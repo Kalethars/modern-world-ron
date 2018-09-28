@@ -1,0 +1,56 @@
+include "ctw_lib.bhs"
+
+       conquest
+{
+
+labels {
+}
+  diff = get_difficulty();
+  x = 0;
+  y = 0;
+
+  if (diff < 3) {
+    set_time_limit(20);
+    gain_tech(1, "Commerce");
+  }
+  else {
+    set_time_limit(15);
+  }
+
+  disable_city_defeat(2);
+  force_transport_ability(2);
+
+  city_name = find_capital(1);
+  city_id = find_city_id(city_name);
+  x = object_position_x(1, city_id)+5;
+  y = object_position_y(1, city_id)+5;
+
+  create_unit_upgrade(1, x, y, "Elite Javelineers", 3);
+  if (find_nation(1) == "Nubians") {
+    create_unit_upgrade(1, x, y, "Bandeirantes", 1);
+  }
+  else {
+    create_unit_upgrade(1, x, y, "Pikemen", 1);
+  }
+  create_unit_upgrade(1, x, y, "Crossbowmen", 3);
+  create_unit_upgrade(1, x, y, "Light Cavalry", 2);
+  create_unit_upgrade(1, x, y, "Knight", 2);
+  if (find_nation(1) == "Spanish") {
+    create_unit_upgrade(1, x, y, "Conquistador", 2);
+  }
+    else if (find_nation(1) == "Nubians") {
+      if (get_age() == 3) {
+        unit = create_unit(1, x, y, "Dragoon", 3);
+        add_to_group(1, unit);
+      }
+      else {
+        unit = create_unit(1, x, y, "Carabineer", 3);
+        add_to_group(1, unit);
+      }
+    }
+  else {
+    create_unit_upgrade(1, x, y, "Horse Archer", 1);
+  }
+  create_unit_upgrade(1, x, y, "General", 1);
+  create_unit_upgrade(1, x, y, "Supply Wagon", 1);
+}

@@ -1,0 +1,66 @@
+include "ctw_lib.bhs"
+
+conquest {
+	static String BarracksRandom[]=["Slingers","Hoplites","Machine Gun"];
+	static String StableRandom[]=["Light Horse","Cataphract"];
+	static String FactoryRandom[]=["Catapult"];
+	static String FortRandom[]=["General","Spy"];
+	static int last_barracks=-1,last_stable=-1,last_factory=-1,last_fort=-1;
+	run_once{
+		ctw_add_objective_text($S("Each built barracks, auto plant, factory or fort will give you one free military unit."), "Hint_id", 0);
+		ctw_add_objective_text($S("Captured cities will be assimilated immediately."), "Hint2_id", 0);
+		enable_trigger("Built_Barracks");
+		enable_trigger("Built_Stable");
+		enable_trigger("Built_Factory");
+		enable_trigger("Built_Fort");
+	}
+	
+	if (time()>=get_time_limit()) {
+	    defeat_attacker_and_allies();
+	}
+	
+	if (city_captured_by(2,1,"")){
+		city_assimilate(1,city_captured_by(2,1));
+	}
+	
+	trigger Built_Barracks(object_type(1,get_last_building_built(1))=="Barracks" && last_barracks!=get_last_building_built(1)){
+		last_barracks=get_last_building_built(1);
+		int building=get_last_building_built(1);
+		int x=object_position_x(1,building);
+		int y=object_position_y(1,building);
+		int i=rand_int(0,BarracksRandom.length);
+		create_unit_upgrade(1,x,y,BarracksRandom[i],1);
+		enable_trigger("Built_Barracks");
+	}
+	
+	trigger Built_Stable(object_type(1,get_last_building_built(1))=="Auto Plant" && last_stable!=get_last_building_built(1)){
+		last_stable=get_last_building_built(1);
+		int building=get_last_building_built(1);
+		int x=object_position_x(1,building);
+		int y=object_position_y(1,building);
+		int i=rand_int(0,StableRandom.length);
+		create_unit_upgrade(1,x,y,StableRandom[i],1);
+		enable_trigger("Built_Stable");
+	}
+	
+	trigger Built_Factory(object_type(1,get_last_building_built(1))=="Factory" && last_factory!=get_last_building_built(1)){
+		last_factory=get_last_building_built(1);
+		int building=get_last_building_built(1);
+		int x=object_position_x(1,building);
+		int y=object_position_y(1,building);
+		int i=rand_int(0,FactoryRandom.length);
+		create_unit_upgrade(1,x,y,FactoryRandom[i],1);
+		enable_trigger("Built_Factory");
+	}
+	
+	trigger Built_Fort((object_type(1,get_last_building_built(1))=="Fortress" || object_type(1,get_last_building_built(1))=="Redoubt") && last_fort!=get_last_building_built(1)){
+		last_fort=get_last_building_built(1);
+		int building=get_last_building_built(1);
+		int x=object_position_x(1,building);
+		int y=object_position_y(1,building);
+		int i=rand_int(0,FortRandom.length);
+		create_unit_upgrade(1,x,y,FortRandom[i],1);
+		enable_trigger("Built_Fort");
+	}
+	
+}

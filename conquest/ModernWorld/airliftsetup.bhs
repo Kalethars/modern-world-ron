@@ -1,0 +1,179 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+
+  labels {
+    DEFENDER,
+    ATTACKER,
+  }
+
+  gain_tech(1, "Military");
+
+  disable_city_defeat(1);
+  disable_city_defeat(2);
+
+  int unit;
+  int building;
+  String city_name;
+  int x;
+  int y;
+
+  for (i = 0; i < 7; i++) {
+    gain_tech(1, "Military");
+    gain_tech(1, "Science");
+  }
+
+  force_transport_ability(ATTACKER);
+
+  diff = get_difficulty();
+  city_name = find_capital(1);
+  int city_id = find_city_id(city_name);
+  building = city_id;
+  x = object_position_x(1, building);
+  y = object_position_y(1, building);
+  
+  building = find_build(1, "Woodcutter's Camp");
+  destroy_building(1, building);
+  building = find_build(1, "Library");
+  destroy_building(1, building);
+  for (i = 0; i < 3; i++) {
+    building = find_build(1, "Farm");
+    destroy_building(1, building);
+  }
+  building = find_build(1, "Senate");
+  destroy_building(1, building);
+
+  place_building(1, "Airbase", city_name);
+  int air_id;
+  air_id = find_build(1, "Airbase");
+  place_building(1, "barracks", city_name);
+  place_building(1, "barracks", city_name);
+  place_building(1, "stable", city_name);
+  place_building(1, "stable", city_name);
+  place_building(1, "siege factory", city_name);
+  object_ignore_orders(1, air_id);
+  disable_type("Airbase");
+
+  def_capital = find_capital(1);
+  def_id = find_city_id(def_capital);
+  x = object_position_x(DEFENDER, def_id);
+  y = object_position_y(DEFENDER, def_id);
+  switch(diff) {
+    case 1 :
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      place_building_upgrade(DEFENDER, "lookout", def_capital);
+      place_building_upgrade(DEFENDER, "lookout", def_capital);
+      place_building_upgrade(DEFENDER, "lookout", def_capital);
+      if (age(1) == 0) {
+        place_building_upgrade(DEFENDER, "tower", def_capital);
+        create_unit_upgrade(DEFENDER, x, y, "hoplites", 1);
+        create_unit_upgrade(DEFENDER, x, y, "bowmen", 1);
+        create_unit_upgrade(DEFENDER, x, y, "slingers", 1);
+      }
+      create_unit_upgrade(DEFENDER, x, y, "hoplites", 2);
+      create_unit_upgrade(DEFENDER, x, y, "bowmen", 2);
+      create_unit_upgrade(DEFENDER, x, y, "slingers", 2);
+      break;
+    case 2 :
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      if (age(1) == 0) place_building_upgrade(DEFENDER, "tower", def_capital);
+      place_building_upgrade(DEFENDER, "lookout", def_capital);
+      place_building_upgrade(DEFENDER, "lookout", def_capital);
+      place_building_upgrade(DEFENDER, "lookout", def_capital);
+      create_unit_upgrade(DEFENDER, x, y, "hoplites", 1);
+      create_unit_upgrade(DEFENDER, x, y, "bowmen", 1);
+      create_unit_upgrade(DEFENDER, x, y, "slingers", 1);
+      if (age(1) == 0) {
+        create_unit_upgrade(DEFENDER, x, y, "hoplites", 1);
+        create_unit_upgrade(DEFENDER, x, y, "bowmen", 1);
+        create_unit_upgrade(DEFENDER, x, y, "slingers", 1);
+      }
+      break;
+    case 3 :
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      if (age(1) == 0) place_building_upgrade(DEFENDER, "tower", def_capital);
+      place_building_upgrade(DEFENDER, "lookout", def_capital);
+      place_building_upgrade(DEFENDER, "lookout", def_capital);
+      create_unit_upgrade(DEFENDER, x, y, "hoplites", 1);
+      create_unit_upgrade(DEFENDER, x, y, "slingers", 1);
+      if (age(1) == 0) create_unit_upgrade(DEFENDER, x, y, "bowmen", 1);
+      break;
+    case 4 :
+      create_unit_upgrade(DEFENDER, x, y, "hoplites", 1);
+      break;
+    case 5 :
+      break;
+    case 6:
+      break;
+  }
+
+
+  destroy_building(1, city_id);
+  create_building_near(1, x, y, "Redoubt", 15);
+  x += -2;
+
+  for (i = 0; i < 2; i++) {
+    unit = find_all_unit(1, "Bomber");
+    kill_unit_anim(1, unit, 1);
+  }
+
+  create_unit_upgrade(1, x, y, "slingers", 1);
+  create_unit_upgrade(1, x, y, "hoplites", 1);
+  create_unit_upgrade(1, x, y, "Light Horse", 2);
+  create_unit_upgrade(1, x, y, "Cataphract", 3);
+  create_unit_upgrade(1, x, y, "Explorer", 1);
+  create_unit_upgrade(1, x, y, "General", 1);
+ // create_unit_upgrade(1, x, y, "Citizen", 5);
+  if (get_age() == 7) {
+    create_unit_upgrade(1, x, y, "Mi-24 Hind", 3);
+  }
+  else {
+    create_unit_upgrade(1, x, y, "Helicopter", 3);
+  }
+  create_unit_upgrade(1, x, y, "Supply Wagon", 1);
+
+  //get the proper angle
+  dir = get_conquest_invasion_dir();
+  dir = dir + 180;
+  if (dir >= 360) {
+    dir = dir - 360;
+  }
+  group_jump_move(1, x, y, dir);
+  
+  disable_type("Oil Platform");
+  disable_type("Small City");
+  disable_type("Temple");
+  disable_type("University");
+  disable_type("Woodcutter's Camp");
+  disable_type("Farm");
+  disable_type("Mine");
+  disable_type("Oil Well");
+  disable_type("Smelter");
+  disable_type("Granary");
+  disable_type("Lumber Mill");
+  disable_type("Refinery");
+  disable_type("Market");
+  disable_type("Library");
+  disable_type("Fort");
+  disable_type("Barracks");
+  disable_type("Stable");
+  disable_type("Siege Factory");
+  disable_type("Senate");
+  disable_type("Dock");
+  disable_type("Airbase");
+  disable_type("Missile Silo");
+
+  set_object_type_max_health("Bomber", 480);
+  set_object_type_max_health("Strategic Bomber", 544);
+  set_unit_type_max_craft("Bomber", 600);
+  set_unit_type_max_craft("Strategic Bomber", 600);
+  set_unit_type_max_craft("Fighter", 600);
+  set_unit_type_max_craft("Jet Fighter", 600);
+}
+
+

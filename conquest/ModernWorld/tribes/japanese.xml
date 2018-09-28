@@ -1,0 +1,51 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Brian Reynolds (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Japanese">
+  <LEADERS>
+    <LEADER>Mutsuhito</LEADER>
+    <LEADER>Hirohito</LEADER>
+    <LEADER>Akihito</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Tokyo</CITY>
+    <CITY>Yokohama</CITY>
+    <CITY>Osaka</CITY>
+    <CITY>Nagoya</CITY>
+    <CITY>Sapporo</CITY>
+    <CITY>Kobe</CITY>
+    <CITY>Kyoto</CITY>
+    <CITY>Fukuoka</CITY>
+    <CITY>Kawasaki</CITY>
+    <CITY>Saitama</CITY>
+    <CITY>Hiroshima</CITY>
+    <CITY>Sendai</CITY>
+    <CITY>Kitakyūshū</CITY>
+    <CITY>Chiba</CITY>
+    <CITY>Sakai</CITY>
+    <CITY>Niigata</CITY>
+    <CITY>Hamamatsu</CITY>
+    <CITY>Shizuoka</CITY>
+    <CITY>Sagamihara</CITY>
+    <CITY>Okayama</CITY>
+    <CITY>Kumamoto</CITY>
+    <CITY>Kagoshima</CITY>
+    <CITY>Funabashi</CITY>
+    <CITY>Hachiōji</CITY>
+    <CITY>Kawaguchi</CITY>
+    <CITY>Himeji</CITY>
+    <CITY>Matsuyama</CITY>
+    <CITY>Higashiōsaka</CITY>
+    <CITY>Utsunomiya</CITY>
+    <CITY>Matsudo</CITY>
+    <CITY>Nishinomiya</CITY>
+    <CITY>Kurashiki</CITY>
+    <CITY>Ichikawa</CITY>
+    <CITY>Ōita</CITY>
+    <CITY>Fukuyama</CITY>
+    <CITY>Amagasaki</CITY>
+    <CITY>Fukushima</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>3 Asian   </UNIT_CONTINENT>
+  <BUILD_CONTINENT>2 Asian</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>2 Asian</BACKUP_BUILD_CONTINENT>
+</TRIBE>

@@ -1,0 +1,39 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by user (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Argentineans">
+  <LEADERS>
+    <LEADER>Hipólito Yrigoyen</LEADER>
+    <LEADER>Juan Domingo Perón</LEADER>
+    <LEADER>Carlos Menem</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Buenos Aires</CITY>
+    <CITY>Bariloche</CITY>
+    <CITY>Cordoba</CITY>
+    <CITY>Iguazu</CITY>
+    <CITY>Mar Del Plata</CITY>
+    <CITY>Mendoza</CITY>
+    <CITY>Rosario</CITY>
+    <CITY>San Juan</CITY>
+    <CITY>Salta</CITY>
+    <CITY>San Miguel de Tucuman</CITY>
+    <CITY>Resistencia</CITY>
+    <CITY>Posadas</CITY>
+    <CITY>Santa Fe</CITY>
+    <CITY>Parana</CITY>
+    <CITY>Rio Cuarto</CITY>
+    <CITY>Godoy Cruz</CITY>
+    <CITY>Moron</CITY>
+    <CITY>Lomas de Zamora</CITY>
+    <CITY>Bahia Blanca</CITY>
+    <CITY>Neuquen</CITY>
+    <CITY>Trelew</CITY>
+    <CITY>Caleta Olivia</CITY>
+    <CITY>Rio Gallegos</CITY>
+    <CITY>Esquel</CITY>
+    <CITY>Puerto Deseado</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>2 American</UNIT_CONTINENT>
+  <BUILD_CONTINENT>0 Med</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>4 American</BACKUP_BUILD_CONTINENT>
+</TRIBE>

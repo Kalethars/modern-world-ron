@@ -1,0 +1,43 @@
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Finns">
+  <LEADERS>
+    <LEADER>Józef Piłsudski</LEADER>
+    <LEADER>Bolesław Bierut</LEADER>
+    <LEADER>Wojciech Jaruzelski</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Helsinki</CITY>
+    <CITY>Espoo</CITY>
+    <CITY>Tampere</CITY>
+    <CITY>Vantaa</CITY>
+    <CITY>Oulu</CITY>
+    <CITY>Turku</CITY>
+    <CITY>Jyväskylä</CITY>
+    <CITY>Lahti</CITY>
+    <CITY>Kuopio</CITY>
+    <CITY>Kouvola</CITY>
+    <CITY>Pori</CITY>
+    <CITY>Joensuu</CITY>
+    <CITY>Lappeenranta</CITY>
+    <CITY>Hämeenlinna</CITY>
+    <CITY>Vaasa</CITY>
+    <CITY>Rovaniemi</CITY>
+    <CITY>Seinäjoki</CITY>
+    <CITY>Mikkeli</CITY>
+    <CITY>Kotka</CITY>
+    <CITY>Salo</CITY>
+    <CITY>Porvoo</CITY>
+    <CITY>Kokkola</CITY>
+    <CITY>Lohja</CITY>
+    <CITY>Hyvinkää</CITY>
+    <CITY>Nurmijärvi</CITY>
+    <CITY>Järvenpää</CITY>
+    <CITY>Rauma</CITY>
+    <CITY>Kirkkonummi</CITY>
+    <CITY>Tuusula</CITY>
+    <CITY>Kajaani</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>0 European</UNIT_CONTINENT>
+  <BUILD_CONTINENT>1 NEuro</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>0 Med</BACKUP_BUILD_CONTINENT>
+</TRIBE>

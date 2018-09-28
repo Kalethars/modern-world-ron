@@ -1,0 +1,240 @@
+//SKIRMISHRUNTIME.BHS
+void conquest set_resources_rate (int who);
+void conquest ai_build ( );
+
+conquest
+{
+
+  labels {
+    ATTACKER,
+    DEFENDER,
+  }
+  
+  int num_forts[] = [0,1,1];
+  int building,unit,x,y;
+  static int diff = get_difficulty();
+
+  static int end_time = get_time_limit();
+  int cur_time;
+
+  run_once {
+    ctw_add_objective_text($S("Each redoubt provides +20 gather rate for food, timber, metal and oil."), "Hint_id", 0);
+    set_timer("res_check", 1);
+    set_resources_rate(ATTACKER);
+    set_resources_rate(DEFENDER);
+    set_timer("build_units", 1);
+    set_timer("place_build", 1);
+    set_timer("raid", 1);
+  }
+
+  cur_time = time_min();
+  if (cur_time >= end_time) {
+    defeat(ATTACKER);
+  }
+  
+  if (timer_expired("raid")) {
+    set_timer("raid", 180-(diff*10));
+	if (num_military_units(2)-num_type_upgrade(2,"Submarine")>num_military_units(1)+4*(diff-2)){
+		building = find_build(1, "Fortress");
+		x=object_position_x(1,building);
+		y=object_position_y(1,building);
+		for (i = 0; i < num_military_units(1)+4*(diff-2); i++) {
+		  unit = find_military(2);
+		  if (object_type(2,unit)!="Submarine"){
+			unit_attack_to_order(2, unit, x, y);
+		  } else i--;
+		}
+		unit = find_unit_upgrade(2,"General");
+		unit_attack_to_order(2, unit, x, y);
+		unit = find_unit_upgrade(2,"Supply Wagon");
+		unit_attack_to_order(2, unit, x, y);
+		for (i = 0; i < num_type_upgrade(2,"Scout"); i++) {
+		  unit = find_unit_upgrade(2,"Scout");
+		  special_forces_sabotage(2,unit,1,building);
+		}
+	}
+	building = find_unit_upgrade(1,"Aircraft Carrier");
+	if (building<0) {building = find_unit_upgrade(1,"Trireme");}
+	if (building<0) {building = find_unit_upgrade(1,"Fishermen");}
+	if (building<0) {building = find_unit_upgrade(1,"Bark");}
+	if (building<0) {building = find_unit_upgrade(1,"Submarine");}
+	if (building>=0) {
+		x=object_position_x(1,building);
+		y=object_position_y(1,building);
+		unit = find_unit_upgrade(2,"Bark");
+		unit_attack_to_order(2, unit, x, y);
+		unit = find_unit_upgrade(2,"Trireme");
+		unit_attack_to_order(2, unit, x, y);
+		for (i=0;i<num_type_upgrade(2,"Submarine");i++){
+			unit = find_unit_upgrade(2,"Submarine");
+			unit_attack_to_order(2, unit, x, y);
+		}
+	}
+  }
+
+  if (num_type_upgrade(ATTACKER, "Fortress") != num_forts[ATTACKER]) {
+    set_resources_rate(ATTACKER);
+    num_forts[ATTACKER] = num_type_upgrade(ATTACKER, "Fortress");
+  }
+  
+  if (num_type_upgrade(DEFENDER, "Fortress") != num_forts[DEFENDER]) {
+    set_resources_rate(DEFENDER);
+    num_forts[DEFENDER] = num_type_upgrade(DEFENDER, "Fortress");
+  }
+  
+ // set_resources_rate(2);
+  
+  if (num_forts[ATTACKER] == 0) {
+    defeat(ATTACKER);
+  }
+  
+  if (num_forts[DEFENDER] == 0) {
+    defeat(DEFENDER);
+  }
+  
+  if (timer_expired("build_units")) {
+    for (n = num_forts[DEFENDER]; n > 0; n--) {
+	  if (find_idle_citizen(2)<0 && diff*(num_type_upgrade(2, "Fortress")+2)+8 > num_type_upgrade(2, "Citizen") && num_type_upgrade(2, "Citizen")<40){
+		train_unit_with_cost(2,1,"Citizen");
+	  }
+	  if (diff*num_type_upgrade(2, "Dock") > num_type_upgrade(2, "Fishermen") && num_type_upgrade(2, "Fishermen")<20){
+		train_unit_with_cost(2,1,"Fishermen");
+	  }
+      ai_build();
+    }
+    set_timer("build_units", 23-(diff*2));
+  }
+  
+  if (timer_expired("place_build")) {
+    set_timer("place_build", 50-(diff*4));
+    if (num_type_upgrade(DEFENDER, "Woodcutter's Camp") < num_type_upgrade(DEFENDER, "Fort")) {
+      building = find_build(DEFENDER, "Fortress");
+      place_orphan_building_upgrade_with_cost(DEFENDER, "Woodcutter's Camp", building);
+    }
+    if (num_type_upgrade(DEFENDER, "Mine") < num_type_upgrade(DEFENDER, "Fort")+1) {
+      building = find_build(DEFENDER, "Fortress");
+      place_orphan_building_upgrade_with_cost(DEFENDER, "Mine", building);
+    }
+    if (num_type_upgrade(DEFENDER, "Oil Well") < num_type_upgrade(DEFENDER, "Fort")+1) {
+      building = find_build(DEFENDER, "Fortress");
+      place_orphan_building_upgrade_with_cost(DEFENDER, "Oil Well", building);
+    }
+    if (num_type_upgrade(DEFENDER, "Tower") < num_type_upgrade(DEFENDER, "Fort")) {
+      building = find_build(DEFENDER, "Fortress");
+      place_orphan_building_upgrade_with_cost(DEFENDER, "Tower", building);
+    }
+    if (num_type_upgrade(DEFENDER, "Dock") < num_type_upgrade(DEFENDER, "Fort")) {
+      building = find_build(DEFENDER, "Fortress");
+	  place_orphan_building_upgrade_with_cost(DEFENDER, "Dock", building);
+    }
+    if (num_type_upgrade(DEFENDER, "Barracks") < num_type_upgrade(DEFENDER, "Fort")) {
+      building = find_build(DEFENDER, "Fortress");
+      place_orphan_building_upgrade_with_cost(DEFENDER, "Barracks", building);
+    }
+    if (num_type_upgrade(DEFENDER, "Stable") < num_type_upgrade(DEFENDER, "Fort")) {
+      building = find_build(DEFENDER, "Fortress");
+      place_orphan_building_upgrade_with_cost(DEFENDER, "Stable", building);
+    }
+    if (num_type_upgrade(DEFENDER, "Siege Factory") < num_type_upgrade(DEFENDER, "Fort")) {
+      building = find_build(DEFENDER, "Fortress");
+      place_orphan_building_upgrade_with_cost(DEFENDER, "Siege Factory", building);
+    }
+    if ((age(2)>=6) && (num_type_upgrade(DEFENDER, "Lookout") < num_type_upgrade(DEFENDER, "Fort")+num_type_upgrade(1,"Aircraft Carrier"))) {
+      building = find_build(DEFENDER, "Fortress");
+      place_orphan_building_upgrade_with_cost(DEFENDER, "Lookout", building);
+    }
+  }
+  
+}
+
+void conquest set_resources_rate (int who)
+{
+
+  int amount = 20;
+  int diff = get_difficulty();
+  
+  //amount=40+5*diff*(who*2-3);
+
+  String resource_types[] = ["Food", "Timber", "Oil", "Metal"];
+  int rate = amount * num_type_upgrade(who, "Fort"); 
+ 
+  for (i = 0; i < resource_types.length; i++) {
+    set_base_rate(who, resource_types[i], rate);
+  }
+  
+  
+}
+
+void conquest ai_build ( ) 
+{
+
+  String support_units[] = ["Merchant", "General", "Supply Wagon", "Scout"];
+
+  int diff = get_difficulty();
+  String nation_name = find_nation(2);
+  int cur_age = age(2);
+  int i,j,flag,building;
+  
+  for (i = 0; i < support_units.length; i++) {
+    if ((num_type_upgrade(2, "Fortress") > num_type_upgrade(2, support_units[i])) || ((i==3) && (2*num_type_upgrade(2, "Fortress") > num_type_upgrade(2, support_units[i])))) {
+      train_unit_with_cost(2, 1, support_units[i]);
+    }
+  }
+  
+  String military_units[] = ["Slingers", "Hoplites", "Machine Gun", "Flamethrower", "Light Horse", "Cataphract", "Catapult", "Spy"];  
+  String nonmetal_units[] = ["Slingers", "Light Horse"];
+  String building_list[]=["Fortress", "Oil Well", "Oil Platform", "Dock", "Lookout", "Tower", "Barracks", "Stable", "Siege Factory", "Mine", "Woodcutter's Camp"];
+  
+  if (num_type_upgrade(2, "Dock")>0){
+    if (num_type_upgrade(2,"Bark")<2*num_type_upgrade(2, "Dock")) military_units[military_units.length]="Bark";
+	if (num_type_upgrade(2,"Trireme")<2*num_type_upgrade(2, "Dock")) military_units[military_units.length]="Trireme";
+	if (num_type_upgrade(2,"Submarine")<num_type_upgrade(2,"Fort")+num_type_upgrade(1,"Aircraft Carrier")) military_units[military_units.length]="Submarine";
+	//if (cur_age>=6) {
+		//military_units[military_units.length]="Aircraft Carrier";
+	//}
+  }
+  /*
+  if (cur_age>=6) {
+	if (cur_age>=6 && 2*num_type_upgrade(1,"Aircraft Carrier")>num_type_upgrade(2,"Anti-aircraft Gun")){
+		military_units[military_units.length]="Anti-aircraft Gun";
+	}
+	if (cur_age>=6 && 7*num_type_upgrade(2,"Aircraft Carrier")>num_type_upgrade(2,"Jet Fighter Bomber")){
+		military_units[military_units.length]="Jet Fighter Bomber";
+	}
+  }
+  */
+  i=rand_int(0,military_units.length);
+  
+  if (num_military_units(2)-num_type_upgrade(2,"Submarine")<num_military_units(1)+4*(diff-2) && num_type_upgrade(2,"Fort")>2){
+	train_unit_with_cost(2, 1, military_units[i]);
+  } else{
+	  if (can_pay_cost(2,"Fortress") || can_pay_cost(2,"Redoubt")) {
+		for (j=0;j<building_list.length;j++){
+			if (num_type_upgrade(2,building_list[j])>0){
+				building = find_build(2, building_list[j]);
+				place_orphan_building_upgrade_with_cost(2, "Fortress", building);
+			}
+		}
+		train_unit_with_cost(2, 1, military_units[i]);
+	  } else {
+		if (num_type_upgrade(2, "Fort") < num_type_upgrade(1, "Fort")+1) {
+			if (num_type_upgrade(2, "Dock")>0 && num_type_upgrade(2,"Submarine")<num_type_upgrade(2,"Fort")+num_type_upgrade(1,"Aircraft Carrier")){
+				nonmetal_units[nonmetal_units.length]="Submarine";
+			}
+			//if (cur_age>=6 && num_type_upgrade(2, "Dock")>0 && num_type_upgrade(2,"Aircraft Carrier")<num_type_upgrade(2,"Fort")){
+			//	nonmetal_units[nonmetal_units.length]="Aircraft Carrier";
+			//}
+			//if (cur_age>=6 && 7*num_type_upgrade(2, "Aircraft Carrier")>num_type_upgrade(2,"Jet Fighter Bomber")){
+			//	nonmetal_units[nonmetal_units.length]="Jet Fighter Bomber";
+			//}
+			if (cur_age>=6 && 2*num_type_upgrade(1,"Aircraft Carrier")>num_type_upgrade(2,"Anti-aircraft Gun")){
+				nonmetal_units[nonmetal_units.length]="Anti-aircraft Gun";
+			}
+			i=rand_int(0,nonmetal_units.length);
+			train_unit_with_cost(2, 1, nonmetal_units[i]);
+		} else {
+			train_unit_with_cost(2, 1, military_units[i]);
+		}
+	  }
+  }
+}

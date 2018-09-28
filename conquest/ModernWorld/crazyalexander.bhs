@@ -1,0 +1,255 @@
+conquest
+{
+
+labels {
+  //Add any constant labels here in a comma separated list.
+}
+
+static alexander_id = 0;
+static sw_id = 0;
+static x1 = 0;
+static y1 = 0;
+static x_sw = 0;
+static y_sw = 0;
+static int diff = get_difficulty();
+static int orig_time = 0;
+
+run_once {
+  disable_all_triggers();
+  for (i = 2; i < 9; i++) {
+    set_leader_difficulty (i, diff);
+  }
+  disable_tech(2, "Allegiance");
+  disable_city_defeat(1);
+  disable_city_defeat(2);
+  alexander_id = find_unit(1, "The CEO");
+  x1 = object_position_x(1, alexander_id);
+  y1 = object_position_y(1, alexander_id);
+  sw_id = find_unit(1, "Supply Wagon");
+  set_timer("EU", 60);
+  
+  enable_trigger("AlexTotallyGone");
+  enable_trigger("EnemyUnits");
+  enable_trigger("AlexHealing");
+  enable_trigger("AlexLife");
+  enable_trigger("EnemyNoCities");
+  enable_trigger("GrabEnemy");
+  set_timer("Grab", 60);
+
+  enable_trigger("Horsies");
+  set_timer("HS", 300);
+
+  enable_trigger("Madness");
+
+  switch(diff) {
+    case 1:
+      break;
+    case 2:
+      break;
+    case 3:
+      set_timer("MD", 540);
+      break;
+    case 4:
+      set_timer("MD", 540);
+      break;
+    case 5:
+      set_timer("MD", 510);
+      break;
+    case 6:
+      set_timer("MD", 480);
+      break;
+  }
+
+  enable_trigger("AlexMove");
+  set_timer("AM", 2);
+
+  ctw_add_objective_text($S("Keep the CEO alive."), "Alex_Lives_ID", 0);  
+  ctw_add_objective_text($S("Use the Supply Wagon to heal him."), "SW_Heal_ID", 0);
+
+  orig_time = type_build_time("Small City");
+  gain_tech(2, "Civic");
+  give_good(2, "Food", 60);
+  give_good(2, "Timber", 60);
+  place_city_with_cost(2);
+  set_type_build_time("Small City", 1);
+  enable_trigger("BuildTimeGuy");
+
+  enable_trigger("StableTime");
+  set_timer("ST", 300);
+
+  unit_ignore_orders(1, alexander_id);
+}
+
+trigger StableTime(timer_expired("ST"))
+{
+  give_good(2, "Food", 2000);
+  give_good(2, "Timber", 2000);
+  for (i = 0; i < num_cities(2); i++) {
+    city_name = find_city_with_num(2, i+1);
+    place_building_upgrade(2, "Stable", city_name);
+    place_building_upgrade(2, "Stable", city_name);
+    place_building_upgrade(2, "Barracks", city_name);
+    place_building_upgrade(2, "Barracks", city_name);
+  }
+}
+
+trigger BuildTimeGuy(find_inactive_build(2, "Small City") < 0)
+{
+  set_type_build_time("Small City", orig_time);
+}
+
+x_sw = object_position_x(1, sw_id);
+y_sw = object_position_y(1, sw_id);
+
+trigger EnemyUnits(timer_expired("EU"))
+{
+  for (i = 0; i < num_type(2, "Barracks"); i++) {
+    build_id = find_build(2, "Barracks");
+    if (build_id > -1) {
+      x = object_position_x(2, build_id);
+      y = object_position_y(2, build_id);
+      create_unit_in_group(2, x, y, "Slingers", diff/2);
+      create_unit_in_group(2, x, y, "Hoplites", diff/2);
+      create_unit_in_group(2, x, y, "Machine Gun", diff/2);
+    }
+  }
+  for(i = 0; i < num_type(2, "Stable"); i++) {
+    build_id = find_build(2, "Stable");
+    if (build_id > -1) {
+      x = object_position_x(2, build_id);
+      y = object_position_y(2, build_id);
+      create_unit_in_group(2, x, y, "Light Horse", diff/2);
+      create_unit_in_group(2, x, y, "Cataphract", diff/2);
+    }
+    group_stance_order(2, "Defensive");
+  }
+  
+  group_stance_order(2, "Defensive");
+  if (diff > 3) {
+    set_timer("EU", 400);
+    enable_trigger("EnemyUnits");
+  }
+}
+
+trigger EnemyNoCities(num_cities(2) < 1&&timer_expired("ENC") != 0)
+{
+  //attack a city
+  clear_group(2);
+  x = world_x_size() - 5;
+  y = rand_int(5, world_y_size() - 5);
+  create_unit(2, x, y, "Slingers", diff);
+  create_unit_in_group(2, x, y, "Hoplites", diff);
+  create_unit_in_group(2, x, y, "Machine Gun", diff/2);
+  create_unit_in_group(2, x, y, "Light Horse", diff/3);
+  create_unit_in_group(2, x, y, "Cataphract", diff/3);
+  city_num = rand_int(1, num_cities(1)+1);
+  city_name = find_city_with_num(1, city_num);
+  city_id = find_city_id(city_name);
+  x = object_position_x(1, city_id);
+  y = object_position_y(1, city_id);
+  group_attack_to_order(2, x, y);
+  
+  //attack alexander
+  add_visibility(2, 1);
+  clear_group(2);
+  x = world_x_size() - 5;
+  y = rand_int(5, world_y_size() - 5);
+  create_unit(2, x, y, "Light Horse", diff);
+  create_unit_in_group(2, x, y, "Cataphract", diff);
+  group_attack_order(2, 1, alexander_id);
+  
+  set_timer("ENC", 225);
+  enable_trigger("EnemyNoCities");
+}
+
+trigger AlexMove(timer_expired("AM"))
+{
+  unit_move_order(1, alexander_id, x1, y1);
+  enable_trigger("AlexMove");
+  set_timer("AM", 2);
+}
+
+trigger AlexTotallyGone(object_near(1, alexander_id, x1, y1, 10))
+{
+  x1 = rand_int(5, world_x_size() - 5);
+  y1 = rand_int(5, world_y_size() - 5);
+  while(!map_is_passable(x1, y1)) {
+    x1 = rand_int(5, world_x_size() - 5);
+    y1 = rand_int(5, world_y_size() - 5);
+  }
+  unit_move_order(1, alexander_id, x1, y1);
+
+  enable_trigger("AlexTotallyGone");
+}
+
+trigger AlexHealing(object_near(1, alexander_id, x_sw, y_sw, 14) && timer_expired("AH") != 0)
+{
+  if (object_health(1, alexander_id) < 100) {
+    heal_object(1, alexander_id, 4);
+  }
+  enable_trigger("AlexHealing");
+  set_timer("AH", 2);
+}
+
+trigger AlexLife(time() >= get_time_limit())
+{
+  victory(1);
+}
+
+trigger GrabEnemy(timer_expired("Grab"))
+{
+  clear_group(2);
+  //int i = 0;
+  add_visibility(2, 1);
+
+  for(i = 0; i < num_military_units(2); i++) {
+    unit_id = find_military(2);
+    add_to_group(2, unit_id);
+  }
+
+  group_attack_order(2, 1, alexander_id);
+
+  enable_trigger("GrabEnemy");
+  set_timer("Grab", 60);
+}
+
+trigger Horsies(timer_expired("HS"))
+{
+  build_id = find_build(2, "Stable");
+  if (build_id > -1) {
+    x = object_position_x(2, build_id);
+    y = object_position_y(2, build_id);
+    create_unit_upgrade(2, x, y, "Light Horse", diff);
+    group_attack_order(2, 1, alexander_id);
+  }
+  enable_trigger("Horsies");
+  set_timer("HS", 120);
+}
+
+trigger Madness(timer_expired("MD"))
+{
+  build_id = find_build(2, "Stable");
+  if (build_id > -1) {
+    x = object_position_x(2, build_id);
+    y = object_position_y(2, build_id);
+    create_unit_in_group(2, x, y, "Light Horse", diff - 3);
+    create_unit_in_group(2, x, y, "Cataphract", diff - 3);
+  }
+
+  build_id = find_build(2, "Barracks");
+  if (build_id > -1) {
+    x = object_position_x(2, build_id);
+    y = object_position_y(2, build_id);
+    create_unit_in_group(2, x, y, "Slingers", diff - 3);
+    create_unit_in_group(2, x, y, "Hoplites", diff - 3);
+    create_unit_in_group(2, x, y, "Machine Gun", diff - 3);
+  }
+
+  group_attack_order(2, 1, alexander_id);
+}
+
+if (unit_killed(1, alexander_id)) {
+  defeat(1);
+}
+
+}

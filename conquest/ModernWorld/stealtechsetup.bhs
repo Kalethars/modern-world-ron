@@ -1,0 +1,48 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  static int red = 1;
+  static int blue = 2;
+  int diff = get_difficulty();
+
+  int building = find_build(red, "Library");
+
+  String tech_list[] = ["Written Word", "Mathematics", "Chemistry", "Laws of Nature", "Electricity", "Electronics", "Computerization", "Barter", "Coinage", "Trade", "Mercantilism", "Finance", "Assembly Line", "Globalization", "City State", "Empire", "Feudalism", "Divine Right", "Constitution", "Great Power", "International Law", "The Art of War", "Mercenaries", "Standing Army", "Conscription", "Levee en Masse", "Nation-in-Arms", "Selective Service"];
+
+  for (i = 0; i < tech_list.length; i++) {
+    disable_tech(1, tech_list[i]);
+  }
+
+  if (age(1) == 5) {
+    disable_tech(1, "Modern Age");
+  }
+  else if (age(1) == 6) {
+    disable_tech(1, "Information Age");
+  }
+  
+  set_unit_type_speed("Spy", 42);
+
+  int x = get_starting_loc_x(red);
+  int y = get_starting_loc_y(red);
+
+  if (diff < 3) create_unit_upgrade(red, x + 2, y, "Spy", 2);
+  else if (diff < 5) create_unit_upgrade(red, x + 2, y, "Spy", 1);
+
+  String tribe_name = find_nation(red);
+
+  disable_type_by_tribe("Library", tribe_name);
+  disable_type_by_tribe("University", tribe_name);
+  disable_type_by_tribe("Scholar", tribe_name);
+
+  string capital = find_capital(red);
+  place_building(red, "Fort", capital);
+  gain_tech(red, "Science");
+  gain_tech(red, "Science");
+  if (diff < 6) gain_tech(red, "Commerce");
+  if (diff < 4) gain_tech(red, "Military");
+  if (diff < 2) gain_tech(red, "Civic");
+  force_transport_ability(red);
+
+}

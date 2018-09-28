@@ -1,0 +1,31 @@
+//runtime script for Conquest style scenarios
+
+conquest {
+
+static int diff = get_difficulty();
+static int who;
+
+run_once {
+  ctw_add_objective_text($S("Capture the enemy capital(s)."), "Hint_id", 0);
+  ctw_add_objective_text($S("If the rebel is defeated the enemy is defeated as well."), "Hint2_id", 0);
+  ctw_add_objective_text($S("Any city captured by the enemy is given to the rebel."), "Hint3_id", 0);
+}
+
+trigger (time() >= get_time_limit()) {
+  defeat_attacker_and_allies();
+}
+
+if (city_captured_by(1, 2, "")) {
+  city_name = city_captured_by(1, 2);
+  city_id = find_city_id(city_name);
+  switch_teams(1, 2, city_id);
+  city_id = find_city_id(city_name);
+  switch_teams(3, 1, city_id);
+}
+
+if (is_defeated(2) || is_defeated(3)) {
+  defeat_attacker_and_allies();
+}
+
+}
+

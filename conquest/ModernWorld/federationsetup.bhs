@@ -1,0 +1,105 @@
+include "ctw_lib.bhs"
+
+       conquest
+{
+
+labels {
+}
+  diff = get_difficulty();
+  x = 0;
+  y = 0;
+
+  for (i = 2; i < 9; i++) {
+    set_leader_difficulty (i, diff);
+  }
+
+  set_time_limit(90);
+
+  diplomacy_set_wait(2);
+  diplomacy_set_wait(3);
+  diplomacy_set_wait(4);
+  diplomacy_set_wait(5);
+  diplomacy_set_wait(6);
+
+  declare_war(1, 2);
+  declare_war(1, 2);
+  declare_war(1, 3);
+  declare_war(1, 3);
+  declare_war(1, 4);
+  declare_war(1, 4);
+  declare_war(1, 5);
+  declare_war(1, 5);
+  declare_war(1, 6);
+  declare_war(1, 6);
+
+  declare_war(2, 3);
+  declare_war(2, 3);
+  declare_war(2, 4);
+  declare_war(2, 4);
+  declare_war(2, 5);
+  declare_war(2, 5);
+  declare_war(2, 6);
+  declare_war(2, 6);
+
+  declare_war(3, 4);
+  declare_war(3, 4);
+  declare_war(3, 5);
+  declare_war(3, 5);
+  declare_war(3, 6);
+  declare_war(3, 6);
+
+  declare_war(4, 5);
+  declare_war(4, 5);
+  declare_war(4, 6);
+  declare_war(4, 6);
+
+  declare_war(5, 6);
+  declare_war(5, 6);
+
+  x = get_starting_loc_x(1);
+  y = get_starting_loc_y(1);
+
+  create_unit_upgrade(1, x, y, "Elite Javelineers", 2);
+  if (find_nation(1) == "Nubians") {
+    create_unit_upgrade(1, x, y, "Bandeirantes", 1);
+  }
+  else {
+    create_unit_upgrade(1, x, y, "Pikemen", 1);
+  }
+  create_unit_upgrade(1, x, y, "Archers", 1);
+  create_unit_upgrade(1, x, y, "Light Cavalry", 2);
+  create_unit_upgrade(1, x, y, "General", 1);
+  create_unit_upgrade(1, x, y, "Explorer", 1);
+
+  if (find_nation(1) == "Nubians" || find_nation(1) == "British" || find_nation(1) == "Dutch" || find_nation(1) == "French" || find_nation(1) == "Spanish" || find_nation(1) == "Americans") {
+    create_unit_upgrade(1, x, y, "Knight", 1);
+    if (find_nation(1) == "Spanish") {
+      create_unit_upgrade(1, x, y, "Conquistador", 2);
+    }
+    else if (find_nation(1) == "Nubians") {
+      if (get_age() == 3) {
+        unit = create_unit(1, x, y, "Dragoon", 3);
+        add_to_group(1, unit);
+      }
+      else {
+        unit = create_unit(1, x, y, "Carabineer", 3);
+        add_to_group(1, unit);
+      }
+    }
+    else {
+      create_unit_upgrade(1, x, y, "Horse Archer", 1);
+    }
+  }
+  else {
+    create_unit_upgrade(1, x, y, "Supply Wagon", 1);
+  }
+
+  //get the proper angle
+  dir = get_conquest_invasion_dir();
+  dir = dir + 180;
+  if (dir >= 360) {
+    dir = dir - 360;
+  }
+  group_jump_move(1, x, y, dir);
+}
+

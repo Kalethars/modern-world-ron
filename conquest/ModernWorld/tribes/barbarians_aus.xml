@@ -1,0 +1,48 @@
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Oceanians">
+  <LEADERS>
+    <LEADER>William Massey of New Zealand</LEADER>
+    <LEADER>Hubert Murray of Papua</LEADER>
+    <LEADER>Ernest Sweet-Escott of Fiji</LEADER>
+    <LEADER>Tjilbruke of Kaurna</LEADER>
+    <LEADER>Ngintaka of Pitjantjatjara</LEADER>
+    <LEADER>Io Matua Kore of Māori</LEADER>
+    <LEADER>Karora of Arrernte</LEADER>
+    <LEADER>Bila of Adnyamathanha</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Wellington</CITY>
+    <CITY>Port Moresby</CITY>
+    <CITY>Suva</CITY>
+    <CITY>Onkaparinga</CITY>
+    <CITY>Ernabella</CITY>
+    <CITY>Te Whanganui-a-Tara</CITY>
+    <CITY>Ltyentye Apurte</CITY>
+    <CITY>Nepabunna</CITY>
+    <CITY>Auckland</CITY>
+    <CITY>Lae</CITY>
+    <CITY>Lautoka</CITY>
+    <CITY>Yertabulti</CITY>
+    <CITY>Pipalyatjara</CITY>
+    <CITY>Tāmaki-makau-rau</CITY>
+    <CITY>Mutitjulu</CITY>
+    <CITY>Wallaroo</CITY>
+    <CITY>Patpangga</CITY>
+    <CITY>Areyonga</CITY>
+    <CITY>Pattawilyangga</CITY>
+    <CITY>Yalata</CITY>
+    <CITY>Wingellina</CITY>
+    <CITY>Tauranga</CITY>
+    <CITY>Rotorua</CITY>
+    <CITY>Whangarei</CITY>
+    <CITY>Honiara</CITY>
+    <CITY>Apia</CITY>
+    <CITY>Tarawa</CITY>
+    <CITY>Nukuʻalofa</CITY>
+    <CITY>Palikir</CITY>
+    <CITY>Ngerulmud</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>4 Iroquois</UNIT_CONTINENT>
+  <BUILD_CONTINENT>6 Iroquois</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>4 American</BACKUP_BUILD_CONTINENT>
+</TRIBE>

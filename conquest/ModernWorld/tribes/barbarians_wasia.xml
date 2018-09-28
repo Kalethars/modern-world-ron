@@ -1,0 +1,48 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Andy Clark (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="West Asians">
+	<LEADERS>
+		<LEADER>Abdullah I of Jordan</LEADER>
+		<LEADER>Sheikh Saeed of Dubai</LEADER>
+		<LEADER>Abdullah of Saudi Arabia</LEADER>
+		<LEADER>Jassim of Qatar</LEADER>
+		<LEADER>Faisal I of Iraq</LEADER>
+		<LEADER>Habibullah Khan of Afghanistan</LEADER>
+		<LEADER>Alikhan Bukeikhanov of Alash Autonomy</LEADER>
+	</LEADERS>
+	<CITIES>
+		<CITY>Jerusalem</CITY>
+		<CITY>Abu Dhabi</CITY>
+		<CITY>Riyadh</CITY>
+		<CITY>Doha</CITY>
+		<CITY>Baghdad</CITY>
+		<CITY>Kabul</CITY>
+		<CITY>Astana</CITY>
+		<CITY>Damascus</CITY>
+		<CITY>Manama</CITY>
+		<CITY>Amman</CITY>
+		<CITY>Sana'a</CITY>
+		<CITY>Ramallah</CITY>
+		<CITY>Muscat</CITY>
+		<CITY>Al Kuwait</CITY>
+		<CITY>Beirut</CITY>
+		<CITY>Islamabad</CITY>
+		<CITY>Bishkek</CITY>
+		<CITY>Dushanbe</CITY>
+		<CITY>Ashgabat</CITY>
+		<CITY>Tashkent</CITY>
+		<CITY>Baku</CITY>
+		<CITY>Tbilisi</CITY>
+		<CITY>Yerevan</CITY>
+		<CITY>Mekka</CITY>
+		<CITY>Dubai</CITY>
+		<CITY>Aleppo</CITY>
+		<CITY>Tel Aviv</CITY>
+		<CITY>Kandahar</CITY>
+		<CITY>Karachi</CITY>
+		<CITY>Basra</CITY>
+	</CITIES>
+	<UNIT_CONTINENT>1 Arab   </UNIT_CONTINENT>
+	<BUILD_CONTINENT>5 Turk</BUILD_CONTINENT>
+	<BACKUP_BUILD_CONTINENT>8 EIndian</BACKUP_BUILD_CONTINENT>
+</TRIBE>

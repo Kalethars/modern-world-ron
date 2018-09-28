@@ -1,0 +1,48 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by XMLSPY 5 Professional Ed. Release 2 (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="North Americans">
+  <LEADERS>
+    <LEADER>Manuel Estrada Cabrera of Guatemala</LEADER>
+    <LEADER>Belisario Porras Barahona of Panama</LEADER>
+    <LEADER>Francisco Bertrand Barahona of Honduras</LEADER>
+    <LEADER>Adolfo Díaz Recinos of Nicaragua</LEADER>
+    <LEADER>Louis Borno of Haiti</LEADER>
+    <LEADER>Carlos Meléndez of El Salvador</LEADER>
+    <LEADER>Ricardo Jiménez Oreamuno of Costa Rica</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Guatemala City</CITY>
+    <CITY>Panama City</CITY>
+    <CITY>Tegucigalpa</CITY>
+    <CITY>Managua</CITY>
+    <CITY>Port-au-Prince</CITY>
+    <CITY>San Salvador</CITY>
+    <CITY>San José</CITY>
+    <CITY>Santo Domingo</CITY>
+    <CITY>Kingston</CITY>
+    <CITY>Roseau</CITY>
+    <CITY>Bridgetown</CITY>
+    <CITY>Nassau</CITY>
+    <CITY>St. John's</CITY>
+    <CITY>Belmopan</CITY>
+    <CITY>St. George's</CITY>
+    <CITY>Basseterre</CITY>
+    <CITY>Castries</CITY>
+    <CITY>Port of Spain</CITY>
+    <CITY>San Juan</CITY>
+    <CITY>San Pedro Sula</CITY>
+    <CITY>Santiago de los Caballeros</CITY>
+    <CITY>Villa Nueva</CITY>
+    <CITY>Carrefour</CITY>
+    <CITY>Alajuela</CITY>
+    <CITY>Choloma</CITY>
+    <CITY>Mixco</CITY>
+    <CITY>San Miguelito</CITY>
+    <CITY>Soyapango</CITY>
+    <CITY>Cobán</CITY>
+    <CITY>Nuuk</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>4 Iroquois</UNIT_CONTINENT>
+  <BUILD_CONTINENT>6 Iroquois</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>4 American</BACKUP_BUILD_CONTINENT>
+</TRIBE>

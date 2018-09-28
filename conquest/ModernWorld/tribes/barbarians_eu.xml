@@ -1,0 +1,50 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Robert Nicaise (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Europeans">
+  <LEADERS>
+    <LEADER>Albert I of Belgium</LEADER>
+    <LEADER>Wilhelmina of the Netherlands</LEADER>
+    <LEADER>Józef Piłsudski of Poland</LEADER>
+    <LEADER>Peter I of Serbia</LEADER>
+    <LEADER>Franz Joseph I of Austria</LEADER>
+    <LEADER>Alexander of Greece</LEADER>
+    <LEADER>Frederick IX of Denmark</LEADER>
+    <LEADER>Ferdinand I of Bulgaria</LEADER>
+    <LEADER>Carol I of Romania</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Brussels</CITY>
+    <CITY>Amsterdam</CITY>
+    <CITY>Warsaw</CITY>
+    <CITY>Belgrade</CITY>
+    <CITY>Vienna</CITY>
+    <CITY>Athens</CITY>
+    <CITY>Copenhagen</CITY>
+    <CITY>Sofia</CITY>
+    <CITY>Bucharest</CITY>
+    <CITY>Prague</CITY>
+    <CITY>Lisbon</CITY>
+    <CITY>Budapest</CITY>
+    <CITY>Stockholm</CITY>
+    <CITY>Bern</CITY>
+    <CITY>Dublin</CITY>
+    <CITY>Zagreb</CITY>
+    <CITY>Luxembourg</CITY>
+    <CITY>Monaco</CITY>
+    <CITY>Kiev</CITY>
+    <CITY>Vaduz</CITY>
+    <CITY>Minsk</CITY>
+    <CITY>Reykjavík</CITY>
+    <CITY>Bratislava</CITY>
+    <CITY>Sarajevo</CITY>
+    <CITY>Chișinău</CITY>
+    <CITY>Skopje</CITY>
+    <CITY>Tirana</CITY>
+    <CITY>Vilnius</CITY>
+    <CITY>Riga</CITY>
+    <CITY>Ljubljana</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>0 European</UNIT_CONTINENT>
+  <BUILD_CONTINENT>1 NEuro</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>0 Med</BACKUP_BUILD_CONTINENT>
+</TRIBE>

@@ -1,0 +1,39 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by user (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Brazilians">
+  <LEADERS>
+    <LEADER>Venceslau Brás</LEADER>
+    <LEADER>Getúlio Vargas</LEADER>
+	<LEADER>Fernando Henrique Cardoso</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Brasilia</CITY>
+    <CITY>Rio de Janeiro</CITY>
+    <CITY>Sao Paulo</CITY>
+    <CITY>Porto Alegre</CITY>
+    <CITY>Recife</CITY>
+    <CITY>Curitiba</CITY>
+    <CITY>Belo Horizonte</CITY>
+    <CITY>Salvador</CITY>
+    <CITY>Manaus</CITY>
+    <CITY>Macapa</CITY>
+    <CITY>Belem</CITY>
+    <CITY>Fortaleza</CITY>
+    <CITY>Natal</CITY>
+    <CITY>Santos</CITY>
+    <CITY>Santa Maria</CITY>
+    <CITY>Ponta Grossa</CITY>
+    <CITY>Rio Branco</CITY>
+    <CITY>Maceio</CITY>
+    <CITY>Salvador</CITY>
+    <CITY>Vitoria</CITY>
+    <CITY>Florianopolis</CITY>
+    <CITY>Aracaju</CITY>
+    <CITY>Flecife</CITY>
+    <CITY>Teresina</CITY>
+    <CITY>Porto Velho</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>4 Iroquois</UNIT_CONTINENT>
+  <BUILD_CONTINENT>4 American</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>4 American</BACKUP_BUILD_CONTINENT>
+</TRIBE>

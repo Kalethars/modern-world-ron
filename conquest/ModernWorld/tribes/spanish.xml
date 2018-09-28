@@ -1,0 +1,48 @@
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Spanish">
+  <LEADERS>
+    <LEADER>Alfonso XIII</LEADER>
+    <LEADER>Francisco Franco</LEADER>
+    <LEADER>Felipe González</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Madrid</CITY>
+    <CITY>Toledo</CITY>
+    <CITY>Seville</CITY>
+    <CITY>Cordoba</CITY>
+    <CITY>Cadiz</CITY>
+    <CITY>Castile</CITY>
+    <CITY>Saragossa</CITY>
+    <CITY>Barcelona</CITY>
+    <CITY>Valencia</CITY>
+    <CITY>Malaga</CITY>
+    <CITY>Salamanca</CITY>
+    <CITY>Valladolid</CITY>
+    <CITY>Burgos</CITY>
+    <CITY>Leon</CITY>
+    <CITY>Ciudad Real</CITY>
+    <CITY>Vigo</CITY>
+    <CITY>Corunna</CITY>
+    <CITY>Oviedo</CITY>
+    <CITY>Bilbao</CITY>
+    <CITY>Pamplona</CITY>
+    <CITY>Murcia</CITY>
+    <CITY>Granada</CITY>
+    <CITY>Santander</CITY>
+    <CITY>Aranjuez</CITY>
+    <CITY>Almanza</CITY>
+    <CITY>Alicante</CITY>
+    <CITY>Osuna</CITY>
+    <CITY>Algeciras</CITY>
+    <CITY>Almeria</CITY>
+    <CITY>Segovia</CITY>
+    <CITY>Badajoz</CITY>
+    <CITY>Talavera</CITY>
+    <CITY>Vitoria</CITY>
+    <CITY>Jerez</CITY>
+    <CITY>Gijon</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>0 European</UNIT_CONTINENT>
+  <BUILD_CONTINENT>0 Med</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>0 Med</BACKUP_BUILD_CONTINENT>
+</TRIBE>

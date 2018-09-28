@@ -1,0 +1,237 @@
+include "ctw_lib.bhs"
+
+int conquest find_rare(int who, int unit, int step);
+
+conquest
+{
+
+  static int red = 1;
+  static int blue = 2;
+  static int purple = 3;
+  static int green = 4;
+  static int yellow = 5;
+  static int theres_a_tie;
+
+  static int less_than;
+  static int tie;
+  static int tied;
+
+  static int diff = get_difficulty();
+  static int attack_who = rand_int(1, num_players());
+
+  int nation;
+  int building;
+  int unit;
+  int x;
+  int y;
+  int x2;
+  int y2;
+  String city_name;
+  int who;
+  int city;
+  int z;
+  int inactive;
+  int inactive2;
+  static int step;
+  String merchant_type;
+
+  static int num_merchants[] = [0,0,0,0,0,0];
+  static int placement[] = [0,1,2,3,4,5];
+  static int place_amount[] = [0,0,0,0,0,0];
+  int merchant;
+  
+  static int time_value = 1;
+
+  static int end_time = get_time_limit();
+  int cur_time;
+  int high_merchants;
+  int winner;
+
+  static int num_rares = num_rare_resources(1);
+  static String leader_name[] = ["Blank", "Red", "Blue", "Purple", "Green", "Yellow"];
+  static int players = num_players();
+  int temp_amount;
+
+  run_once {
+    leader_name[0] = "";
+    for (nation = 1; nation < 6; nation++) {
+      city_name = get_leader_name(nation);
+      if (nation == red) {
+        leader_name[nation] = parse("$STRING0 (Red)", city_name);
+      } else if (nation == blue) {
+        leader_name[nation] = parse("$STRING0 (Blue)", city_name);
+      } else if (nation == purple) {
+        leader_name[nation] = parse("$STRING0 (Purple)", city_name);
+      } else if (nation == green) {
+        leader_name[nation] = parse("$STRING0 (Green)", city_name);
+      } else if (nation == yellow) {
+        leader_name[nation] = parse("$STRING0 (Yellow)", city_name);
+      } 
+    }
+    ctw_add_objective_text($S("Have the most Merchant Huts when time expires."), 10, "");
+    add_objective_text(parse("$STRING0 Merchant Huts: $NUM0", leader_name[red], num_merchants[red]), 1, "");
+    add_objective_text(parse("$STRING0 Merchant Huts: $NUM0", leader_name[blue], num_merchants[blue]), 2, "");
+    if (players > 2) add_objective_text(parse("$STRING0 Merchant Huts: $NUM0", leader_name[purple], num_merchants[purple]), 3, "");
+    if (players > 3) add_objective_text(parse("$STRING0 Merchant Huts: $NUM0", leader_name[green], num_merchants[green]), 4, "");
+    if (players > 4) add_objective_text(parse("$STRING0 Merchant Huts: $NUM0", leader_name[yellow], num_merchants[yellow]), 5, "");
+    set_timer("merchant_killers", 60);
+    for(nation = 1; nation < 6; nation++) {
+      disable_give_attrition(nation);
+    }
+    set_timer("merchant_check", 1);
+  }
+
+  cur_time = time_min();
+  if (cur_time >= end_time) {
+    for (nation = 1; nation < 6; nation++) {
+      if (num_merchants[nation] > high_merchants) {
+        high_merchants = num_merchants[nation];
+        winner = nation;
+      }
+    }
+    victory(winner);   
+  } 
+
+  trigger (cur_time >= 25) {
+    for (nation = 1; nation < 6; nation++) {
+      if (num_merchants[nation] > high_merchants) {
+        high_merchants = num_merchants[nation];
+        winner = nation;
+      }
+    }
+    show_notice(parse("$STRING0 has the most Merchant Huts with 5 minutes to go.", leader_name[winner]), "merchant_notice", placement[1]);
+  }
+
+  if (timer_expired("merchant_check")) {
+    set_timer("merchant_check", 5);
+    for (nation = 1; nation < 6; nation++) {
+      //if (is_defeated(nation)) defeat(red);
+      num_merchants[nation] = 0;
+      if (find_nation(nation) == "Dutch") {
+        merchant_type = "Armed Merchant";
+      }
+      else {
+        merchant_type = "Merchant";
+      }
+      for (m = num_type(nation, merchant_type); m > 0; m--) {
+        unit = find_unit(nation, merchant_type);
+        if (is_merchant_unpacked(nation, unit)) num_merchants[nation]++;
+        else if (nation > 1) {
+          if (is_idle(nation, unit)) {
+            step = find_rare(nation, unit, step);
+          }
+        }
+      }
+    }
+  }
+    //if (num_merchants[nation] >= 8) victory(nation);
+    
+  less_than = 1;
+  tie = 0;  
+  tied = 0;
+    
+  for (nation = players; nation > 0; nation--) {
+    tie = 0;
+    less_than = 1;
+    for (n = 1; n < players+1; n++) {
+      if (n == nation) {
+        n++;
+      }
+      if (n == players+1) {
+        break;
+      }
+      if (num_merchants[n] > num_merchants[nation]) {
+        less_than++;
+      }
+      else if (num_merchants[nation] == num_merchants[n]) {
+        if (nation > n) {
+          tie++;
+        }
+        tied = 1;
+      }
+    }
+    if (tied == 0) {
+      temp_amount = less_than;
+    }
+    else {
+      temp_amount = less_than + tie;
+      tied = 0;
+    }
+    placement[temp_amount] = nation;
+  }
+  change_objective_text(1, parse("$STRING0 Merchant Huts: $NUM1", leader_name[placement[1]], num_merchants[placement[1]]));
+  change_objective_text(2, parse("$STRING0 Merchant Huts: $NUM1", leader_name[placement[2]], num_merchants[placement[2]]));
+  if (players > 2) {
+    change_objective_text(3, parse("$STRING0 Merchant Huts: $NUM1", leader_name[placement[3]], num_merchants[placement[3]]));
+  }
+  if (players > 3) {
+    change_objective_text(4, parse("$STRING0 Merchant Huts: $NUM1", leader_name[placement[4]], num_merchants[placement[4]]));
+  }
+  if (players > 4) {
+    change_objective_text(5, parse("$STRING0 Merchant Huts: $NUM1", leader_name[placement[5]], num_merchants[placement[5]]));
+  }
+  
+  for (nation = 2; nation < 6; nation++) {
+    if (nation != red) {
+      city_name = find_capital(nation);
+      if (find_nation(nation) == "Dutch") {
+        merchant_type = "Armed Merchant";
+      }
+      else {
+        merchant_type = "Merchant";
+      }
+      if (num_type(nation, "Market") == 0) place_building(nation, "Market", city_name);
+      if (time_later_than(time_value) && num_type(nation, merchant_type) < 12) {
+        building = find_build(nation, "Market");
+        x = object_position_x(nation, building) + 2;
+        y = object_position_y(nation, building);
+        create_unit(nation, x, y, merchant_type, 1);
+        time_value++;
+      }
+      attack_who = rand_int(2, num_players());
+      if (attack_who == nation) {
+        attack_who++;
+      }
+      if (attack_who > num_players()) {
+        attack_who = 1;
+      }
+      if (time_min()%3 == 0) {
+        attack_who = 2;
+      }
+      if (num_type(building, "Merchant") > 0) {
+        for (z = num_military_units(nation); z > 0; z--) {
+          merchant = find_unit(attack_who, merchant_type);
+          unit = find_military(nation);
+          if (is_idle(nation, unit)) unit_attack_order(nation, unit, attack_who, merchant);
+        }
+      }
+    }
+  }
+}
+
+int conquest find_rare(int who, int unit, int step)
+{
+
+  int x;
+  int y;
+  int res;
+  String res_name[] = ["Relics", "Wine", "Papyrus", "Dye", "Silk", "Spice", "Salt", "Horses", "Sulphur", "Amber", "Silver", "Tobacco", "Marble", "Furs", "Cotton", "Bison", "Copper", "Peacocks", "Citrus", "Sugar", "Diamonds", "Gems", "Obsidian", "Wool"];
+
+  for (i = 0; i < 24; i++) {
+    if (step >= res_name.length) step = 0;
+    res = find_resource(res_name[step]);
+    if (res > -1) {
+      x = resource_position_x(res);
+      y = resource_position_y(res);
+      unit_move_order(who, unit, x, y);
+      clear_group(who);
+      add_to_group(who, find_military(2));
+      group_guard_order(who, who, unit);
+      step++;
+      break;
+    } else step++;
+  }
+
+  return step;
+
+}

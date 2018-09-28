@@ -1,0 +1,44 @@
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by user (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="North Koreans">
+  <LEADERS>
+    <LEADER>Kim Il-sung</LEADER>
+    <LEADER>Kim Jong-il</LEADER>
+    <LEADER>Kim Jung-eun</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Pyongyang</CITY>
+    <CITY>Kaesong</CITY>
+    <CITY>Nampo</CITY>
+    <CITY>Rason</CITY>
+    <CITY>Hamhung</CITY>
+    <CITY>Chongjin</CITY>
+    <CITY>Sinuiju</CITY>
+    <CITY>Phyongsong</CITY>
+    <CITY>Sariwon</CITY>
+    <CITY>Haeju</CITY>
+    <CITY>Kanggye</CITY>
+    <CITY>Kimchaek</CITY>
+    <CITY>Hyesan</CITY>
+    <CITY>Songrim</CITY>
+    <CITY>Heungnam</CITY>
+    <CITY>Anju</CITY>
+    <CITY>Chongju</CITY>
+    <CITY>Hoeryong</CITY>
+    <CITY>Huichon</CITY>
+    <CITY>Kaechon</CITY>
+    <CITY>Kusong</CITY>
+    <CITY>Manpo</CITY>
+    <CITY>Munchon</CITY>
+    <CITY>Sinpo</CITY>
+    <CITY>Sunchon</CITY>
+    <CITY>Tokchon</CITY>
+    <CITY>Tanchon</CITY>
+    <CITY>Wonsan</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>3 Asian</UNIT_CONTINENT>
+  <BUILD_CONTINENT>3 Korean</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>2 Asian</BACKUP_BUILD_CONTINENT>
+</TRIBE>
+

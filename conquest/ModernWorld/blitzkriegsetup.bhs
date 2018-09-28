@@ -1,0 +1,17 @@
+include "ctw_lib.bhs"
+
+conquest {
+	int i,building,x,y;
+	String cap_name;
+	
+	disable_type_by_tribe("Senate",find_nation(1));
+	gain_tech(1,"Military");
+	gain_tech(1,"Military");
+	for (i=1;i<=2;i++){
+		cap_name=find_capital(i);
+		building=find_city_id(cap_name);
+		x=object_position_x(i,building);
+		y=object_position_y(i,building);
+		place_new_world_army(i,x,y);
+	}
+}

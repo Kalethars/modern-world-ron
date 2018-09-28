@@ -1,0 +1,171 @@
+ include "ctw_lib.bhs"
+
+conquest
+{
+if (get_ctw_campaign() == "The New World") {
+  new_world_rules();
+}
+
+labels {
+}
+
+static int diff = get_difficulty();
+static int sw_id = 0;
+static int alexander_id = 0;
+static int unit_countdown = 0;
+static int MAX_UNITS = 20;
+static int MIN = 300;
+static int MAX = 420;
+static int orig_time = 0;
+
+run_once {
+  disable_all_triggers();
+  disable_city_defeat(1);
+
+  add_objective_text(parse("$d0 units killed.", unit_countdown), "Unit_Obj", 0);
+  if (find_nation(1) != "French") {
+    ctw_add_objective_text($S("The Supply Wagon you start with can heal your soldiers as long as it is not in enemy territory or threatened by enemy troops."), "Hint_Obj", 0);
+    enable_trigger("UnitHealing");
+  }
+  
+  sw_id = find_unit(1, "Supply Wagon");
+  if (get_ctw_campaign() == "Alexander the Great") {
+    alexander_id = find_unit(1, "Alexander");
+  }
+  else if (get_ctw_campaign() == "Napoleon") {
+    alexander_id = find_unit(1, "Napoleon");
+  }
+  else {
+    alexander_id = find_unit(1, "General");
+  }
+
+  enable_trigger("MDK");
+  enable_trigger("Unit_Spawn");
+  set_timer("Spawn", rand_int(MIN, MAX));
+
+  switch (diff) {
+    case 1:
+      MIN = 110;
+      MAX = 120;
+      MAX_UNITS = 35;
+      break;
+    case 2:
+      MIN = 120;
+      MAX = 130;
+      MAX_UNITS = 30;
+      break;
+    case 3:
+      MIN = 140;
+      MAX = 150;
+      MAX_UNITS = 25;
+      break;
+    case 4:
+      MIN = 160;
+      MAX = 190;
+      MAX_UNITS = 20;
+      break;
+    case 5:
+      MIN = 220;
+      MAX = 250;
+      MAX_UNITS = 17;
+      break;
+    case 6:
+      MIN = 290;
+      MAX = 310;
+      MAX_UNITS = 14;
+      break;
+    default:
+      MIN = 350;
+      MAX = 370;
+      MAX_UNITS = 10;
+      break;
+  }
+  orig_time = type_build_time("Small City");
+  gain_tech(2, "Civic");
+  give_good(2, "Food", 60);
+  give_good(2, "Timber", 60);
+  place_city_with_cost(2);
+  set_type_build_time("Small City", 1);
+  enable_trigger("BuildTimeGuy");
+}
+
+trigger BuildTimeGuy(find_inactive_build(2, "Small City") < 0)
+{
+  set_type_build_time("Small City", orig_time);
+}
+
+trigger MDK(unit_any_killed(2))
+{
+  unit_countdown++;
+  if (unit_countdown == 1) {
+    change_objective_text("Unit_Obj", parse("$d0 unit killed.", unit_countdown));
+  }
+  else {
+    change_objective_text("Unit_Obj", parse("$d0 units killed.", unit_countdown));
+  }
+  
+  enable_trigger("MDK");
+}
+
+x_sw = object_position_x(1, sw_id);
+y_sw = object_position_y(1, sw_id);
+
+trigger UnitHealing(any_object_near(1, 1, x_sw, y_sw, 14) && timer_expired("UH") != 0)
+{
+  if (territory_owner (x_sw, y_sw) < 2) {
+    if (!any_object_near(2, 1, x_sw, y_sw, 14)) {
+      //heal_object(3, alexander_id, 1);
+      for (i = 0; i < num_military_units(1); i++) {
+        unit_id = find_military(1);
+        if (object_near(1, unit_id, x_sw, y_sw, 14)) {
+          if (object_health(1, unit_id) < 100) {
+            heal_object(1, unit_id, 7);
+          }
+        }
+      }
+      if (object_near(1, alexander_id, x_sw, y_sw, 10)) {
+        if (object_health(1, alexander_id) < 100) {
+          heal_object(1, alexander_id, 7);
+        }
+      }
+    }
+  }
+  
+  enable_trigger("UnitHealing");
+  set_timer("UH", 2);
+}
+
+trigger Unit_Spawn(timer_expired("Spawn"))
+{
+  if (num_units(1) < MAX_UNITS && !unit_killed(1, sw_id)) {
+    popup_dialog($S("More of your people have joined your cause!"));
+    create_unit_upgrade(1, x_sw, y_sw, "Horse Archer", 1);
+    create_unit_upgrade(1, x_sw, y_sw, "Light Horse", 1);
+    create_unit_upgrade(1, x_sw, y_sw, "Companion", 1);
+    create_unit_upgrade(1, x_sw, y_sw, "Archers", 1);
+  }
+  enable_trigger("Unit_Spawn");
+  set_timer("Spawn", rand_int(MIN, MAX));
+}
+
+if (unit_countdown > 39) {
+  victory(1);
+}
+
+if (num_units(1) < 1) {
+  defeat(1);
+}
+
+if(time() >= get_time_limit()) {
+  defeat(1);
+}
+
+for (i = 0; i < num_cities(2); i++) {
+  city_name = find_city_with_num(2, i+1);
+  city_id = find_city_id(city_name);
+  if (object_health(2, city_id) < 20) {
+    set_object_health(2, city_id, 20);
+  }
+}
+
+}

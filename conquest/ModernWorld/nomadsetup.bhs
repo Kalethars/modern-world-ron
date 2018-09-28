@@ -1,0 +1,111 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  labels  {
+  }
+
+static diff = get_difficulty();
+
+  switch(diff) {
+    case 1:
+      set_time_limit(45);
+      break;
+    case 2:
+      set_time_limit(40);
+      break;
+    case 3:
+      set_time_limit(40);
+      break;
+    case 4:
+      set_time_limit(35);
+      break;
+    case 5:
+      set_time_limit(30);
+      break;
+    case 6:
+      set_time_limit(25);
+      break;
+  }
+
+  disable_production_ai(2);
+  disable_production_ai(3);
+  disable_production_ai(4);
+  disable_city_ai(2);
+  disable_city_ai(3);
+  disable_city_ai(4);
+  disable_city_defeat(2);
+  disable_city_defeat(3);
+  disable_city_defeat(4);
+  force_transport_ability(2);
+  force_transport_ability(3);
+  force_transport_ability(4);
+
+  disable_tech(1, "Allegiance");
+
+  num_wagons = 3;
+
+  if (diff < 3) {
+    num_wagons = 1;
+  }
+  else if (diff < 5) {
+    num_wagons = 2;
+  }
+
+  //player
+  x = get_starting_loc_x(1);
+  y = get_starting_loc_y(1);
+  
+  //drop in units
+  create_unit_in_group(1, x - 1, y, "Slingers", 9);
+  create_unit_in_group(1, x, y, "Hoplites", 7-diff);
+  create_unit_in_group(1, x - 3, y, "Light Horse", 10-diff);
+  create_unit_in_group(1, x - 3, y, "Cataphract", 7-diff);
+  create_unit_in_group(1, x, y, "General", 1);
+  create_unit_in_group(1, x - 4, y, "Scout", 1);
+
+  //get the proper angle
+  dir = get_conquest_invasion_dir();
+  dir = dir + 180;
+  if (dir >= 360) {
+    dir = dir - 360;
+  }
+
+  group_jump_move(1, x, y, dir);
+
+  //computers
+  for (i = 0; i < 3; i++) {
+    who = i+2;
+    set_population_cap(who, 100);
+
+    //drop in units
+    x = get_starting_loc_x(who);
+    y = get_starting_loc_y(who);
+    //map_is_land (x, y);
+    //map_is_passable (x, y);
+    if (x == -1 || y == -1) {
+      if (get_starting_loc_x(who-1) > 35) {
+        x = get_starting_loc_x(who-1) - 20;
+      }
+      else {
+        x = get_starting_loc_x(who-1) + 20;
+      }
+      if (get_starting_loc_y(who-1) > 35) {
+        y = get_starting_loc_y(who-1) - 20;
+      }
+      else {
+        y = get_starting_loc_y(who-1) + 20;
+      }
+    }
+
+    create_unit_upgrade(who, x, y, "Supply Wagon", num_wagons);
+    create_unit_upgrade(who, x, y, "Light Horse", 3);
+    create_unit_upgrade(who, x, y, "Hoplites", 2);
+    create_unit_upgrade(who, x, y, "Slingers", 2);
+    create_unit_upgrade(who, x, y, "Cataphract", 2);
+    create_unit_upgrade(who, x, y, "Machine Gun", 1);
+  }
+  
+  gain_tech(1, "Military");
+}

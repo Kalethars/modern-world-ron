@@ -1,0 +1,49 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by XMLSPY 5 Professional Ed. Release 2 (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute-->
+<TRIBE name="Norwegians">
+  <LEADERS>
+    <LEADER>Gunnar Knudsen</LEADER>
+    <LEADER>Einar Gerhardsen</LEADER>
+    <LEADER>Kjell Magne Bondevik</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Oslo</CITY>
+    <CITY>Bergen</CITY>
+    <CITY>Trondheim</CITY>
+    <CITY>Stavanger</CITY>
+    <CITY>Kristiansand</CITY>
+    <CITY>Sandnes</CITY>
+    <CITY>Fredrikstad</CITY>
+    <CITY>Tromsø</CITY>
+    <CITY>Skien</CITY>
+    <CITY>Drammen</CITY>
+    <CITY>Sarpsborg</CITY>
+    <CITY>Bodø</CITY>
+    <CITY>Sandefjord</CITY>
+    <CITY>Ålesund</CITY>
+    <CITY>Larvik</CITY>
+    <CITY>Tønsberg</CITY>
+    <CITY>Porsgrunn</CITY>
+    <CITY>Haugesund</CITY>
+    <CITY>Hamar</CITY>
+    <CITY>Moss</CITY>
+    <CITY>Halden</CITY>
+    <CITY>Gjøvik</CITY>
+    <CITY>Lillehammer</CITY>
+    <CITY>Horten</CITY>
+    <CITY>Molde</CITY>
+    <CITY>Kongsberg</CITY>
+    <CITY>Harstad</CITY>
+    <CITY>Steinkjer</CITY>
+    <CITY>Grimstad</CITY>
+    <CITY>Narvik</CITY>
+    <CITY>Kongsvinger</CITY>
+    <CITY>Hønefoss</CITY>
+    <CITY>Mandal</CITY>
+    <CITY>Egersund</CITY>
+    <CITY>Namsos</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>0 European</UNIT_CONTINENT>
+  <BUILD_CONTINENT>1 NEuro</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>0 Med</BACKUP_BUILD_CONTINENT>
+</TRIBE>

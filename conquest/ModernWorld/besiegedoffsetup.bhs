@@ -1,0 +1,210 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+  int i, j, x, y, x2, y2, building, size, center, flag, city_id, city_id2, unit, count, count2, dist, mindist;
+  String nation_name;
+  String cap_name, cap_name2;
+  String campaign = get_ctw_campaign();
+  int diff = get_difficulty();
+
+  int xi[], yi[], xj[], yj[];
+  count=0;
+  count2=0;
+  size=get_map_size();
+  center=size/2;
+  for (x=10;x<=size-10;x++){
+	for (y=10;y<=size-10;y++){
+		if (map_is_buildable(x,y) &&(x-center)*(x-center)+(y-center)*(y-center)>=center*center/16){
+			if ((x-center)*(x-center)+(y-center)*(y-center)>=center*center/4){
+				xi[count]=x;
+				yi[count]=y;
+				count++;
+			}
+			xj[count2]=x;
+			yj[count2]=y;
+			count2++;
+		}
+	}
+  }
+  mindist=-20+count/125;
+  if (count>=10000) {mindist=60;}
+  if (count<5000) {mindist=20;}
+  
+  disable_city_defeat(1);
+  for (i=2;i<9;i++){
+	disable_city_defeat(i);
+    set_leader_difficulty(i,diff);
+	lose_current_age(i);
+	declare_war(i,1);
+	declare_war(i,1);
+	for (j=i+1;j<9;j++){
+		make_alliance(i,j);
+	}
+  }
+  
+  cap_name2 = find_capital(2);
+  city_id2 = find_city_id(cap_name2);
+  
+  String tribe_name = find_nation(1);
+  disable_type_by_tribe("Small City",tribe_name);
+  
+  for (i = 2; i < 9; i++){
+    gain_tech(i,"Military");
+	if (i!=2 && num_cities(i)==1){
+		cap_name = find_city_name(i);
+		building=find_city_id(cap_name);
+		x=object_position_x(i,building);
+		y=object_position_y(i,building);
+		destroy_building(i,find_build_at_city(i,cap_name,"Woodcutter's Camp",1));
+		destroy_building(i,find_build_at_city(i,cap_name,"Library",1));
+		destroy_building(i,find_build_at_city(i,cap_name,"Farm",1));
+		destroy_building(i,find_build_at_city(i,cap_name,"Farm",1));
+		destroy_building(i,find_build_at_city(i,cap_name,"Farm",1));
+		destroy_building(i,building);
+		create_building_near(i, x, y, "Large City", 1);
+	}
+	dist=300;
+	while (num_cities(i)==0 || (i==2 && num_cities(i)==1)) {
+	  flag = 1;
+	  if (count>=8000){
+		j=rand_int(0,count);
+		x=xi[j];
+		y=yi[j];
+	  } else{
+		j=rand_int(0,count2);
+		x=xj[j];
+		y=yj[j];
+	  }
+	  for (j = 1; j < 9; j++){
+		cap_name = find_city_name(j);
+		building = find_city_id(cap_name);
+		x2 = object_position_x(j, building);
+		y2 = object_position_y(j, building);
+		if ((x-x2)*(x-x2)+(y-y2)*(y-y2)<=dist*dist){
+			if (dist>mindist) dist--;
+			flag=0;
+			break;
+		}
+	  }
+	  if (map_is_buildable(x,y) && flag==1){
+		create_building_near(i, x, y, "Large City", 5);
+	  }
+	}
+  }
+  for (i = 2; i < 9; i++){
+	cap_name = find_city_name(i);
+	if (cap_name!=cap_name2){
+		set_capital(i, cap_name);
+		building=find_city_id(cap_name);
+		x=object_position_x(i,building);
+		y=object_position_y(i,building);
+		place_building(i, "Farm", cap_name);
+		place_building(i, "Farm", cap_name);
+		place_building(i, "Farm", cap_name);
+		if (i!=2){
+			set_base_rate(i, "Food", get_base_rate(i,"Food")+30-10*(num_type(i,"Farm")));
+		} else{
+			set_base_rate(i, "Food", get_base_rate(i,"Food")+60-10*(num_type(i,"Farm")));
+		}
+		place_building(i, "Woodcutter's Camp", cap_name);
+		if (num_type(i,"Woodcutter's Camp")==0 || (num_type(i,"Woodcutter's Camp")==1 && i==2)){
+			place_building(i, "Dock", cap_name);
+			set_base_rate(i, "Timber", get_base_rate(i,"Timber")+10);
+		}
+		place_building(i, "Library", cap_name);
+		if (num_type(i,"Library")==0 || (num_type(i,"Library")==1 && i==2)){
+			gain_tech(i,"Civic");
+			gain_tech(i,"Commerce");
+			gain_tech(i,"Commerce");
+			gain_tech(i,"Science");
+		}
+		place_building(i, "Mine", cap_name);
+		if (num_type(i,"Mine")==0){
+			set_base_rate(i, "Metal", get_base_rate(i,"Metal")+10);
+		} else{
+			destroy_building(i,find_build(i,"Mine"));
+		}
+		place_building(i, "University", cap_name);
+		if (num_type(i,"University")==0){
+			set_base_rate(i, "Knowledge", get_base_rate(i,"Knowledge")+10);
+		} else{
+			destroy_building(i,find_build(i,"University"));
+		}
+		place_building(i, "Market", cap_name);
+		if (num_type(i,"Market")==0){
+			set_base_rate(i, "Wealth", get_base_rate(i,"Wealth")+10);
+		} else{
+			destroy_building(i,find_build(i,"Market"));
+		}
+		place_building(i, "Barracks", cap_name);
+		if (num_type(i,"Barracks")==0){
+			create_unit_upgrade(i, x, y, "Slingers", 2);
+		}
+		place_building(i, "Stable", cap_name);
+		if (num_type(i,"Stable")==0){
+			create_unit_upgrade(i, x, y, "Light Horse", 2);
+		}
+	}
+	if (num_type(i,"Citizen")>0){
+		for (j=1;j<=5;j++){
+			unit=find_unit(i,"Citizen");
+			if (i!=2){
+				add_to_group(i,unit);
+			} else {
+				switch_teams(1,i,unit);
+			}
+		}
+		unit=find_unit(i,"Scout");
+		if (i!=2){
+			kill_unit(i,unit);
+		} else {
+			if (find_nation(1)!="Iroquois"){
+				switch_teams(1,i,unit);
+			} else{
+				add_to_group(i,unit);
+				create_unit_upgrade(1, center, center, "Scout", 1);
+			}
+		}
+		group_jump_move(i, x, y, 135);
+		kill_unit(i,unit);
+		create_unit_upgrade(i, x, y, "Slingers", 2);
+		create_unit_upgrade(i, x, y, "Light Horse", 2);
+		create_unit_upgrade(i, x, y, "Scout", 1);
+	}
+	if (num_type(i,"Citizen")==0) {
+		create_unit_upgrade(i, x, y, "Citizen", 5);
+	}
+	if (num_military_units(i) == 0) {
+		create_unit_upgrade(i, x, y, "Slingers", 2);
+		create_unit_upgrade(i, x, y, "Light Horse", 2);
+		create_unit_upgrade(i, x, y, "Scout", 1);
+	}
+	
+	cap_name = find_capital(i);
+	building = find_city_id(cap_name);
+	x = object_position_x(i, building);
+	y = object_position_y(i, building);
+	group_jump_move(i, x, y, 135);
+  }
+  
+  switch_teams(1, 2, city_id2);
+  set_capital(1,cap_name2);
+  set_object_health(1,city_id2,100);
+  city_assimilate(1,cap_name2);
+
+  gain_tech(1,"Military");
+  gain_tech(1,"Commemerce");
+  gain_tech(1,"Science");
+  
+  cap_name = find_capital(1);
+  building = find_city_id(cap_name);
+  x = object_position_x(1, building);
+  y = object_position_y(1, building);
+  place_new_world_army(1,x,y);
+  set_object_health(1,building,100);
+  
+  for (i=1;i<9;i++){
+	enable_city_defeat(i);
+  }
+}

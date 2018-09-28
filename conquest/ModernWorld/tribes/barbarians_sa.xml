@@ -1,0 +1,48 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Andy Clark (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="South Americans">
+	<LEADERS>
+		<LEADER>Augusto Bernardino Leguía of Peru</LEADER>
+		<LEADER>Ramón Barros Luco of Chile</LEADER>
+		<LEADER>Ismael Montes Gamboa of Bolivia</LEADER>
+		<LEADER>Carlos Eugenio Restrepo of Colombia</LEADER>
+		<LEADER>Leónidas Plaza Gutiérrez of Ecuador</LEADER>
+		<LEADER>Juan Vicente Gómez of Venezuela</LEADER>
+		<LEADER>Eduardo Schaerer of Paraguay</LEADER>
+	</LEADERS>
+	<CITIES>
+		<CITY>Lima</CITY>
+		<CITY>Santiago</CITY>
+		<CITY>Sucre</CITY>
+		<CITY>Bogotá</CITY>
+		<CITY>Quito</CITY>
+		<CITY>Caracas</CITY>
+		<CITY>Asunción</CITY>
+		<CITY>Georgetown</CITY>
+		<CITY>Paramaribo</CITY>
+		<CITY>Montevideo</CITY>
+		<CITY>Cayenne</CITY>
+		<CITY>Guayaquil</CITY>
+		<CITY>Maracaibo</CITY>
+		<CITY>Santa Cruz de la Sierra</CITY>
+		<CITY>Callao</CITY>
+		<CITY>Puente Alto</CITY>
+		<CITY>Medellín</CITY>
+		<CITY>Salto</CITY>
+		<CITY>Ciudad del Este</CITY>
+		<CITY>La Paz</CITY>
+		<CITY>Maipú</CITY>
+		<CITY>Cali</CITY>
+		<CITY>Cuenca</CITY>
+		<CITY>Barquisimeto</CITY>
+		<CITY>San Lorenzo</CITY>
+		<CITY>Ciudad de la Costa</CITY>
+		<CITY>Barranquilla</CITY>
+		<CITY>Arequipa</CITY>
+		<CITY>Mabaruma</CITY>
+		<CITY>Nieuw Nickerie</CITY>
+	</CITIES>
+	<UNIT_CONTINENT>2 American</UNIT_CONTINENT>
+	<BUILD_CONTINENT>4 American</BUILD_CONTINENT>
+	<BACKUP_BUILD_CONTINENT>4 American</BACKUP_BUILD_CONTINENT>
+</TRIBE>

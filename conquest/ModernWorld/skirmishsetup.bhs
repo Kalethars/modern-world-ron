@@ -1,0 +1,200 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  labels {
+    ATTACKER,
+    DEFENDER,
+  }
+
+  for (i = 1; i < 3; i++) {
+    gain_tech(i, "Taxation");
+    gain_tech(i, "Vassalage");
+    gain_tech(i, "Social Contract");
+    gain_tech(i, "Income Tax");
+  }
+
+  String support_units[] = ["Citizen","Merchant", "General", "Spy", "Supply Wagon", "Armed Merchant", "Armed Supply Wagon"];
+  int time;
+  for (i = 0; i < support_units.length; i++) {
+    time = type_build_time(support_units[i]);
+    set_type_build_time(support_units[i], (int)(time/2));
+  }
+  int row_pos;
+  int col_pos;
+
+  int cur_age = age(ATTACKER);
+  int nation;
+  String tribe;
+  static build_time;
+  int diff = get_difficulty();
+  String building_list[] = ["Barracks", "Stable", "Auto Plant", "Siege Factory", "Factory", "Redoubt", "Anchorage", "Dock", "Shipyard", "Woodcutter's Camp", "Mine", "Oil Well", "Oil Platform", "Fort", "Castle", "Fortress", "Lookout", "Observation Post", "Air Defense Gun", "Radar Air Defense", "SAM Installation", "Tower", "Keep", "Stockade", "Bunker"];
+  
+  for (i = 0; i < building_list.length; i++) {
+    build_time = type_build_time(building_list[i]);
+    set_type_build_time(building_list[i], 2 * build_time/5);
+  }
+ 
+  gain_tech(ATTACKER, "Science");
+  gain_tech(ATTACKER, "Science");
+  gain_tech(DEFENDER, "Science");
+  gain_tech(DEFENDER, "Science");
+  for (i = 7; i > 0; i--) {
+    gain_tech(ATTACKER, "Military");
+    gain_tech(DEFENDER, "Military");
+    gain_tech(ATTACKER, "Commerce");
+    gain_tech(DEFENDER, "Commerce");    
+  }
+  gain_tech(ATTACKER, "Global Prosperity");
+  gain_tech(DEFENDER, "Global Prosperity");
+  
+  for (i = 1; i < 3; i++) {
+    gain_tech(i, "Tactics");
+    gain_tech(i, "Operations");
+    gain_tech(i, "Strategy");
+    gain_tech(i, "Fortification");
+    gain_tech(i, "Bombardment");
+    gain_tech(i, "Strategic Reserves");
+    gain_tech(i, "Herbal Lore");
+    gain_tech(i, "Medicine");
+    gain_tech(i, "Pharmaceuticals");
+    gain_tech(i, "Forage");
+    gain_tech(i, "Supply");
+    gain_tech(i, "Logistics");
+	disable_tech(i, "Allegiance");
+  }
+
+  //disable buildings for ALL
+  disable_type("Smelter");
+  disable_type("Granary");
+  disable_type("Lumber Mill");
+  disable_type("Missile Silo");
+  disable_type("Small City");
+  disable_type("Farm");
+  disable_type("Airbase");
+  disable_type("Temple");
+  disable_type("Senate");
+  disable_type("Market");
+  disable_type("Library");
+  disable_type("University");
+  disable_type("Refinery");
+
+  set_population_cap(ATTACKER, 200);
+  set_population_cap(DEFENDER, 200);
+
+  give_good(1, "Food", 50*(7-diff));
+  give_good(1, "Timber", 50*(7-diff));
+  give_good(1, "Wealth", 50*(7-diff));
+  give_good(1, "Oil", 50*(7-diff));
+  give_good(1, "Metal", 50*(7-diff));
+  
+  give_good(2, "Food", 50*diff);
+  give_good(2, "Timber", 50*diff);
+  give_good(2, "Wealth", 50*diff);
+  give_good(2, "Oil", 50*diff);
+  give_good(2, "Metal", 50*diff);  
+
+  //insert Redoubts for all
+
+  int x;
+  int y;
+  int unit;
+  int dir;
+  int go_times;
+
+  //insert units and redoubt for both
+  for (nation = 1; nation < 3; nation++) {
+    tribe = find_nation(nation);
+    force_transport_ability(nation);
+    disable_city_defeat(nation);
+    x = get_starting_loc_x(nation);
+    y = get_starting_loc_y(nation);
+    create_building_near(nation, x, y, "Fortress", 15);
+    create_building_near(nation, x, y, "Barracks", 15);
+    create_building_near(nation, x, y, "Stable", 15);
+    create_building_near(nation, x, y, "Siege Factory", 15);
+    //go_times = diff;
+    //if (nation == 1) {
+      go_times = 1;
+    //}
+    create_unit_upgrade(nation, x + 2, y, "Citizen", 10);
+    for (z = 0; z < go_times; z++) {
+    create_unit_upgrade(nation, x + 2, y, "General", 1);
+    create_unit_upgrade(nation, x + 2, y, "Supply Wagon", 1); 
+    create_unit_upgrade(nation, x + 2, y, "Scout", 1); 
+    create_unit_upgrade(nation, x + 2, y, "Hoplites", 3);
+    create_unit_upgrade(nation, x + 2, y, "Machine Gun", 1);
+    create_unit_upgrade(nation, x + 2, y, "Light Horse", 2); 
+    create_unit_upgrade(nation, x + 2, y, "Slingers", 3);
+    create_unit_upgrade(nation, x + 2, y, "Machine Gun", 1);
+    create_unit_upgrade(nation, x + 2, y, "Light Horse", 2);
+    create_unit_upgrade(nation, x + 2, y, "Cataphract", 2);
+    create_unit_upgrade(nation, x + 2, y, "Catapult", 3);
+    }
+    //position right
+    for (u = num_units(nation); u > 0; u--) {
+      unit = find_unit(nation, "");
+      add_to_group(nation, unit);
+    }
+    
+    //get the proper angle
+    dir = get_conquest_invasion_dir();
+	if (nation==1){
+		dir = dir + 180;
+		if (dir >= 360) {
+		  dir = dir - 360;
+		}
+	}
+
+    group_jump_move(nation, x, y, dir);
+
+    disable_type_by_tribe("Citizen", tribe);
+    enable_type_by_tribe("Citizen", tribe, "Fortress", 0, 0);
+    //enable_type_by_tribe("Citizen", tribe, "Redoubt", 0, 0);
+    if (!have_tech(nation, "Citizen")) {
+      gain_upgrade(nation, "Citizen");}
+
+    if (tribe == "Dutch"){
+    disable_type_by_tribe("Armed Merchant", tribe);
+    enable_type_by_tribe("Armed Merchant", tribe, "Fortress", 0, 1);
+    //enable_type_by_tribe("Armed Merchant", tribe, "Redoubt", 0, 1);
+    if (!have_tech(nation, "Armed Merchant")) {
+      gain_upgrade(nation, "Armed Merchant");}
+    } else{
+    disable_type_by_tribe("Merchant", tribe);
+    enable_type_by_tribe("Merchant", tribe, "Fortress", 0, 1);
+    //enable_type_by_tribe("Merchant", tribe, "Redoubt", 0, 1);
+    if (!have_tech(nation, "Merchant")) {
+      gain_upgrade(nation, "Merchant");}
+    }
+
+    disable_type_by_tribe("General", tribe);
+    enable_type_by_tribe("General", tribe, "Fortress", 0, 2);
+    //enable_type_by_tribe("General", tribe, "Redoubt", 0, 2);
+    if (!have_tech(nation, "General")) {
+      gain_upgrade(nation, "General");}
+
+    disable_type_by_tribe("Spy", tribe);
+    enable_type_by_tribe("Spy", tribe, "Fortress", 0, 3);
+    //enable_type_by_tribe("Spy", tribe, "Redoubt", 0, 3);
+    if (!have_tech(nation, "Spy")) {
+      gain_upgrade(nation, "Spy");}
+
+    if (tribe == "Dutch"){
+    disable_type_by_tribe("Armed Supply Wagon", tribe);
+    enable_type_by_tribe("Armed Supply Wagon", tribe, "Fortress", 0, 4);
+    //enable_type_by_tribe("Armed Supply Wagon", tribe, "Redoubt", 0, 4);
+    if (!have_tech(nation, "Armed Supply Wagon")) {
+      gain_upgrade(nation, "Armed Supply Wagon");}
+    } else{
+    disable_type_by_tribe("Supply Wagon", tribe);
+    enable_type_by_tribe("Supply Wagon", tribe, "Fortress", 0, 4);
+    //enable_type_by_tribe("Supply Wagon", tribe, "Redoubt", 0, 4);
+    if (!have_tech(nation, "Supply Wagon")) {
+      gain_upgrade(nation, "Supply Wagon");}
+    }
+
+  }
+
+}

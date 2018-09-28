@@ -1,0 +1,53 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Brian Reynolds (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Italians">
+  <LEADERS>
+    <LEADER>Giovanni Giolitti</LEADER>
+    <LEADER>Benito Mussolini</LEADER>
+    <LEADER>Silvio Berlusconi</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Rome</CITY>
+    <CITY>Milan</CITY>
+    <CITY>Naples</CITY>
+    <CITY>Turin</CITY>
+    <CITY>Palermo</CITY>
+    <CITY>Genoa</CITY>
+    <CITY>Bologna</CITY>
+    <CITY>Florence</CITY>
+    <CITY>Bari</CITY>
+    <CITY>Catania</CITY>
+    <CITY>Venice</CITY>
+    <CITY>Verona</CITY>
+    <CITY>Messina</CITY>
+    <CITY>Padua</CITY>
+    <CITY>Trieste</CITY>
+    <CITY>Taranto</CITY>
+    <CITY>Brescia</CITY>
+    <CITY>Parma</CITY>
+    <CITY>Prato</CITY>
+    <CITY>Modena</CITY>
+    <CITY>Reggio Calabria</CITY>
+    <CITY>Reggio Emilia</CITY>
+    <CITY>Perugia</CITY>
+    <CITY>Ravenna</CITY>
+    <CITY>Livorno</CITY>
+    <CITY>Cagliari</CITY>
+    <CITY>Foggia</CITY>
+    <CITY>Rimini</CITY>
+    <CITY>Salerno</CITY>
+    <CITY>Ferrara</CITY>
+    <CITY>Sassari</CITY>
+    <CITY>Latina</CITY>
+    <CITY>Giugliano in Campania</CITY>
+    <CITY>Monza</CITY>
+    <CITY>Syracuse</CITY>
+    <CITY>Pescara</CITY>
+    <CITY>Bergamo</CITY>
+    <CITY>Forlì</CITY>
+    <CITY>Trento</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>0 European</UNIT_CONTINENT>
+  <BUILD_CONTINENT>0 Med</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>0 Med</BACKUP_BUILD_CONTINENT>
+</TRIBE>

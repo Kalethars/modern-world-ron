@@ -1,0 +1,50 @@
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Brian Reynolds (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Americans">
+  <LEADERS>
+    <LEADER>Woodrow Wilson</LEADER>
+    <LEADER>Theodore Roosevelt</LEADER>
+    <LEADER>Donald Trump</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Washington</CITY>
+    <CITY>New York</CITY>
+    <CITY>Baltimore</CITY>
+    <CITY>Los Angeles</CITY>
+    <CITY>Seattle</CITY>
+    <CITY>Miami</CITY>
+    <CITY>Hartford</CITY>
+    <CITY>Philadelphia</CITY>
+    <CITY>Chicago</CITY>
+    <CITY>Austin</CITY>
+    <CITY>Springfield</CITY>
+    <CITY>Kansas City</CITY>
+    <CITY>Orlando</CITY>
+    <CITY>Atlanta</CITY>
+    <CITY>Newark</CITY>
+    <CITY>San Diego</CITY>
+    <CITY>Portland</CITY>
+    <CITY>San Francisco</CITY>
+    <CITY>Providence</CITY>
+    <CITY>Cleveland</CITY>
+    <CITY>Cincinnati</CITY>
+    <CITY>Boise</CITY>
+    <CITY>New Orleans</CITY>
+    <CITY>Detroit</CITY>
+    <CITY>Boston</CITY>
+    <CITY>Houston</CITY>
+    <CITY>Augusta</CITY>
+    <CITY>Concord</CITY>
+    <CITY>Montgomery</CITY>
+    <CITY>Frankfort</CITY>
+    <CITY>Annapolis</CITY>
+    <CITY>Dallas</CITY>
+    <CITY>Jefferson City</CITY>
+    <CITY>Salt Lake City</CITY>
+    <CITY>Montpelier</CITY>
+
+  </CITIES>
+  <UNIT_CONTINENT>0 Europe</UNIT_CONTINENT>
+  <BUILD_CONTINENT>7 Colonial</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>7 Colonial</BACKUP_BUILD_CONTINENT>
+</TRIBE>

@@ -1,0 +1,941 @@
+<?xml version="1.0"?>
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Mark Sobota (Big Huge Games) -->
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by Isaac Ellis (Big Huge Games) -->
+<ROOT name="The Modern World" desc="A map of the entire world with all nations available." intro="Through your wise and skillful leadership, you have united the $TRIBENAME0 under your command. Now you must crush all who would oppose you under the iron rule of your mighty nation. Barbarian hordes and rival nations alike will fall as you set forth to CONQUER THE WORLD." minimap_continents="./art/CTW_Minimap_Overlay_01.tga" victory_conditions="Through conquest, coercion, and shrewd dealing, gain control over the entire world." intro_image="./art/CTW_Loading_Background_01.tga" tex_width="8000" tex_height="4000" map_width="1000" map_height="500.6876" map_scale="0.524109" turns_per_age="7" starting_age="5" ending_age="7" allow_wrap="1" allow_continue="1" allow_vassals="1" allow_random_nations="1" diplo_response_script_file="./conquest/ModernWorld/diplo_response.bhs" voiceover="entireworldcampaign.wav">
+	<CONQUESTSTYLES>
+		<DEFENSIVE>
+			<STYLE title="Liberation" id="Liberation" eliminations="Capital" victories="Time Limit" mapsizes="Huge" add_opponents_diff0="1" add_opponents_diff1="1" add_opponents_diff2="1" add_opponents_diff3="1" add_opponents_diff4="1" add_opponents_diff5="1" min_victory="90" max_victory="90" setup=".\conquest\ModernWorld\liberationdefsetup.bhs" runtime=".\conquest\ModernWorld\liberationdefruntime.bhs" reveal_buildings="1" description="The enemy has hired rebels to take control of your territory. Win this battle by defeating any of them or hold out for $NUM0 minutes." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Besieged" eliminations="Capital" victories="Time Limit" mapsizes="Huge" map_style="Defender" add_opponents_diff0="1" add_opponents_diff1="2" add_opponents_diff2="2" add_opponents_diff3="3" add_opponents_diff4="3" add_opponents_diff5="4" min_victory="60" max_victory="60" setup=".\conquest\ModernWorld\besiegedsetup.bhs" runtime=".\conquest\ModernWorld\besiegedruntime.bhs" objective="Capture all enemy capitals or hold out for 60 minutes." description="You are besieged by the enemy and local rebels. You are not able to establish new cities. But fortunately, these enemies are one age behind you." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Melee" eliminations="Capital" victories="Time Limit" mapsizes="Huge" revealmaps="Explored" add_opponents_diff0="2" add_opponents_diff1="2" add_opponents_diff2="3" add_opponents_diff3="3" add_opponents_diff4="4" add_opponents_diff5="4" min_victory="120" max_victory="120" setup=".\conquest\ModernWorld\meleesetup.bhs" runtime=".\conquest\ModernWorld\meleeruntime.bhs" objective="Capture all enemy capitals or hold out for 120 minutes." description="The enemy has instigated opposition powers in this region to fight against you. You have one loyal supporter to help you resist this invasion. Because our undercovers are hidden in rebels, we can get information about them." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Guerrilla Warfare" land_only="1" eliminations="Conquest" victories="Time Limit" min_victory="15" max_victory="15" mapsizes="Arena" map_style="Defender Attack" setup=".\conquest\ModernWorld\guerillasetup.bhs" runtime=".\conquest\ModernWorld\guerillaruntime.bhs" objective="Destroy 40 enemy units." description="The enemy has taken several of your cities. Their morale is not very high, however if enough of their men are eliminated they will likely retreat." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Conquest" eliminations="Capital" victories="Time Limit" mapsizes="Huge" min_victory="90" max_victory="90" setup=".\conquest\scripts\conquestsetup.bhs" runtime=".\conquest\scripts\conquestruntime.bhs" objective="Capture the enemy capital(s) or hold out for $NUM0 minutes." reveal_buildings="1" description="You are being invaded by a treacherous neighbor. Take the enemy capital(s) or hold off their assault for $NUM0 minutes to force them to withdraw." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Airlift" id="Airlift" eliminations="Conquest" victories="Time Limit" min_victory="15" max_victory="15" map_style="Defender" setup=".\conquest\ModernWorld\airliftsetup.bhs" runtime=".\conquest\ModernWorld\airliftruntime.bhs" reveal_buildings="1" objective="Defend your base." description="Your only supply comes in the form of air drops. For every bomber that lands at your Airbase, you will gain resources. Use these resources to defend your base until the timer expires." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Surprise Attack!" eliminations="Sudden Death Capital" victories="Time Limit" min_victory="15" max_victory="15" map_style="Defender" setup=".\conquest\ModernWorld\defsetup0.bhs" runtime=".\conquest\ModernWorld\defruntime0.bhs" objective="Defend your capital for 15 minutes." description="Your enemy has launched a surprise attack on this territory. Hold off the attackers and defend your capital to achieve victory." victory_text="You have won the battle." defeat_text="You have lost the battle." reveal_buildings="1" revealmaps="Explored"></STYLE>
+			<STYLE title="Ambush" eliminations="Conquest" mapsizes="Huge" victories="Time Limit" min_victory="90" max_victory="90" min_age="1" setup=".\conquest\ModernWorld\offsetup1.bhs" runtime=".\conquest\ModernWorld\offruntime1.bhs" objective="Find and capture the enemy's capital or hold out for 90 minutes." description="Your army has reached the largest enemy settlement in this territory. Capture the capital in 90 minutes and the territory will fall. The enemy leader is crafty, so beware of ambush by the enemy troops. " victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Overwhelm" eliminations="Capital" victories="Time Limit" mapsizes="Huge" min_victory="90" max_victory="90" add_opponents_diff0="2" add_opponents_diff1="2" add_opponents_diff2="2" add_opponents_diff3="2" add_opponents_diff4="2" add_opponents_diff5="2" setup=".\conquest\ModernWorld\overwhelmsetup.bhs" runtime=".\conquest\ModernWorld\overwhelmruntime.bhs" objective="Capture the enemy capital(s), control 75% of the territory or hold out for $NUM0 minutes." description="You are being invaded by a treacherous neighbor. There are also several barbarians in your territory. The barbarians will immediately bow to anybody who captures their captial. Take their Capital(s) in $NUM0 minutes or less or control 75% of the territory, or hold off their assault for $NUM0 minutes to force them to withdraw. You will lose if any of them controls 60% of the territory." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Mercenary" eliminations="Conquest" victories="Time Limit" mapsizes="Huge" opp_team_together="1" min_age="1" add_opponents_diff0="1" add_opponents_diff1="1" add_opponents_diff2="1" add_opponents_diff3="1" add_opponents_diff4="2" add_opponents_diff5="2" min_victory="25" max_victory="25" setup=".\conquest\ModernWorld\mercenarysetup.bhs" runtime=".\conquest\scripts\offruntime7.bhs" objective="Hold off the enemy until the timer expires." description="The enemy has hired a group of opposition powers in this region to destroy you. Survive until the timer expires to win." victory_text="You have won the battle." defeat_text="You have lost the battle." land_only="1" default="1"/>
+			<STYLE title="Hideaway" eliminations="Conquest" victories="Time Limit" min_victory="30" max_victory="30" map_style="Standard Player City" setup=".\conquest\ModernWorld\hideawaysetup.bhs" runtime=".\conquest\ModernWorld\hideawayruntime.bhs" objective="Eliminate all enemy Generals or control 80% of the territory." description="The enemy's army is tied up elsewhere, so they have hired mercenaries. These mercenaries can survive without a City and they suffer no attrition. To find them will require some careful scouting; they are aware of your presence and will certainly set up ambushes. And beware--they will raid your homeland relentlessly." victory_text="You have rooted out the brigands." defeat_text="The brigands have overwhelmed you."/>
+		</DEFENSIVE>
+		<OFFENSIVE>
+			<STYLE title="Blitzkrieg" eliminations="Capital" victories="Time Limit" mapsizes="Huge" min_victory="25" max_victory="25" setup=".\conquest\ModernWorld\blitzkriegsetup.bhs" runtime=".\conquest\ModernWorld\blitzkriegruntime.bhs" objective="Capture the enemy capital(s) in 25 minutes." description="You have launched a surprise invasion aiming to get a swift victory. Each built military building will give you extra military units. You must take down the enemy in short time or your plan will miscarry." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Melee" eliminations="Capital" victories="Time Limit" mapsizes="Huge" revealmaps="Explored" add_opponents_diff0="2" add_opponents_diff1="2" add_opponents_diff2="3" add_opponents_diff3="3" add_opponents_diff4="4" add_opponents_diff5="4" min_victory="120" max_victory="120" setup=".\conquest\ModernWorld\meleesetup.bhs" runtime=".\conquest\ModernWorld\meleeruntime.bhs" objective="Capture all enemy capitals in 120 minutes." description="The enemy has several supporters in this region. The opposition leader has joined you to help defeat the enemy and its supporters. Because our undercovers are hidden in rebels, we can get information about them." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Overwhelm" eliminations="Capital" victories="Time Limit" mapsizes="Huge" min_victory="90" max_victory="90" add_opponents_diff0="2" add_opponents_diff1="2" add_opponents_diff2="2" add_opponents_diff3="2" add_opponents_diff4="2" add_opponents_diff5="2" setup=".\conquest\ModernWorld\overwhelmsetup.bhs" runtime=".\conquest\ModernWorld\overwhelmruntime.bhs" objective="Capture the enemy capital(s) in $NUM0 minutes or control 75% of the territory." description="The enemy is resisting your invasion. There are also several barbarian tribes in enemy's territory. The barbarians will immediately bow to anybody who captures their captial. Take their Capital(s) in $NUM0 minutes or less or control 75% of the territory. You will lose if any of them controls 60% of the territory." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Airlift" id="Airlift" eliminations="Conquest" victories="Time Limit" min_victory="15" max_victory="15" map_style="Attacker Defense" setup=".\conquest\ModernWorld\airliftsetup.bhs" runtime=".\conquest\ModernWorld\airliftruntime.bhs" reveal_buildings="1" objective="Defend your base." description="Your only supply comes in the form of air drops. For every bomber that lands at your Airbase, you will gain resources. Use these resources to defend your base until the timer expires." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Conquest" eliminations="Capital" victories="Time Limit" mapsizes="Huge" min_victory="90" max_victory="90" setup=".\conquest\scripts\conquestsetup.bhs" runtime=".\conquest\scripts\conquestruntime.bhs" reveal_buildings="1" objective="Capture the enemy capital(s) in $NUM0 minutes." description="The enemy is resisting your invasion. Take their Capital(s) in $NUM0 minutes or less to win." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Hideaway" eliminations="Conquest" victories="Time Limit" min_victory="30" max_victory="30" map_style="Standard Player City" setup=".\conquest\ModernWorld\hideawaysetup.bhs" runtime=".\conquest\ModernWorld\hideawayruntime.bhs" objective="Eliminate all enemy Generals or control 80% of the territory." description="The enemy's army is tied up elsewhere, so they have hired mercenaries. These mercenaries can survive without a City and they suffer no attrition. To find them will require some careful scouting; they are aware of your presence and will certainly set up ambushes. And beware--they will raid your homeland relentlessly." victory_text="You have rooted out the brigands." defeat_text="The brigands have overwhelmed you."/>
+			<STYLE title="Liberation" id="Liberation" eliminations="Capital" victories="Time Limit" mapsizes="Huge" add_opponents_diff0="1" add_opponents_diff1="1" add_opponents_diff2="1" add_opponents_diff3="1" add_opponents_diff4="1" add_opponents_diff5="1" min_victory="90" max_victory="90" setup=".\conquest\ModernWorld\liberationsetup.bhs" runtime=".\conquest\scripts\liberationruntime.bhs" reveal_buildings="1" description="Help the rebels seize control of the country." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Tech Raid" id="Tech Raid" eliminations="Capital" victories="Time Limit" mapsizes="Huge" min_victory="90" max_victory="90" setup=".\conquest\ModernWorld\stealtechsetup.bhs" runtime=".\conquest\ModernWorld\stealtechruntime.bhs" objective="Capture the enemy capital." description="You have made haste to arrive in this territory. However, you went so fast that you left behind all your librarians. You'll have to steal technologies from your enemies using Spies to infiltrate their Library. Take the enemy technology and use it to crush them!" victory_text="You have won the battle." defeat_text="You have lost the battle." land_only="1" default="1"/>
+			<STYLE title="Guerrilla Bases" id="Guerrilla Bases" eliminations="Conquest" victories="Time Limit" min_victory="30" max_victory="30" mapsizes="Arena" map_style="Standard Player City" setup=".\conquest\ModernWorld\guerillabasessetup.bhs" runtime=".\conquest\Napoleon\guerillabasesruntime.bhs" objective="Destroy the guerrilla encampments." description="Root out the guerrilla forces in this province to quash all resistance and gain control of the land." victory_text="You have won the battle." defeat_text="You have lost the battle." land_only="1"></STYLE>
+			<STYLE title="Ambush" eliminations="Conquest" victories="Time Limit" mapsizes="Huge" min_victory="90" max_victory="90" min_age="1" setup=".\conquest\ModernWorld\offsetup1.bhs" runtime=".\conquest\ModernWorld\offruntime1.bhs" objective="Find and capture the enemy's capital in 90 minutes." description="Your army has reached the largest enemy settlement in this territory. Capture the capital in 90 minutes and the territory will fall. The enemy leader is crafty, so beware of ambush by the enemy troops. " victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Surprise Attack!" eliminations="Sudden Death Capital" victories="Time Limit" min_victory="15" max_victory="15" map_style="Attacker Defense" setup=".\conquest\ModernWorld\defsetup0.bhs" runtime=".\conquest\ModernWorld\defruntime0.bhs" objective="Defend your capital for 15 minutes." description="Your enemy has launched a surprise attack on this territory. Hold off the attackers and defend your capital to achieve victory." victory_text="You have won the battle." defeat_text="You have lost the battle." reveal_buildings="1" revealmaps="Explored"></STYLE>
+			<STYLE title="Pillage" id="Pillage" eliminations="Conquest" victories="Time Limit" min_victory="15" max_victory="15" map_style="Defender" setup=".\conquest\ModernWorld\pillagesetup.bhs" runtime=".\conquest\ModernWorld\pillageruntime.bhs" objective="Destroy the enemy buildings." description="Your army is approaching the enemy's army.  Attack their encampment and destroy all their civilian buildings in order to win." victory_text="You have won the battle." defeat_text="You have lost the battle."></STYLE>
+			<STYLE title="Skirmish" id="Skirmish" eliminations="Conquest" victories="Time Limit" min_victory="60" max_victory="60" map_style="Standard No City" setup=".\conquest\ModernWorld\skirmishsetup.bhs" runtime=".\conquest\ModernWorld\skirmishruntime.bhs" reveal_buildings="1" objective="Destroy the enemy Redoubts." description="This battle is almost entirely a military engagement. You can only build limited kinds of buildings. Also, all your unit production will come from your Redoubt, Barracks, Auto Plant, Factory and Anchorage. Gain more resources by building more Redoubts and using the economic units you can build." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Assault" eliminations="Capital" victories="Time Limit" mapsizes="Huge" min_victory="90" max_victory="90" map_style="Defender" setup=".\conquest\ModernWorld\assaultsetup.bhs" runtime=".\conquest\ModernWorld\assaultruntime.bhs" objective="Capture the enemy capital(s) in $NUM0 minutes." description="You arrive enemy's territory, but you take little supply so you are an age behind your enemy. Find a place to build the city and army. You will regain your age according to the difficulty. Take their Capital(s) in $NUM0 minutes or less to win." victory_text="You have won the battle." defeat_text="You have lost the battle." default="1"/>
+			<STYLE title="Guerrilla Warfare" land_only="1" id="Guerilla Warfare" eliminations="Conquest" victories="Time Limit" min_victory="15" max_victory="15" mapsizes="Arena" map_style="Defender" setup=".\conquest\ModernWorld\guerillasetup.bhs" runtime=".\conquest\ModernWorld\guerillaruntime.bhs" reveal_buildings="1" objective="Destroy 40 enemy units." description="The enemy soldiers in this area tire of the occupation and their morale is failing. If your attack is fierce enough, they will likely retreat." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Bribery" id="Bribery" eliminations="Capital" victories="Time Limit" min_victory="15" max_victory="15" map_style="Defender" setup=".\conquest\ModernWorld\bribesetup.bhs" runtime=".\conquest\ModernWorld\briberuntime.bhs" reveal_buildings="1" objective="Capture the enemy capital(s)." description="A group of Spies has been sent into Enemy's territory. Its mission is to take over this territory by bribing enemy units to join your side and then using them to attack the enemy capital." victory_text="You have completed the mission." defeat_text="You have failed the mission." land_only="1"/>
+			<STYLE title="Speech of the Supreme Leader" eliminations="Conquest" victories="Time Limit" min_victory="90" max_victory="90" map_style="Defender" setup=".\conquest\ModernWorld\crazyalexandersetup.bhs" runtime=".\conquest\ModernWorld\crazyalexander.bhs" description="The Supreme Leader wants to spread his concepts to people on this land. He must be protected until his speed was heard by everyone." victory_text="You have protected the Supreme Leader!" defeat_text="You have failed to protect the Supreme Leader!" land_only="1"/>
+		</OFFENSIVE>
+		<BARBARIAN>
+			<STYLE title="Blitzkrieg" eliminations="Capital" victories="Time Limit" mapsizes="Huge" min_victory="25" max_victory="25" setup=".\conquest\ModernWorld\blitzkriegsetup.bhs" runtime=".\conquest\ModernWorld\blitzkriegruntime.bhs" objective="Capture the enemy capital(s) in 25 minutes." description="You have launched a surprise invasion aiming to get a swift victory. Each built military building will give you extra military units. You must take down the enemy in short time or your plan will miscarry." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Besieged" eliminations="Capital" victories="Time Limit" mapsizes="Huge" map_style="Defender" add_opponents_diff0="1" add_opponents_diff1="2" add_opponents_diff2="2" add_opponents_diff3="3" add_opponents_diff4="3" add_opponents_diff5="4" min_victory="60" max_victory="60" setup=".\conquest\ModernWorld\besiegedoffsetup.bhs" runtime=".\conquest\ModernWorld\besiegedruntime.bhs" objective="Capture all enemy capitals or hold out for 60 minutes." description="You have taken control of this territory, but you are besieged by local guerrilla forces. You are not able to establish new cities. But fortunately, these enemies are one age behind you." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Barbarian Rally" eliminations="Sudden Death Capital" victories="Time Limit" min_victory="15" max_victory="15" map_style="Attacker Defense" setup=".\conquest\ModernWorld\defsetup0.bhs" runtime=".\conquest\ModernWorld\defruntime0.bhs" objective="Defend your capital for 15 minutes." description="Your armies encountered no resistance in taking the territory.  However, the natives have rallied and are assaulting your new outpost.  Defend your capital until the timer expires to win." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Sudden Death" eliminations="Conquest" victories="Time Limit" mapsizes="Huge" opp_team_together="1" add_opponents_diff0="1" add_opponents_diff1="1" add_opponents_diff2="1" add_opponents_diff3="1" add_opponents_diff4="1" add_opponents_diff5="2" min_victory="90" max_victory="90" runtime=".\conquest\scripts\offruntime5.bhs" objective="Capture one city from each nation to defeat them in $NUM0 minutes." description="The barbarian nations in this region are weak and sure to kneel to your nation if you are able to prove your superiority by capturing one of their cities in $NUM0 minutes. They must capture your capital to defeat you." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Wheel and Deal" eliminations="Conquest" victories="Time Limit" mapsizes="Huge" opp_team_together="" gamestyles="Diplomacy" min_age="0" add_opponents_diff0="1" add_opponents_diff1="1" add_opponents_diff2="2" add_opponents_diff3="2" add_opponents_diff4="2" add_opponents_diff5="2" min_victory="120" max_victory="120" runtime=".\conquest\scripts\dipruntime.bhs" objective="Defeat the barbarian tribes in 120 minutes." description="There are several native tribes in this territory vying for power. Use your diplomatic skills to play them off of each other and ensure your own dominance in the area.  Defeat the barbarian tribes in 120 minutes." victory_text="You have won the battle." defeat_text="You have lost the battle." land_only="1"/>
+			<STYLE title="Barbarians at the Gates!" eliminations="Conquest" victories="Time Limit" mapsizes="Huge" opp_team_together="1" min_age="1" add_opponents_diff0="1" add_opponents_diff1="1" add_opponents_diff2="1" add_opponents_diff3="1" add_opponents_diff4="2" add_opponents_diff5="2" min_victory="25" max_victory="25" setup=".\conquest\ModernWorld\offsetup5.bhs" runtime=".\conquest\scripts\offruntime7.bhs" objective="Hold off the enemy until the timer expires." description="A group of barbarian tribes in this region have united together to destroy you. Fortunately you brought extra supplies and the barbarians are an Age behind you.  Survive until the timer expires to win." victory_text="You have won the battle." defeat_text="You have lost the battle." land_only="1"/>
+			<STYLE title="Food for the Winter" id="Food for the Winter" eliminations="Conquest" victories="Time Limit" min_victory="90" max_victory="90" map_style="Attacker Defense" setup=".\conquest\ModernWorld\foodsetup.bhs" runtime=".\conquest\ModernWorld\foodruntime.bhs" description="You have established a settlement in this region. Now the winter is fast approaching. Make sure your people have enough food to survive the harsh cold." victory_text="You have succeeded." defeat_text="Your people are going to starve."/>
+			<STYLE title="Federation" id="Federation" eliminations="Capital" victories="Time Limit" mapsizes="Huge" add_opponents_diff0="4" add_opponents_diff1="4" add_opponents_diff2="4" add_opponents_diff3="4" add_opponents_diff4="5" add_opponents_diff5="5" min_victory="90" max_victory="90" setup=".\conquest\ModernWorld\federationsetup.bhs" runtime=".\conquest\ModernWorld\federationruntime.bhs" description="There are several native tribes in the area. Conquer them before they band together into one federation." victory_text="You have won the battle." defeat_text="You have lost the battle." land_only="1"/>
+			<STYLE title="Hideaway" eliminations="Conquest" victories="Time Limit" min_victory="30" max_victory="30" map_style="Standard Player City" setup=".\conquest\ModernWorld\hideawaysetup.bhs" runtime=".\conquest\ModernWorld\hideawayruntime.bhs" objective="Eliminate all enemy Generals or control 80% of the territory." description="The enemy's army is tied up elsewhere, so they have hired mercenaries. These mercenaries can survive without a City and they suffer no attrition. To find them will require some careful scouting; they are aware of your presence and will certainly set up ambushes. And beware--they will raid your homeland relentlessly." victory_text="You have rooted out the brigands." defeat_text="The brigands have overwhelmed you."/>
+			<STYLE title="Settlers" id="Settlers" eliminations="Conquest" victories="Time Limit" mapsizes="Huge" gamestyles="Diplomacy" add_opponents_diff0="2" add_opponents_diff1="2" add_opponents_diff2="3" add_opponents_diff3="4" add_opponents_diff4="5" add_opponents_diff5="6" min_victory="90" max_victory="90" map_style="Standard No City" setup=".\conquest\ModernWorld\settlerssetup.bhs" runtime=".\conquest\ModernWorld\settlersruntime.bhs" objective="Destroy or ally with the enemy nations." description="You have sent settlers to an unexplored region of the New World. There are many other nations on their way as well, but you have arrived first. Use your head start to build up your nation in preparation to battle the other tribes. " victory_text="You have settled new lands." defeat_text="Your settlers have been defeated." land_only="1"/>
+			<STYLE title="Airlift" id="Airlift" eliminations="Conquest" victories="Time Limit" min_victory="15" max_victory="15" map_style="Attacker Defense" setup=".\conquest\ModernWorld\airliftsetup.bhs" runtime=".\conquest\ModernWorld\airliftruntime.bhs" reveal_buildings="1" objective="Defend your base." description="Your only supply comes in the form of air drops. For every bomber that lands at your Airbase, you will gain resources. Use these resources to defend your base until the timer expires." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Guerrilla Bases" id="Guerrilla Bases" eliminations="Conquest" victories="Time Limit" min_victory="30" max_victory="30" mapsizes="Arena" map_style="Standard Player City" setup=".\conquest\ModernWorld\guerillabasessetup.bhs" runtime=".\conquest\Napoleon\guerillabasesruntime.bhs" objective="Destroy the guerrilla encampments." description="Root out the guerrilla forces in this province to quash all resistance and gain control of the land." victory_text="You have won the battle." defeat_text="You have lost the battle." land_only="1"></STYLE>
+			<STYLE title="Mercantile" id="Mercantile" eliminations="Capital" victories="Time Limit" add_opponents_diff2="1" add_opponents_diff3="2" add_opponents_diff4="2" add_opponents_diff5="3" min_victory="30" max_victory="20" mapsizes="Huge" setup=".\conquest\ModernWorld\mercantilesetup.bhs" runtime=".\conquest\ModernWorld\mercantileruntime.bhs" description="You are competing with other nations to establish trade dominance in this area. This will be a fierce battle for rare resources. Since this is not all out war, attrition will be disabled for this battle. Protect your resources well, and raid your enemy's often, in order to win." victory_text="You have won the trade war." defeat_text="You have lost the trade war." land_only="1"/>
+			<STYLE title="Pillage" id="Pillage" eliminations="Conquest" victories="Time Limit" min_victory="15" max_victory="15" map_style="Defender" setup=".\conquest\ModernWorld\pillagesetup.bhs" runtime=".\conquest\ModernWorld\pillageruntime.bhs" objective="Destroy the enemy buildings." description="Your army is approaching a local force.  Attack their encampment and destroy all their civilian buildings in order to win." victory_text="You have won the battle." defeat_text="You have lost the battle."></STYLE>
+			<STYLE title="Skirmish" id="Skirmish" eliminations="Conquest" victories="Time Limit" min_victory="60" max_victory="60" map_style="Standard No City" setup=".\conquest\ModernWorld\skirmishsetup.bhs" runtime=".\conquest\ModernWorld\skirmishruntime.bhs" reveal_buildings="1" objective="Destroy the enemy Redoubts." description="This battle is almost entirely a military engagement. You can only build limited kinds of buildings. Also, all your unit production will come from your Redoubt, Barracks, Auto Plant, Factory and Anchorage. Gain more resources by building more Redoubts and using the economic units you can build." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Guerrilla Warfare" land_only="1" id="Guerilla Warfare" eliminations="Conquest" victories="Time Limit" min_victory="15" max_victory="15" mapsizes="Arena" map_style="Defender" setup=".\conquest\ModernWorld\guerillasetup.bhs" runtime=".\conquest\ModernWorld\guerillaruntime.bhs" reveal_buildings="1" objective="Destroy 40 enemy units." description="The enemy soldiers in this area tire of the occupation and their morale is failing. If your attack is fierce enough, they will likely retreat." victory_text="You have won the battle." defeat_text="You have lost the battle."/>
+			<STYLE title="Bribery" id="Bribery" eliminations="Capital" victories="Time Limit" min_victory="15" max_victory="15" map_style="Defender" setup=".\conquest\ModernWorld\bribesetup.bhs" runtime=".\conquest\ModernWorld\briberuntime.bhs" reveal_buildings="1" objective="Capture the enemy capital(s)." description="A group of Spies has been sent into Enemy's territory. Its mission is to take over this territory by bribing enemy units to join your side and then using them to attack the enemy capital." victory_text="You have completed the mission." defeat_text="You have failed the mission." land_only="1"/>
+			<STYLE title="Nomad" eliminations="Conquest" victories="Time Limit" add_opponents_diff0="2" add_opponents_diff1="2" add_opponents_diff2="2" add_opponents_diff3="2" add_opponents_diff4="2" add_opponents_diff5="2" min_victory="60" max_victory="60" mapsizes="Arena" map_style="Standard Player City" setup=".\conquest\ModernWorld\nomadsetup.bhs" runtime=".\conquest\ModernWorld\nomadruntime.bhs" description="You have successfully established a new settlement but several nomadic tribes also claim this territory. Eliminate them in order to protect your people." victory_text="You have defeated all of the nomad tribes." defeat_text="You were unable to defeat all of the nomad tribes." land_only="1"></STYLE>
+			<STYLE title="Speech of the Supreme Leader" eliminations="Conquest" victories="Time Limit" min_victory="90" max_victory="90" map_style="Defender" setup=".\conquest\ModernWorld\crazyalexandersetup.bhs" runtime=".\conquest\ModernWorld\crazyalexander.bhs" description="The Supreme Leader wants to spread his concepts to people on this land. He must be protected until his speed was heard by everyone." victory_text="You have protected the Supreme Leader!" defeat_text="You have failed to protect the Supreme Leader!" land_only="1"/>
+			<STYLE title="Metal Rush!" id="Metal Rush!" eliminations="Conquest" victories="Time Limit" add_opponents_diff0="0" add_opponents_diff1="1" add_opponents_diff2="1" add_opponents_diff3="2" add_opponents_diff4="2" add_opponents_diff5="3" min_victory="30" max_victory="30" setup=".\conquest\ModernWorld\metalrushsetup.bhs" runtime=".\conquest\ModernWorld\metalrushruntime.bhs" objective="" description="The natives in this region are unable to collect Metal, but have a great need for it. They will give their allegiance to whichever nation proves it can collect Metal the fastest. Be the first to collect the amount of Metal the natives desire." victory_text="You have collected enough Metal." defeat_text="You did not collect enough Metal." land_only="1"/>
+		</BARBARIAN>
+	</CONQUESTSTYLES>
+	<TEXTURE file=".\art\CTWMap_0.tga" alpha="0" tile_ratio="5"/>
+	<TEXTURE file=".\art\CTWMap_1.tga" alpha="32" tile_ratio="5"/>
+	<TEXTURE file=".\art\CTWMap_2.tga" alpha="64" tile_ratio="5"/>
+	<TEXTURE file=".\art\CTWMap_3.tga" alpha="96" tile_ratio="5"/>
+	<TEXTURE file=".\art\CTWMap_4.tga" alpha="128" tile_ratio="5"/>
+	<TEXTURE file=".\art\CTWMap_5.tga" alpha="160" tile_ratio="5"/>
+	<CONTINENTS image_file="./art/CTW_ColdWar_Continent_Victory_01.tga" image_width="441" image_height="239">
+		<CONTINENT name="North America" id="North America" barbarian_file="../conquest/ModernWorld/tribes/barbarians_na.xml" image_file="./art/ctw_continent_victory_coldwar_01.tga"/>
+		<CONTINENT name="South America" id="South America" barbarian_file="../conquest/ModernWorld/tribes/barbarians_sa.xml" image_file="./art/ctw_continent_victory_coldwar_02.tga"/>
+		<CONTINENT name="Europe" id="Europe" barbarian_file="../conquest/ModernWorld/tribes/barbarians_eu.xml" image_file="./art/ctw_continent_victory_coldwar_04.tga"/>
+		<CONTINENT name="West Asia" id="West Asia" barbarian_file="../conquest/ModernWorld/tribes/barbarians_wasia.xml" image_file="./conquest/ModernWorld/ctw_continent_victory_modernworld_05.tga"/>
+		<CONTINENT name="East Asia" id="East Asia" barbarian_file="../conquest/ModernWorld/tribes/barbarians_easia.xml" image_file="./art/ctw_continent_victory_coldwar_06.tga"/>
+		<CONTINENT name="Oceania" id="Oceania" barbarian_file="../conquest/ModernWorld/tribes/barbarians_aus.xml" image_file="./conquest/ModernWorld/ctw_continent_victory_modernworld_07.tga"/>
+		<CONTINENT name="Africa" id="Africa" barbarian_file="../conquest/ModernWorld/tribes/barbarians_af.xml" image_file="./art/ctw_continent_victory_coldwar_03.tga"/>
+	</CONTINENTS>
+	<COUNTRY name="Finland" id="Finland" tileset="arctic" rare="Huskies" size="5" capital="1" owner="lakota" red="185" green="255" blue="17" continent="Europe" left="4126" right="4449" top="58" bottom="516" x="4293" y="377">
+		<LINK to="Norway" sea="0"/>
+		<LINK to="Sweden" sea="1"/>
+		<LINK to="Karelia" sea="0"/>
+		<LINK to="Eastern Europe" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Greenland" id="Greenland" tileset="arctic" size="0" red="115" green="177" blue="247" continent="North America" supply_depot="1" tribute="10" left="1956" right="3407" top="0" bottom="608" x="2847" y="240">
+		<LINK to="Baffin Island" sea="1"/>
+		<LINK to="Quebec" sea="1"/>
+		<LINK to="England" sea="1"/>
+		<LINK to="Ireland" sea="1"/>
+		<LINK to="New Foundland" sea="1"/>
+		<LINK to="Iceland" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Quebec" id="Quebec" tileset="snowy" size="0" card="Commerce Eureka" tribute="30" red="67" green="71" blue="83" continent="North America" left="1802" right="2580" top="434" bottom="1265" x="2080" y="860">
+		<LINK to="Greenland" sea="1"/>
+		<LINK to="Baffin Island" sea="1"/>
+		<LINK to="New Foundland" sea="1"/>
+		<LINK to="Mid-Atlantic" sea="0"/>
+		<LINK to="Ontario" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Nunavut" id="Nunavut" tileset="snowy" size="0" supply_depot="1" tribute="30" red="242" green="108" blue="125" continent="North America" left="792" right="1824" top="0" bottom="984" x="1356" y="550">
+		<LINK to="Baffin Island" sea="1"/>
+		<LINK to="Yukon" sea="0"/>
+		<LINK to="Ontario" sea="0"/>
+		<LINK to="Midwest" sea="0"/>
+		<LINK to="South Canada" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Western Russia" tileset="m_steppe_2" rare="Iron Ore" size="5" capital="1" id="Russia" owner="russians" red="80" green="5" blue="165" continent="Europe" left="4392" right="5018" top="230" bottom="886" x="4733" y="483">
+		<LINK to="Urals" sea="0"/>
+		<LINK to="Karelia" sea="0"/>
+		<LINK to="Eastern Europe" sea="0"/>
+		<LINK to="South Russia" sea="0"/>
+		<LINK to="Arkhangelsk" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Eastern Siberia" card="Commandeer Transport" tileset="arctic" size="0" id="Eastern Siberia" red="2" green="202" blue="120" continent="East Asia" tribute="15" left="6127" right="7518" top="34" bottom="1183" x="6908" y="441">
+		<LINK to="Western Siberia" sea="0"/>
+		<LINK to="Kamchatskaya" sea="1"/>
+		<LINK to="Chukotskiy" sea="0"/>
+		<LINK to="Hokkaido" sea="1"/>
+		<LINK to="Sakhalin" sea="1"/>
+		<LINK to="Northeast China" sea="0"/>
+		<LINK to="Inner Mongolia" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Western Siberia" rare="Aluminum" tileset="arctic" size="0" id="Western Siberia" red="91" green="11" blue="49" continent="East Asia" tribute="15" left="5443" right="6437" top="70" bottom="1067" x="5955" y="551">
+		<LINK to="Eastern Siberia" sea="0"/>
+		<LINK to="Urals" sea="0"/>
+		<LINK to="Inner Mongolia" sea="0"/>
+		<LINK to="Xinjiang" sea="0"/>
+		<LINK to="Kazakhstan" sea="0"/>
+		<LINK to="Mongolia" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Karelia" card="Letter of Marque" id="Karelia" tileset="arctic" size="0" red="247" green="186" blue="115" continent="Europe" tribute="45" left="4328" right="4786" top="91" bottom="499" x="4476" y="330">
+		<LINK to="Finland" sea="0"/>
+		<LINK to="Russia" sea="0"/>
+		<LINK to="Arkhangelsk" sea="1"/>
+		<LINK to="Eastern Europe" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Norway" tileset="snowy" rare="Furs" size="5" capital="1" owner="dutch" id="Norway" red="128" green="246" blue="170" continent="Europe" left="3640" right="4207" top="95" bottom="591" x="3805" y="494">
+		<LINK to="Sweden" sea="0"/>
+		<LINK to="Finland" sea="0"/>
+		<LINK to="Denmark" sea="1"/>
+		<LINK to="England" sea="1"/>
+		<LINK to="Iceland" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Sweden" id="Sweden" tileset="snowy" size="0" red="254" green="55" blue="40" continent="Europe" card="Great Thinker" supply_depot="1" left="3818" right="4245" top="154" bottom="700" x="3998" y="535">
+		<LINK to="Finland" sea="1"/>
+		<LINK to="Norway" sea="0"/>
+		<LINK to="Poland" sea="1"/>
+		<LINK to="East Germany" sea="1"/>
+		<LINK to="Denmark" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Alaska" id="Alaska" tileset="arctic" size="0" red="251" green="138" blue="77" continent="North America" supply_depot="1" tribute="15" left="92" right="637" top="140" bottom="815" x="266" y="330">
+		<LINK to="Chukotskiy" sea="1"/>
+		<LINK to="Kamchatskaya" sea="1"/>
+		<LINK to="Yukon" sea="0"/>
+		<LINK to="South Canada" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Great Britain" rare="Relics" tileset="dirty_2" size="5" capital="1" id="England" owner="british" red="164" green="244" blue="202" continent="Europe" left="3219" right="3507" top="432" bottom="891" x="3387" y="762">
+		<LINK to="Greenland" sea="1"/>
+		<LINK to="France" sea="1"/>
+		<LINK to="Norway" sea="1"/>
+		<LINK to="Ireland" sea="1"/>
+		<LINK to="Netherlands" sea="1"/>
+		<LINK to="Iceland" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Eastern Europe" card="Knowledge Economic Boom" tileset="dirty" size="0" id="Eastern Europe" red="1" green="196" blue="225" continent="Europe" tribute="35" left="4142" right="4618" top="500" bottom="830" x="4428" y="679">
+		<LINK to="Finland" sea="1"/>
+		<LINK to="Russia" sea="0"/>
+		<LINK to="South Russia" sea="0"/>
+		<LINK to="Poland" sea="0"/>
+		<LINK to="Ukraine" sea="0"/>
+		<LINK to="Karelia" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="West Germany" id="West Germany" size="0" supply_depot="1" tribute="30" tileset="dirty_2" red="2" green="200" blue="202" continent="Europe" left="3666" right="3871" top="719" bottom="1074" x="3782" y="833">
+		<LINK to="East Germany" sea="0"/>
+		<LINK to="France" sea="0"/>
+		<LINK to="Italy" sea="0"/>
+		<LINK to="Netherlands" sea="0"/>
+		<LINK to="Denmark" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Poland" tileset="dirty" size="0" id="Poland" red="151" green="238" blue="0" rare="Amber" tribute="25" continent="Europe" left="3955" right="4279" top="640" bottom="987" x="4154" y="841">
+		<LINK to="Sweden" sea="1"/>
+		<LINK to="Eastern Europe" sea="0"/>
+		<LINK to="Ukraine" sea="0"/>
+		<LINK to="East Germany" sea="0"/>
+		<LINK to="Austria" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="East Germany" id="East Germany" tileset="dirty" rare="Gypsum" size="5" capital="1" owner="germans" red="70" green="141" blue="7" continent="Europe" left="3809" right="4018" top="712" bottom="1062" x="3920" y="857">
+		<LINK to="Sweden" sea="1"/>
+		<LINK to="West Germany" sea="0"/>
+		<LINK to="Poland" sea="0"/>
+		<LINK to="Italy" sea="0"/>
+		<LINK to="Austria" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Chinese Mainland" tileset="dirty" rare="Silk" size="5" capital="1" id="Chinese Mainland" owner="chinese" red="11" green="69" blue="29" continent="East Asia" left="5939" right="6615" top="876" bottom="1959" x="6425" y="1681">
+		<LINK to="Inner Mongolia" sea="0"/>
+		<LINK to="Northeast China" sea="0"/>
+		<LINK to="Tibet" sea="0"/>
+		<LINK to="Southeast Asia" sea="0"/>
+		<LINK to="Taiwan" sea="1"/>
+		<LINK to="North Korea" sea="1"/>
+		<LINK to="Korea" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="France" tileset="dirty" rare="Uranium" size="5" capital="1" id="France" owner="french" red="178" green="4" blue="74" continent="Europe" left="3316" right="3779" top="843" bottom="1271" x="3504" y="975">
+		<LINK to="England" sea="1"/>
+		<LINK to="West Germany" sea="0"/>
+		<LINK to="Spain" sea="0"/>
+		<LINK to="Netherlands" sea="0"/>
+		<LINK to="Italy" sea="0"/>
+		<LINK to="Algeria" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Kazakhstan" rare="Salt" tileset="m_steppe_2" size="0" id="Kazakhstan" red="101" green="115" blue="9" continent="West Asia" card="Oil Economic Boom" tribute="45" left="4956" right="5706" top="880" bottom="1438" x="5358" y="1095">
+		<LINK to="Western Siberia" sea="0"/>
+		<LINK to="South Russia" sea="0"/>
+		<LINK to="Xinjiang" sea="0"/>
+		<LINK to="Caucasus" sea="0"/>
+		<LINK to="Urals" sea="0"/>
+		<LINK to="Afghanistan" sea="0"/>
+		<LINK to="Iran" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Pacific Rockies" rare="Coal" supply_depot="1" tileset="sw_desert" size="0" id="Pacific Rockies" red="157" green="2" blue="202" continent="North America" left="684" right="1067" top="944" bottom="1527" x="747" y="1252">
+		<LINK to="Baja Carlifornia" sea="0"/>
+		<LINK to="South Canada" sea="0"/>
+		<LINK to="Midwest" sea="0"/>
+		<LINK to="Texas" sea="0"/>
+		<LINK to="Mexico" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Midwest" tileset="dirty" size="0" id="Midwest" tribute="30" card="Metal Economic Boom" red="255" green="98" blue="4" continent="North America" left="949" right="1599" top="961" bottom="1509" x="1268" y="1183">
+		<LINK to="Nunavut" sea="0"/>
+		<LINK to="South Canada" sea="0"/>
+		<LINK to="Pacific Rockies" sea="0"/>
+		<LINK to="Mid-Atlantic" sea="0"/>
+		<LINK to="Gulf Coast" sea="0"/>
+		<LINK to="Texas" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Mid-Atlantic" tileset="autumn" rare="Cattle" size="5" capital="1" id="Mid-Atlantic" owner="americans" red="59" green="8" blue="128" continent="North America" left="1467" right="2148" top="964" bottom="1463" x="1935" y="1335">
+		<LINK to="Quebec" sea="0"/>
+		<LINK to="Midwest" sea="0"/>
+		<LINK to="Gulf Coast" sea="0"/>
+		<LINK to="Ontario" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Mongolia" id="Mongolia" tileset="m_steppe" size="0" red="249" green="214" blue="91" continent="East Asia" tribute="40" card="Mercenaries" left="5879" right="6483" top="1014" bottom="1308" x="6189" y="1161">
+		<LINK to="Western Siberia" sea="0"/>
+		<LINK to="Inner Mongolia" sea="0"/>
+		<LINK to="Xinjiang" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Italy" rare="Wine" tileset="dirty" size="5" capital="1" id="Italy" owner="romans" red="246" green="164" blue="128" continent="Europe" left="3720" right="4047" top="1028" bottom="1475" x="3892" y="1241">
+		<LINK to="West Germany" sea="0"/>
+		<LINK to="East Germany" sea="0"/>
+		<LINK to="Austria" sea="0"/>
+		<LINK to="France" sea="0"/>
+		<LINK to="Greece" sea="1"/>
+		<LINK to="Balkans" sea="1"/>
+		<LINK to="Libya" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Japan" tileset="dirty" rare="Salmon" size="5" capital="1" id="Japan" owner="japanese" red="164" green="183" blue="244" continent="East Asia" left="6900" right="7247" top="1255" bottom="1607" x="7117" y="1495">
+		<LINK to="Korea" sea="1"/>
+		<LINK to="North Korea" sea="1"/>
+		<LINK to="Kyushu" sea="1"/>
+		<LINK to="Hokkaido" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Balkans" id="Balkans" tileset="dirty" size="0" tribute="40" card="Merchant Guild" red="26" green="2" blue="202" continent="Europe" left="3955" right="4410" top="1054" bottom="1294" x="4097" y="1152">
+		<LINK to="Ukraine" sea="0"/>
+		<LINK to="Austria" sea="0"/>
+		<LINK to="Turkey" sea="0"/>
+		<LINK to="Greece" sea="0"/>
+		<LINK to="Italy" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Spain" tileset="dirty" rare="Olive Oil" capital="1" size="5" id="Spain" owner="spanish" red="225" green="128" blue="246" continent="Europe" left="3175" right="3551" top="1156" bottom="1491" x="3336" y="1328">
+		<LINK to="France" sea="0"/>
+		<LINK to="Algeria" sea="1"/>
+		<LINK to="Morocco" sea="1"/>
+		<LINK to="Ireland" sea="1"/>
+		<LINK to="Portugal" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="North Korea" id="North Korea" tileset="autumn" rare="Gems" size="5" capital="1" owner="mongols" red="252" green="101" blue="66" continent="East Asia" left="6656" right="6860" top="1220" bottom="1383" x="6729" y="1278">
+		<LINK to="Northeast China" sea="0"/>
+		<LINK to="Korea" sea="0"/>
+		<LINK to="Japan" sea="1"/>
+		<LINK to="Chinese Mainland" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Turkey" id="Turkey" tileset="dirty" rare="Copper" size="5" owner="turks" capital="1" red="255" green="82" blue="29" continent="Europe" left="4283" right="4801" top="1223" bottom="1498" x="4513" y="1384">
+		<LINK to="Caucasus" sea="0"/>
+		<LINK to="Balkans" sea="0"/>
+		<LINK to="Greece" sea="0"/>
+		<LINK to="Iran" sea="0"/>
+		<LINK to="Middle East" sea="0"/>
+		<LINK to="Egypt" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Greece" tribute="25" id="Greece" tileset="dirty" size="0" red="104" green="248" blue="189" continent="Europe" card="Wonder of the World" left="4084" right="4314" top="1235" bottom="1472" x="4149" y="1322">
+		<LINK to="Balkans" sea="0"/>
+		<LINK to="Turkey" sea="0"/>
+		<LINK to="Libya" sea="1"/>
+		<LINK to="Italy" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="South Korea" tileset="dirty_2" rare="Sulphur" size="5" capital="1" id="Korea" owner="koreans" red="10" green="81" blue="104" continent="East Asia" left="6720" right="6867" top="1327" bottom="1583" x="6794" y="1449">
+		<LINK to="Japan" sea="1"/>
+		<LINK to="Kyushu" sea="1"/>
+		<LINK to="Taiwan" sea="1"/>
+		<LINK to="Chinese Mainland" sea="1"/>
+		<LINK to="North Korea" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Middle East" tileset="sw_desert" supply_depot="1" size="0" id="Middle East" red="244" green="176" blue="224" continent="West Asia" card="Wealth Economic Boom" left="4525" right="5131" top="1422" bottom="2111" x="4715" y="1690">
+		<LINK to="Iran" sea="0"/>
+		<LINK to="Turkey" sea="0"/>
+		<LINK to="Egypt" sea="0"/>
+		<LINK to="Ethiopian Highlands" sea="1"/>
+		<LINK to="Benadir Plains" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Afghanistan" tileset="sw_desert" size="0" card="Mercenaries" tribute="20" id="Afghanistan" red="104" green="39" blue="10" continent="West Asia" left="5107" right="5535" top="1353" bottom="1776" x="5276" y="1555">
+		<LINK to="Tibet" sea="0"/>
+		<LINK to="Xinjiang" sea="0"/>
+		<LINK to="Kazakhstan" sea="0"/>
+		<LINK to="Iran" sea="0"/>
+		<LINK to="India" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Gulf Coast" tribute="15" tileset="tropical_wet" size="0" id="Gulf Coast" red="29" green="255" blue="56" continent="North America" supply_depot="1" left="1453" right="2011" top="1389" bottom="1707" x="1609" y="1554">
+		<LINK to="Texas" sea="0"/>
+		<LINK to="Midwest" sea="0"/>
+		<LINK to="Mid-Atlantic" sea="0"/>
+		<LINK to="Florida" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Egypt" tileset="gs_desert" rare="Papyrus" size="5" capital="1" id="Egypt" owner="egyptians" red="253" green="53" blue="73" continent="Africa" left="4248" right="4595" top="1559" bottom="1945" x="4432" y="1660">
+		<LINK to="Turkey" sea="1"/>
+		<LINK to="Middle East" sea="0"/>
+		<LINK to="Libya" sea="0"/>
+		<LINK to="Ethiopian Highlands" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Western Africa" tileset="african_savannah" size="0" tribute="20" card="Political Dissidents" id="Western Africa" red="115" green="152" blue="247" continent="Africa" left="3201" right="3897" top="1729" bottom="2394" x="3606" y="2110">
+		<LINK to="Algeria" sea="0"/>
+		<LINK to="Morocco" sea="0"/>
+		<LINK to="Guinea" sea="0"/>
+		<LINK to="Central Africa" sea="0"/>
+		<LINK to="Libya" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="India" tileset="tropical" size="5" capital="1" id="India" owner="indians" rare="Spice" red="244" green="191" blue="152" continent="West Asia" left="5319" right="5910" top="1460" bottom="2263" x="5560" y="1986">
+		<LINK to="Tibet" sea="0"/>
+		<LINK to="Afghanistan" sea="0"/>
+		<LINK to="Southeast Asia" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Mexico" rare="Coffee" size="5" capital="1" id="Mexico" owner="aztecs" red="247" green="247" blue="0" continent="North America" tileset="sw_desert" left="925" right="1647" top="1508" bottom="2092" x="1279" y="1882">
+		<LINK to="Pacific Rockies" sea="0"/>
+		<LINK to="Texas" sea="0"/>
+		<LINK to="Baja Carlifornia" sea="0"/>
+		<LINK to="Central America" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Southeast Asia" tileset="jungle" size="0" card="Population Boom" supply_depot="1" id="Southeast Asia" red="75" green="254" blue="40" continent="East Asia" left="5880" right="6328" top="1627" bottom="2287" x="6279" y="2120">
+		<LINK to="Chinese Mainland" sea="0"/>
+		<LINK to="India" sea="1"/>
+		<LINK to="Indonesia" sea="1"/>
+		<LINK to="The Philippines" sea="1"/>
+		<LINK to="Tibet" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Ethiopian Highlands" tileset="african_savannah" size="0" id="Ethiopian Highlands" tribute="40" card="Political Dissidents" red="189" green="104" blue="248" continent="Africa" left="4212" right="4768" top="1900" bottom="2516" x="4517" y="2177">
+		<LINK to="Middle East" sea="1"/>
+		<LINK to="Egypt" sea="0"/>
+		<LINK to="Libya" sea="0"/>
+		<LINK to="Central Africa" sea="0"/>
+		<LINK to="Congo" sea="0"/>
+		<LINK to="Benadir Plains" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Cuba" tileset="jungle" rare="Rum" size="5" id="Cuba" capital="1" owner="maya" red="112" green="83" blue="162" continent="North America" left="1895" right="2171" top="1899" bottom="1991" x="2034" y="1943">
+		<LINK to="Florida" sea="1"/>
+		<LINK to="Central America" sea="1"/>
+		<LINK to="West Indies" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Central America" tileset="jungle" size="0" id="Central America" red="251" green="111" blue="177" continent="North America" tribute="35" card="Wonder of the World" left="1467" right="1993" top="1941" bottom="2323" x="1776" y="2199">
+		<LINK to="Mexico" sea="0"/>
+		<LINK to="Cuba" sea="1"/>
+		<LINK to="Florida" sea="1"/>
+		<LINK to="Colombia" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Llanos" tileset="jungle" size="0" id="Colombia" red="77" green="200" blue="251" continent="South America" card="Military Eureka" tribute="25" left="1973" right="2408" top="2063" bottom="2363" x="2244" y="2106">
+		<LINK to="West Indies" sea="1"/>
+		<LINK to="Central America" sea="0"/>
+		<LINK to="Brazil" sea="0"/>
+		<LINK to="Peru" sea="0"/>
+		<LINK to="Guyana" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Amazon" tileset="jungle" rare="Bananas" size="5" id="Brazil" capital="1" owner="iroquois" red="69" green="232" blue="86" continent="South America" left="2135" right="2772" top="2243" bottom="2794" x="2500" y="2506">
+		<LINK to="Guyana" sea="0"/>
+		<LINK to="Colombia" sea="0"/>
+		<LINK to="Peru" sea="0"/>
+		<LINK to="Bolivia" sea="0"/>
+		<LINK to="East Brazil" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Congo" tileset="jungle" size="0" card="Timber Economic Boom" tribute="40" id="Congo" red="5" green="165" blue="61" continent="Africa" left="3912" right="4510" top="2224" bottom="2869" x="4236" y="2555">
+		<LINK to="Central Africa" sea="0"/>
+		<LINK to="Ethiopian Highlands" sea="0"/>
+		<LINK to="South Africa" sea="0"/>
+		<LINK to="Benadir Plains" sea="0"/>
+		<LINK to="Tanzania" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Peru" tileset="tropical" size="0" id="Peru" red="183" green="133" blue="12" tribute="50" rare="Gold" continent="South America" left="1912" right="2287" top="2303" bottom="2950" x="2084" y="2626">
+		<LINK to="Colombia" sea="0"/>
+		<LINK to="Brazil" sea="0"/>
+		<LINK to="Bolivia" sea="0"/>
+		<LINK to="Chile" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="New South Wales" id="New South Wales" rare="Wool" tileset="dirty" size="5" capital="1" owner="inca" red="207" green="245" blue="141" continent="Oceania" left="6777" right="7155" top="3158" bottom="3469" x="6999" y="3392">
+		<LINK to="Queensland" sea="0"/>
+		<LINK to="Central Australia" sea="0"/>
+		<LINK to="New Zealand" sea="1"/>
+		<LINK to="Tasmania" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Queensland" tileset="autumn" size="0" id="Queensland" tribute="15" card="Traitors" red="128" green="210" blue="246" continent="Oceania" left="6736" right="7155" top="2451" bottom="3157" x="7024" y="3075">
+		<LINK to="New South Wales" sea="0"/>
+		<LINK to="Central Australia" sea="0"/>
+		<LINK to="New Zealand" sea="1"/>
+		<LINK to="Papua New Guinea" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Argentina" size="5" id="Argentina" rare="Tobacco" capital="1" owner="nubians" red="128" green="161" blue="246" continent="South America" tileset="m_steppe" left="2345" right="2807" top="2838" bottom="3879" x="2585" y="3508">
+		<LINK to="East Brazil" sea="0"/>
+		<LINK to="Bolivia" sea="0"/>
+		<LINK to="Chile" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="South Africa" tileset="african_savannah" size="5" rare="Diamonds" capital="1" id="South Africa" owner="bantu" red="252" green="110" blue="66" continent="Africa" left="3975" right="4679" top="2747" bottom="3539" x="4175" y="3490">
+		<LINK to="Congo" sea="0"/>
+		<LINK to="Madagascar" sea="1"/>
+		<LINK to="Tanzania" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Madagascar" tileset="african_savannah" size="0" card="Cultural Dominance" id="Madagascar" tribute="15" red="255" green="0" blue="0" continent="Africa" left="4731" right="4908" top="2851" bottom="3266" x="4824" y="3050">
+		<LINK to="South Africa" sea="1"/>
+		<LINK to="Benadir Plains" sea="1"/>
+		<LINK to="Western Australia" sea="1"/>
+		<LINK to="Tanzania" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Taiwan" tileset="tropical" size="0" id="Taiwan" card="Science Eureka" tribute="25" red="218" green="212" blue="189" continent="East Asia" left="6588" right="6637" top="1767" bottom="1850" x="6611" y="1812">
+		<LINK to="Chinese Mainland" sea="1"/>
+		<LINK to="Kyushu" sea="1"/>
+		<LINK to="Korea" sea="1"/>
+		<LINK to="The Philippines" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Indonesia" tileset="jungle" size="0" id="Indonesia" card="Commandeer Transport" rare="Peacocks" red="136" green="28" blue="64" continent="East Asia" left="6059" right="6514" top="2179" bottom="2484" x="6360" y="2302">
+		<LINK to="Southeast Asia" sea="1"/>
+		<LINK to="Papua New Guinea" sea="1"/>
+		<LINK to="Central Australia" sea="1"/>
+		<LINK to="Western Australia" sea="1"/>
+		<LINK to="The Philippines" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Sakhalin" tileset="arctic" size="0" id="Sakhalin" tribute="20" supply_depot="1" red="156" green="71" blue="147" continent="East Asia" left="7164" right="7322" top="667" bottom="1032" x="7229" y="843">
+		<LINK to="Hokkaido" sea="1"/>
+		<LINK to="Eastern Siberia" sea="1"/>
+		<LINK to="Kamchatskaya" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Inner Mongolia" tileset="m_steppe" size="0" id="Inner Mongolia" rare="Horses" tribute="40" red="80" green="0" blue="76" continent="East Asia" left="5894" right="6660" top="837" bottom="1392" x="6335" y="1311">
+		<LINK to="Chinese Mainland" sea="0"/>
+		<LINK to="Northeast China" sea="0"/>
+		<LINK to="Mongolia" sea="0"/>
+		<LINK to="Eastern Siberia" sea="0"/>
+		<LINK to="Western Siberia" sea="0"/>
+		<LINK to="Tibet" sea="0"/>
+		<LINK to="Xinjiang" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Xinjiang" tileset="african_savannah" size="0" id="Xinjiang" supply_depot="1" card="Partisans" red="58" green="11" blue="69" continent="East Asia" left="5392" right="5952" top="998" bottom="1446" x="5753" y="1167">
+		<LINK to="Tibet" sea="0"/>
+		<LINK to="Kazakhstan" sea="0"/>
+		<LINK to="Afghanistan" sea="0"/>
+		<LINK to="Mongolia" sea="0"/>
+		<LINK to="Western Siberia" sea="0"/>
+		<LINK to="Inner Mongolia" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Qinghai-Tibet Plateau" tileset="m_steppe_2" size="0" id="Tibet" rare="Bison" tribute="30" red="0" green="46" blue="80" continent="East Asia" left="5527" right="6201" top="1287" bottom="1649" x="5861" y="1514">
+		<LINK to="Xinjiang" sea="0"/>
+		<LINK to="Chinese Mainland" sea="0"/>
+		<LINK to="Afghanistan" sea="0"/>
+		<LINK to="India" sea="0"/>
+		<LINK to="Southeast Asia" sea="0"/>
+		<LINK to="Inner Mongolia" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Northeast China" tileset="snowy" size="0" id="Northeast China" card="Civic Eureka" supply_depot="1" red="51" green="80" blue="0" continent="East Asia" left="6497" right="6976" top="803" bottom="1355" x="6671" y="1158">
+		<LINK to="Inner Mongolia" sea="0"/>
+		<LINK to="Chinese Mainland" sea="0"/>
+		<LINK to="North Korea" sea="0"/>
+		<LINK to="Eastern Siberia" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Arkhangelsk" tileset="arctic" size="0" id="Arkhangelsk" card="Logistics" tribute="10" red="94" green="165" blue="5" continent="Europe" left="5023" right="5468" top="8" bottom="264" x="5085" y="152">
+		<LINK to="Russia" sea="1"/>
+		<LINK to="Karelia" sea="1"/>
+		<LINK to="Urals" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Ukraine" tileset="dirty_2" size="0" id="Ukraine" rare="Titanium" supply_depot="1" red="204" green="1" blue="225" continent="Europe" left="4237" right="4746" top="799" bottom="1139" x="4458" y="905">
+		<LINK to="South Russia" sea="0"/>
+		<LINK to="Balkans" sea="0"/>
+		<LINK to="Poland" sea="0"/>
+		<LINK to="Eastern Europe" sea="0"/>
+		<LINK to="Austria" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Ireland" tileset="autumn" size="0" id="Ireland" rare="Sugar" tribute="25" red="170" green="164" blue="244" continent="Europe" left="3107" right="3267" top="655" bottom="831" x="3194" y="747">
+		<LINK to="England" sea="1"/>
+		<LINK to="Greenland" sea="1"/>
+		<LINK to="New Foundland" sea="1"/>
+		<LINK to="Spain" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Papua New Guinea" tileset="tropical_wet" size="0" id="Papua New Guinea" tribute="20" card="Warpath" red="136" green="28" blue="125" continent="Oceania" left="6604" right="6960" top="2296" bottom="2463" x="6815" y="2369">
+		<LINK to="Queensland" sea="1"/>
+		<LINK to="Indonesia" sea="1"/>
+		<LINK to="The Philippines" sea="1"/>
+		<LINK to="Central Australia" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Central Australia" tileset="sw_desert" size="0" id="Central Australia" tribute="30" rare="Rubber" red="141" green="245" blue="189" continent="Oceania" left="6462" right="6776" top="2447" bottom="3484" x="6627" y="2970">
+		<LINK to="New South Wales" sea="0"/>
+		<LINK to="Queensland" sea="0"/>
+		<LINK to="Western Australia" sea="0"/>
+		<LINK to="Tasmania" sea="1"/>
+		<LINK to="Indonesia" sea="1"/>
+		<LINK to="Papua New Guinea" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Western Australia" tileset="gs_desert" size="0" id="Western Australia" card="Sabotage" supply_depot="1" red="245" green="148" blue="141" continent="Oceania" left="5967" right="6461" top="2527" bottom="3291" x="6347" y="2952">
+		<LINK to="Madagascar" sea="1"/>
+		<LINK to="Central Australia" sea="0"/>
+		<LINK to="Indonesia" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="New Zealand" tileset="dirty" size="0" id="New Zealand" supply_depot="1" tribute="15" red="141" green="176" blue="245" continent="Oceania" left="7145" right="7609" top="3097" bottom="3746" x="7502" y="3317">
+		<LINK to="New South Wales" sea="1"/>
+		<LINK to="Tasmania" sea="1"/>
+		<LINK to="Queensland" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="The Philippines" tileset="Jungle" size="0" id="The Philippines" tribute="20" card="Propaganda" red="178" green="4" blue="155" continent="East Asia" left="6451" right="6589" top="1961" bottom="2186" x="6519" y="1996">
+		<LINK to="Taiwan" sea="1"/>
+		<LINK to="Indonesia" sea="1"/>
+		<LINK to="Papua New Guinea" sea="1"/>
+		<LINK to="Southeast Asia" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Baffin Island" rare="Whales" tileset="arctic" size="0" id="Baffin Island" tribute="20" red="209" green="242" blue="108" continent="North America" left="1483" right="2231" top="136" bottom="424" x="1937" y="231">
+		<LINK to="Nunavut" sea="1"/>
+		<LINK to="Quebec" sea="1"/>
+		<LINK to="Greenland" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="West Indies" tileset="tropical_wet" size="0" id="West Indies" supply_depot="1" card="Logistics" red="80" green="77" blue="0" continent="North America" left="2070" right="2372" top="1977" bottom="2046" x="2239" y="2006">
+		<LINK to="Cuba" sea="1"/>
+		<LINK to="Colombia" sea="1"/>
+		<LINK to="Guyana" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Portugal" tileset="dirty" size="0" id="Portugal" supply_depot="1" rare="Marble" red="246" green="207" blue="128" continent="Europe" left="3168" right="3253" top="1233" bottom="1455" x="3189" y="1379">
+		<LINK to="Morocco" sea="1"/>
+		<LINK to="Spain" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Low Countries" tileset="dirty_2" size="0" id="Netherlands" tribute="30" rare="Citrus" red="2" green="202" blue="78" continent="Europe" left="3603" right="3688" top="759" bottom="927" x="3636" y="817">
+		<LINK to="France" sea="0"/>
+		<LINK to="West Germany" sea="0"/>
+		<LINK to="England" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Denmark" tileset="snowy" size="0" id="Denmark" red="202" green="2" blue="16" card="Commandeer Transport" tribute="10" continent="Europe" left="3726" right="3819" top="584" bottom="741" x="3780" y="681">
+		<LINK to="Norway" sea="1"/>
+		<LINK to="Sweden" sea="1"/>
+		<LINK to="West Germany" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Ontario" tileset="snowy" rare="Beaver Pelts" size="5" id="Ontario" capital="1" owner="greeks" red="242" green="108" blue="190" continent="North America" left="1560" right="1998" top="671" bottom="1139" x="1862" y="1033">
+		<LINK to="Quebec" sea="0"/>
+		<LINK to="Mid-Atlantic" sea="0"/>
+		<LINK to="Nunavut" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Yukon" tileset="arctic" size="0" id="Yukon" red="109" green="108" blue="242" tribute="40" card="Spy Academy" continent="North America" left="392" right="1300" top="0" bottom="683" x="850" y="482">
+		<LINK to="Alaska" sea="0"/>
+		<LINK to="South Canada" sea="0"/>
+		<LINK to="Nunavut" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="South Canada" tileset="snowy" size="0" id="South Canada" red="108" green="242" blue="225" tribute="20" card="Political Dissidents" continent="North America" left="592" right="1326" top="684" bottom="981" x="729" y="899">
+		<LINK to="Alaska" sea="0"/>
+		<LINK to="Yukon" sea="0"/>
+		<LINK to="Nunavut" sea="0"/>
+		<LINK to="Midwest" sea="0"/>
+		<LINK to="Pacific Rockies" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Hokkaido" tileset="snowy" size="0" id="Hokkaido" red="164" green="244" blue="210" tribute="15" rare="Cotton" continent="East Asia" left="7159" right="7411" top="1047" bottom="1267" x="7260" y="1157">
+		<LINK to="Sakhalin" sea="1"/>
+		<LINK to="Japan" sea="1"/>
+		<LINK to="Eastern Siberia" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Kyushu" tileset="autumn" size="0" id="Kyushu" tribute="30" supply_depot="1" red="178" green="136" blue="4" continent="East Asia" left="6843" right="6931" top="1584" bottom="1707" x="6890" y="1650">
+		<LINK to="Japan" sea="1"/>
+		<LINK to="Taiwan" sea="1"/>
+		<LINK to="Korea" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Chile" tileset="tropical" size="0" id="Chile" red="128" green="235" blue="246" tribute="35" card="Partisans" continent="South America" left="2270" right="2647" top="2851" bottom="3999" x="2372" y="3193">
+		<LINK to="Peru" sea="0"/>
+		<LINK to="Argentina" sea="0"/>
+		<LINK to="Bolivia" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Bolivia and Paraguay" tileset="autumn" size="0" id="Bolivia" red="181" green="128" blue="246" tribute="15" supply_depot="1" continent="South America" left="2222" right="2784" top="2603" bottom="2962" x="2399" y="2758">
+		<LINK to="Brazil" sea="0"/>
+		<LINK to="Peru" sea="0"/>
+		<LINK to="Chile" sea="0"/>
+		<LINK to="Argentina" sea="0"/>
+		<LINK to="East Brazil" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Victoria and Tasmania" tileset="autumn" size="0" id="Tasmania" red="255" green="119" blue="238" tribute="50" continent="Oceania" left="6777" right="7031" top="3362" bottom="3649" x="6934" y="3602">
+		<LINK to="New Zealand" sea="1"/>
+		<LINK to="New South Wales" sea="1"/>
+		<LINK to="Central Australia" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Guyana" tileset="jungle" size="0" id="Guyana" red="232" green="194" blue="69" rare="Obsidian" tribute="40" continent="South America" left="2369" right="2654" top="2147" bottom="2315" x="2515" y="2230">
+		<LINK to="Colombia" sea="0"/>
+		<LINK to="Brazil" sea="0"/>
+		<LINK to="West Indies" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="East Brazil" tileset="jungle" size="0" id="East Brazil" red="166" green="236" blue="104" tribute="35" card="Commandeer Transport" continent="South America" left="2653" right="3047" top="2300" bottom="3327" x="2949" y="2575">
+		<LINK to="Brazil" sea="0"/>
+		<LINK to="Argentina" sea="0"/>
+		<LINK to="Bolivia" sea="0"/>
+		<LINK to="Guinea" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Caucasus" tileset="sw_desert" size="0" id="Caucasus" red="131" green="69" blue="86" tribute="20" card="Sabotage" continent="West Asia" left="4637" right="4955" top="1023" bottom="1366" x="4853" y="1180">
+		<LINK to="South Russia" sea="0"/>
+		<LINK to="Kazakhstan" sea="0"/>
+		<LINK to="Turkey" sea="0"/>
+		<LINK to="Iran" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="South Russia" tileset="m_steppe" size="0" id="South Russia" red="0" green="170" blue="80" tribute="30" card="Spy Network" continent="Europe" left="4594" right="5017" top="707" bottom="1046" x="4817" y="880">
+		<LINK to="Russia" sea="0"/>
+		<LINK to="Eastern Europe" sea="0"/>
+		<LINK to="Ukraine" sea="0"/>
+		<LINK to="Caucasus" sea="0"/>
+		<LINK to="Urals" sea="0"/>
+		<LINK to="Kazakhstan" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Urals" tileset="m_steppe_2" size="0" id="Urals" red="5" green="39" blue="165" tribute="15" supply_depot="1" continent="Europe" left="4952" right="5572" top="143" bottom="998" x="5195" y="593">
+		<LINK to="Russia" sea="0"/>
+		<LINK to="South Russia" sea="0"/>
+		<LINK to="Kazakhstan" sea="0"/>
+		<LINK to="Western Siberia" sea="0"/>
+		<LINK to="Arkhangelsk" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Iran" tileset="sw_desert" rare="Dye" size="5" id="Iran" capital="1" owner="persian" red="176" green="244" blue="196" continent="West Asia" left="4766" right="5148" top="1354" bottom="1747" x="4952" y="1448">
+		<LINK to="Caucasus" sea="0"/>
+		<LINK to="Turkey" sea="0"/>
+		<LINK to="Kazakhstan" sea="0"/>
+		<LINK to="Middle East" sea="0"/>
+		<LINK to="Afghanistan" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Iceland" tileset="arctic" size="0" id="Iceland" red="215" green="181" blue="208" tribute="25" rare="Fish" continent="Europe" left="3411" right="3671" top="194" bottom="389" x="3560" y="304">
+		<LINK to="Greenland" sea="1"/>
+		<LINK to="England" sea="1"/>
+		<LINK to="Norway" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Libya" tileset="gs_desert" size="0" id="Libya" red="251" green="253" blue="53" tribute="20" card="Brigands" continent="Africa" left="3754" right="4247" top="1432" bottom="1982" x="3953" y="1609">
+		<LINK to="Western Africa" sea="0"/>
+		<LINK to="Egypt" sea="0"/>
+		<LINK to="Ethiopian Highlands" sea="0"/>
+		<LINK to="Algeria" sea="0"/>
+		<LINK to="Central Africa" sea="0"/>
+		<LINK to="Italy" sea="1"/>
+		<LINK to="Greece" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Benadir Plains" tileset="sw_desert" size="0" id="Benadir Plains" red="104" green="241" blue="248" card="Trade Embargo" tribute="15" continent="Africa" left="4488" right="4931" top="2151" bottom="2662" x="4758" y="2440">
+		<LINK to="Madagascar" sea="1"/>
+		<LINK to="Ethiopian Highlands" sea="0"/>
+		<LINK to="Congo" sea="0"/>
+		<LINK to="Tanzania" sea="0"/>
+		<LINK to="Middle East" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Tanzania" tileset="sw_desert" size="0" id="Tanzania" red="165" green="13" blue="5" tribute="30" supply_depot="1" continent="Africa" left="4478" right="4666" top="2603" bottom="2813" x="4604" y="2722">
+		<LINK to="Madagascar" sea="1"/>
+		<LINK to="Benadir Plains" sea="0"/>
+		<LINK to="Congo" sea="0"/>
+		<LINK to="South Africa" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Morocco" tileset="gs_desert" size="0" id="Morocco" red="132" green="247" blue="115" rare="Silver" tribute="25" continent="Africa" left="3114" right="3401" top="1523" bottom="1881" x="3286" y="1582">
+		<LINK to="Spain" sea="1"/>
+		<LINK to="Portugal" sea="1"/>
+		<LINK to="Algeria" sea="0"/>
+		<LINK to="Western Africa" sea="0"/>
+		<LINK to="Guinea" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Algeria" tileset="gs_desert" size="0" id="Algeria" red="247" green="135" blue="115" card="Missionaries" tribute="40" continent="Africa" left="3302" right="3809" top="1437" bottom="1973" x="3605" y="1521">
+		<LINK to="Spain" sea="1"/>
+		<LINK to="France" sea="1"/>
+		<LINK to="Morocco" sea="0"/>
+		<LINK to="Western Africa" sea="0"/>
+		<LINK to="Libya" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Guinea" tileset="dirty" size="0" id="Guinea" red="115" green="247" blue="217" supply_depot="1" card="Warpath" continent="Africa" left="3103" right="3393" top="1880" bottom="2365" x="3276" y="2222">
+		<LINK to="East Brazil" sea="1"/>
+		<LINK to="Morocco" sea="0"/>
+		<LINK to="Western Africa" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Central Africa" tileset="gs_desert" size="0" id="Central Africa" red="247" green="210" blue="115" supply_depot="1" tribute="30" continent="Africa" left="3774" right="4261" top="1903" bottom="2431" x="4046" y="2150">
+		<LINK to="Libya" sea="0"/>
+		<LINK to="Congo" sea="0"/>
+		<LINK to="Western Africa" sea="0"/>
+		<LINK to="Ethiopian Highlands" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Austria" tileset="dirty_2" size="0" id="Austria" red="238" green="130" blue="0" tribute="20" card="Cultural Dominance" continent="Europe" left="3911" right="4262" top="908" bottom="1143" x="4186" y="975">
+		<LINK to="Ukraine" sea="0"/>
+		<LINK to="East Germany" sea="0"/>
+		<LINK to="Poland" sea="0"/>
+		<LINK to="Italy" sea="0"/>
+		<LINK to="Balkans" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="New Foundland" tileset="arctic" size="0" id="New Foundland" red="195" green="219" blue="185" card="Commandeer Transport" tribute="30" continent="North America" left="2516" right="2751" top="772" bottom="924" x="2632" y="876">
+		<LINK to="Quebec" sea="1"/>
+		<LINK to="Ireland" sea="1"/>
+		<LINK to="Greenland" sea="1"/>
+	</COUNTRY>
+	<COUNTRY name="Baja Carlifornia" tileset="autumn_wet" size="0" id="Baja Carlifornia" red="247" green="62" blue="0" tribute="25" rare="Maize" continent="North America" left="811" right="1056" top="1506" bottom="1843" x="895" y="1661">
+		<LINK to="Pacific Rockies" sea="0"/>
+		<LINK to="Mexico" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Texas" tileset="sw_desert" size="0" id="Texas" red="29" green="224" blue="255" tribute="20" card="Food Economic Boom" continent="North America" left="1058" right="1481" top="1386" bottom="1751" x="1374" y="1637">
+		<LINK to="Pacific Rockies" sea="0"/>
+		<LINK to="Mexico" sea="0"/>
+		<LINK to="Midwest" sea="0"/>
+		<LINK to="Gulf Coast" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Florida" tileset="autumn_wet" size="0" id="Florida" red="29" green="111" blue="255" rare="Incense" tribute="30" continent="North America" left="1686" right="1915" top="1622" bottom="1879" x="1865" y="1768">
+		<LINK to="Cuba" sea="1"/>
+		<LINK to="Central America" sea="1"/>
+		<LINK to="Gulf Coast" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Chukotskiy" tileset="arctic" size="0" id="Chukotskiy" red="202" green="73" blue="2" card="Traitors" tribute="30" continent="East Asia" left="7420" right="7855" top="16" bottom="447" x="7668" y="272">
+		<LINK to="Alaska" sea="1"/>
+		<LINK to="Kamchatskaya" sea="0"/>
+		<LINK to="Eastern Siberia" sea="0"/>
+	</COUNTRY>
+	<COUNTRY name="Kamchatskaya" tileset="arctic" size="0" id="Kamchatskaya" red="21" green="202" blue="2" tribute="35" card="Population Boom" continent="East Asia" left="7451" right="7683" top="376" bottom="879" x="7508" y="702">
+		<LINK to="Sakhalin" sea="1"/>
+		<LINK to="Alaska" sea="1"/>
+		<LINK to="Chukotskiy" sea="0"/>
+		<LINK to="Eastern Siberia" sea="1"/>
+	</COUNTRY>
+	<TRIBES>
+		<!--ART STYLES    (BUILDING/UNIT)
+Building
+0 MED_STYLE,
+1 NEUROPE_STYLE,
+2 ASIAN_STYLE,
+3 KOREAN_STYLE,
+4 AMERICAN_STYLE,
+5 TURKISH_STYLE,
+
+Unit
+ 0 = American
+ 1 = Arab
+ 2 = European
+ 3 = Asian
+-->
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/mexicans.tga">
+			<FILE>./conquest/ModernWorld/tribes/mexicans.xml</FILE>
+			<KEY>aztecs   </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/cubans.tga">
+			<FILE>./conquest/ModernWorld/tribes/cubans.xml</FILE>
+			<KEY>maya     </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/australians.tga">
+			<FILE>./conquest/ModernWorld/tribes/australians.xml</FILE>
+			<KEY>inca     </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/southafricans.tga">
+			<FILE>./conquest/ModernWorld/tribes/southafricans.xml</FILE>
+			<KEY>bantu    </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/argentineans.tga">
+			<FILE>./conquest/ModernWorld/tribes/argentineans.xml</FILE>
+			<KEY>nubians  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/canadians.tga">
+			<FILE>./conquest/ModernWorld/tribes/canadians.xml</FILE>
+			<KEY>greeks</KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/italians.tga">
+			<FILE>./conquest/ModernWorld/tribes/italians.xml</FILE>
+			<KEY>romans   </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/egyptians.tga">
+			<FILE>./conquest/ModernWorld/tribes/egyptians.xml</FILE>
+			<KEY>egyptians</KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/turks.tga">
+			<FILE>./conquest/ModernWorld/tribes/turks.xml</FILE>
+			<KEY>turks    </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/spanish.tga">
+			<FILE>./conquest/ModernWorld/tribes/spanish.xml</FILE>
+			<KEY>spanish  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/french.tga">
+			<FILE>./conquest/ModernWorld/tribes/french.xml</FILE>
+			<KEY>french   </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/british.tga">
+			<FILE>./conquest/ModernWorld/tribes/british.xml</FILE>
+			<KEY>germans</KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/germans.tga">
+			<FILE>./conquest/ModernWorld/tribes/germans.xml</FILE>
+			<KEY>british  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/russians.tga">
+			<FILE>./conquest/ModernWorld/tribes/russians.xml</FILE>
+			<KEY>russians </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/chinese.tga">
+			<FILE>./conquest/ModernWorld/tribes/chinese.xml</FILE>
+			<KEY>chinese  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/japanese.tga">
+			<FILE>./conquest/ModernWorld/tribes/japanese.xml</FILE>
+			<KEY>japanese </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/southkoreans.tga">
+			<FILE>./conquest/ModernWorld/tribes/southkoreans.xml</FILE>
+			<KEY>koreans  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/northkoreans.tga">
+			<FILE>./conquest/ModernWorld/tribes/northkoreans.xml</FILE>
+			<KEY>mongols  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/brazilians.tga">
+			<FILE>./conquest/ModernWorld/tribes/brazilians.xml</FILE>
+			<KEY>iroquois  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/finns.tga">
+			<FILE>./conquest/ModernWorld/tribes/finns.xml</FILE>
+			<KEY>lakota  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/americans.tga">
+			<FILE>./conquest/ModernWorld/tribes/americans.xml</FILE>
+			<KEY>americans  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/indians.tga">
+			<FILE>./conquest/ModernWorld/tribes/indians.xml</FILE>
+			<KEY>indians  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/norwegians.tga">
+			<FILE>./conquest/ModernWorld/tribes/norwegians.xml</FILE>
+			<KEY>dutch  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+		<TRIBE intro_image="./conquest/ModernWorld/tribes/iranians.tga">
+			<FILE>./conquest/ModernWorld/tribes/iranians.xml</FILE>
+			<KEY>persian  </KEY>
+			<NO_PROPOSE_ALLY>1</NO_PROPOSE_ALLY>
+		</TRIBE>
+	</TRIBES>
+	<CONQUESTGRAPHICPIECES>
+		<PIECE name="army" texture=".\art\CTW_army_USSR.tga" model=".\art\CTW_army_USSR_stand.bh3" offset_x="8.3" offset_y="-8.7" offset_z="0.0" scale=".25" angle="60">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="30" rad="30"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="army_move" texture=".\art\CTW_army_USSR.tga" model=".\art\CTW_army_USSR_attack.bh3" offset_x="8.3" offset_y="-8.7" offset_z="0.0" scale=".25" angle="60">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="30" rad="30"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="army_attack" texture=".\art\CTW_army_USSR.tga" model=".\art\CTW_army_USSR_attack.bh3" offset_x="8.3" offset_y="-8.7" offset_z="0.0" scale=".25" angle="60">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="30" rad="30"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="city0" texture=".\art\CTW_CityTexture_cold.tga" model=".\art\CTW_City_1.bh3" offset_x="0.0" offset_y="0" offset_z="0.0" scale=".309" angle="315">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="40" rad="60"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="city1" texture=".\art\CTW_CityTexture_cold.tga" model=".\art\CTW_City_2.bh3" offset_x="0.0" offset_y="0" offset_z="0.0" scale=".309" angle="315">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="40" rad="60"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="city2" texture=".\art\CTW_CityTexture_cold.tga" model=".\art\CTW_City_3.bh3" offset_x="0.0" offset_y="0" offset_z="0.0" scale=".309" angle="315">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="40" rad="60"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="city3" texture=".\art\CTW_CityTexture_cold.tga" model=".\art\CTW_City_4.bh3" offset_x="0.0" offset_y="0" offset_z="0.0" scale=".309" angle="315">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="40" rad="60"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="city4" texture=".\art\CTW_CityTexture_cold.tga" model=".\art\CTW_City_5.bh3" offset_x="0.0" offset_y="0" offset_z="0.0" scale=".309" angle="315">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="40" rad="60"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="city5" texture=".\art\CTW_CityTexture_cold.tga" model=".\art\CTW_City_6.bh3" offset_x="0.0" offset_y="0" offset_z="0.0" scale=".309" angle="315">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="40" rad="60"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="city6" texture=".\art\CTW_CityTexture_cold.tga" model=".\art\CTW_City_7.bh3" offset_x="0.0" offset_y="0" offset_z="0.0" scale=".309" angle="315">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="40" rad="60"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="city7" texture=".\art\CTW_CityTexture_cold.tga" model=".\art\CTW_City_8.bh3" offset_x="0.0" offset_y="0" offset_z="0.0" scale=".309" angle="315">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="40" rad="60"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="city_barbarian" texture=".\art\CTW_CityTexture_all.tga" model=".\art\CTW_City_1.bh3" offset_x="0.0" offset_y="0" offset_z="0.0" scale=".309" angle="315">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="40" rad="60"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="city_flag" texture=".\art\CTW_Capital-Flag.tga" model=".\art\CTW_Capital-Flag.bh3" offset_x="0.0" offset_y="0" offset_z="0.0" scale=".309" angle="0">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="40" rad="60"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+		<PIECE name="enemy" texture=".\art\CTW_Army_cold_enemy.tga" model=".\art\CTW_army_cold_enemy.bh3" offset_x="-11.25" offset_y="0" offset_z="0.0" scale=".25" angle="90">
+			<BOUNDINGVOLUMES>
+				<SPHERE x="0" y="0" z="30" rad="20"/>
+			</BOUNDINGVOLUMES>
+		</PIECE>
+	</CONQUESTGRAPHICPIECES>
+	<BONUSCARDDECK name="Wonder of the World"/>
+	<BONUSCARDDECK name="Sabotage"/>
+	<BONUSCARDDECK name="$TECHCAT0 Eureka"/>
+	<BONUSCARDDECK name="$RES0 Economic Boom"/>
+	<BONUSCARDDECK name="Mercenaries"/>
+	<BONUSCARDDECK name="Treachery"/>
+	<BONUSCARDDECK name="Great Thinker"/>
+	<BONUSCARDDECK name="Merchant Guild"/>
+	<BONUSCARDDECK name="Logistics"/>
+	<BONUSCARDDECK name="Partisans"/>
+	<BONUSCARDDECK name="Cultural Dominance"/>
+	<BONUSCARDDECK name="Trade Embargo"/>
+	<BONUSCARDDECK name="Propaganda"/>
+	<BONUSCARDDECK name="Commandeer Transport"/>
+</ROOT>

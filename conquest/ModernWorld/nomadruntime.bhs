@@ -1,0 +1,452 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+labels {
+
+}
+
+static caravan_id_2 = 0;
+static caravan_id_3 = 0;
+static caravan_id_4 = 0;
+static x2 = 0;
+static y2 = 0;
+static x3 = 0;
+static y3 = 0;
+static x4 = 0;
+static y4 = 0;
+static MIN = 45;
+static MAX = 100;
+static MAX_UNITS = 51;
+static blue_remaining = 0;
+static blue_mess_1;
+static blue_mess_2;
+static purple_remaining = 0;
+static purple_mess_1;
+static purple_mess_2;
+static green_remaining = 0;
+static green_mess_1;
+static green_mess_2;
+static mapsize = get_map_size();
+static start_x2 = get_starting_loc_x(2);
+static start_y2 = get_starting_loc_y(2);
+static start_x3 = get_starting_loc_x(3);
+static start_y3 = get_starting_loc_y(3);
+static start_x4 = world_x_size()/2;
+static start_y4 = world_y_size()/2;
+static int diff = get_difficulty();
+static String location = get_attack_to();
+static String caravan_unit;
+static int end_time = get_time_limit();
+int cur_time;
+
+run_once {
+  disable_all_triggers();
+  disable_production_ai(2);
+  disable_production_ai(3);
+  disable_production_ai(4);
+  disable_city_ai(2);
+  disable_city_ai(3);
+  disable_city_ai(4);
+  disable_city_defeat(2);
+  disable_city_defeat(3);
+  disable_city_defeat(4);
+  disable_tech(1, "Allegiance");
+  caravan_unit = "Supply Wagon";
+  caravan_string = $S("Supply Wagon");
+  caravan_id_2 = find_unit(2, caravan_unit);
+  x2 = object_position_x(2, caravan_id_2);
+  y2 = object_position_y(2, caravan_id_2);
+  caravan_id_3 = find_unit(3, caravan_unit);
+  x3 = object_position_x(3, caravan_id_3);
+  y3 = object_position_y(3, caravan_id_3);
+  caravan_id_4 = find_unit(4, caravan_unit);
+  x4 = object_position_x(4, caravan_id_4);
+  y4 = object_position_y(4, caravan_id_4);
+  enable_trigger("Guard2");
+  enable_trigger("Movement_Orders_2");
+  enable_trigger("Unit_Spawn_2");
+  enable_trigger("Defeat_Setup_2");
+  set_timer("Spawn2", rand_int(MIN, MAX));
+  
+  enable_trigger("Guard3");
+  enable_trigger("Movement_Orders_3");
+  enable_trigger("Unit_Spawn_3");
+  enable_trigger("Defeat_Setup_3");
+  set_timer("Spawn3", rand_int(MIN, MAX));
+  
+  enable_trigger("Guard4");
+  enable_trigger("Movement_Orders_4");
+  enable_trigger("Unit_Spawn_4");
+  enable_trigger("Defeat_Setup_4");
+  set_timer("Spawn4", rand_int(MIN, MAX));
+
+  ctw_add_objective_text($S("Eliminate the nomadic armies."), "Goal_Obj", 0);
+  
+  add_objective_text(parse("There are $d0 blue nomads remaining.", num_units(2)), "Blue_Obj", 0);
+  enable_trigger("Blue_Message");
+  
+  add_objective_text(parse("There are $d0 purple nomads remaiing.", num_units(3)), "Purple_Obj", 0);
+  enable_trigger("Purple_Message");
+  
+  add_objective_text(parse("There are $d0 green nomads remaining.", num_units(4)), "Green_Obj", 0);
+  enable_trigger("Green_Message");
+
+  ctw_add_objective_text(parse("Hint: Kill all of the $s0s to eliminate the tribes' provisions.", caravan_string), "Hint_Obj", 0);
+
+  switch(diff) {
+    case 1:
+      MIN = 240;
+      MAX = 260;
+      MAX_UNITS = 15;
+      break;
+    case 2:
+      MIN = 180;
+      MAX = 200;
+      MAX_UNITS = 20;
+      break;
+    case 3:
+      MIN = 120;
+      MAX = 180;
+      MAX_UNITS = 25;
+      break;
+    case 4:
+      MIN = 75;
+      MAX = 130;
+      MAX_UNITS = 33;
+      break;
+    case 5:
+      MIN = 60;
+      MAX = 115;
+      MAX_UNITS = 45;
+      break;
+    case 6:
+      MIN = 45;
+      MAX = 100;
+      MAX_UNITS = 51;
+      break;
+  }
+  
+  enable_trigger("CityRazeSetup");
+}
+
+cur_time = time_min();
+if (cur_time >= end_time) {
+  defeat(1);
+}
+
+trigger Blue_Message(blue_remaining != num_units(2))
+{
+  blue_remaining = num_units(2);
+  if (blue_remaining == 1) {
+    change_objective_text("Blue_Obj", parse("There is $d0 blue nomad remaining.", blue_remaining));
+  }
+  else {
+    change_objective_text("Blue_Obj", parse("There are $d0 blue nomads remaining.", blue_remaining));
+  }
+
+  if (blue_remaining > 0) {
+    enable_trigger("Blue_Message");
+  }
+}
+
+trigger Purple_Message(purple_remaining != num_units(3))
+{
+  purple_remaining = num_units(3);
+  if (purple_remaining == 1) {
+    change_objective_text("Purple_Obj", parse("There is $d0 purple nomad remaining.", purple_remaining));  }
+  else {
+    change_objective_text("Purple_Obj", parse("There are $d0 purple nomads remaining.", purple_remaining));
+  }
+
+  if (purple_remaining > 0) {
+    enable_trigger("Purple_Message");
+  }
+}
+
+trigger Green_Message(green_remaining != num_units(4))
+{
+  green_remaining = num_units(4);
+  if (green_remaining == 1) {
+    change_objective_text("Green_Obj", parse("There is $d0 green nomad remaining.", green_remaining));
+  }
+  else {
+    change_objective_text("Green_Obj", parse("There are $d0 green nomads remaining.", green_remaining));
+  }
+    
+  if (green_remaining > 0) {
+    enable_trigger("Green_Message");
+  }
+}
+
+////////////Computer Player Blue////////////////
+trigger Guard2()
+{
+  clear_group(2);
+  for (i = 0; i < num_military_units(2); i++) {
+    unit_id = find_military(2);
+    add_to_group(2, unit_id);
+  }
+  
+  group_guard_order(2, 2, caravan_id_2);
+}
+
+//x 83 - 197
+//y 67 - 154
+trigger Movement_Orders_2(object_type_near(2, caravan_unit, 1, x2, y2, 4))
+{
+  clear_group(2);
+  unit_id = find_unit(2, caravan_unit);
+  caravan_id_2 = unit_id;
+  add_to_group(2, unit_id);
+  unit_id = find_unit(2, caravan_unit);
+  add_to_group(2, unit_id);
+  unit_id = find_unit(2, caravan_unit);
+  add_to_group(2, unit_id);
+
+  x2 = rand_int(start_x2-50, start_x2+50);
+  y2 = rand_int(start_y2-50, start_y2+50);
+  while(!map_is_passable(x2, y2) || !map_is_land(x2, y2)) {
+    x2 = rand_int(start_x2-50, start_x2+50);
+    y2 = rand_int(start_y2-50, start_y2+50);
+  }
+  group_move_order(2, x2, y2);
+  
+  enable_trigger("Movement_Orders_2");
+}
+
+trigger Unit_Spawn_2(timer_expired("Spawn2"))
+{
+  if (num_units(2) < MAX_UNITS) {
+    x = object_position_x(2, caravan_id_2);
+    y = object_position_y(2, caravan_id_2);
+    create_unit_upgrade(2, x, y, "Light Horse", 3);
+    create_unit_upgrade(2, x, y, "Hoplites", 2);
+    create_unit_upgrade(2, x, y, "Slingers", 2);
+    create_unit_upgrade(2, x, y, "Cataphract", 2);
+    create_unit_upgrade(2, x, y, "Machine Gun", 1);
+  }
+  enable_trigger("Unit_Spawn_2");
+  enable_trigger("Guard2");
+  set_timer("Spawn2", rand_int(MIN, MAX));
+}
+
+trigger Defeat_Setup_2(num_type_upgrade(2, caravan_unit) < 1)
+{
+  disable_trigger("Guard2");
+  disable_trigger("Movement_Orders_2");
+  disable_trigger("Unit_Spawn_2");
+  city_name = find_capital(1);
+  city_id = find_city_id(city_name);
+  clear_group(2);
+  for (i = 0; i < num_military_units(2); i++) {
+    unit_id = find_military(2);
+    add_to_group(2, unit_id);
+  }
+  group_attack_to_order(2, object_position_x(1, city_id), object_position_y(1, city_id));
+  enable_trigger("Defeat_2");
+}
+
+trigger Defeat_2(num_units(2) < 1)
+{
+  defeat(2);
+}
+
+///////////Computer Player Purple/////////////////////
+trigger Guard3()
+{
+  clear_group(3);
+  for (i = 0; i < num_military_units(3); i++) {
+    unit_id = find_military(3);
+    add_to_group(3, unit_id);
+  }
+  
+  group_guard_order(3, 3, caravan_id_3);
+}
+
+//x 1 - 83
+//y 67 - 154
+trigger Movement_Orders_3(object_type_near(3, caravan_unit, 1, x3, y3, 4))
+{
+  clear_group(3);
+  unit_id = find_unit(3, caravan_unit);
+  caravan_id_3 = unit_id;
+  add_to_group(3, unit_id);
+  unit_id = find_unit(3, caravan_unit);
+  add_to_group(3, unit_id);
+  unit_id = find_unit(3, caravan_unit);
+  add_to_group(3, unit_id);
+
+  x3 = rand_int(start_x3-50, start_x3+50);
+  y3 = rand_int(start_y3, start_y3+50);
+  while(!map_is_passable(x3, y3) || !map_is_land(x3, y3)) {
+    x3 = rand_int(start_x3-50, start_x3+50);
+    y3 = rand_int(start_y3, start_y3+50);
+  }
+  group_move_order(3, x3, y3);
+  
+  enable_trigger("Movement_Orders_3");
+}
+
+trigger Unit_Spawn_3(timer_expired("Spawn3"))
+{
+  if (num_units(3) < MAX_UNITS) {
+    x = object_position_x(3, caravan_id_3);
+    y = object_position_y(3, caravan_id_3);
+    create_unit_upgrade(3, x, y, "Light Horse", 3);
+    create_unit_upgrade(3, x, y, "Hoplites", 2);
+    create_unit_upgrade(3, x, y, "Slingers", 2);
+    create_unit_upgrade(3, x, y, "Cataphract", 2);
+    create_unit_upgrade(3, x, y, "Machine Gun", 1);
+  }
+  enable_trigger("Unit_Spawn_3");
+  enable_trigger("Guard3");
+  set_timer("Spawn3", rand_int(MIN, MAX));
+}
+
+trigger Defeat_Setup_3(num_type_upgrade(3, caravan_unit) < 1)
+{
+  disable_trigger("Guard3");
+  disable_trigger("Movement_Orders_3");
+  disable_trigger("Unit_Spawn_3");
+  city_name = find_capital(1);
+  city_id = find_city_id(city_name);
+  clear_group(3);
+  for (i = 0; i < num_military_units(3); i++) {
+    unit_id = find_military(3);
+    add_to_group(3, unit_id);
+  }
+  group_attack_to_order(3, object_position_x(1, city_id), object_position_y(1, city_id));
+  enable_trigger("Defeat_3");
+}
+
+trigger Defeat_3(num_units(3) < 1)
+{
+  defeat(3);
+}
+
+//////Computer Player Green///////////////
+trigger Guard4()
+{
+  clear_group(4);
+  for (i = 0; i < num_military_units(4); i++) {
+    unit_id = find_military(4);
+    add_to_group(4, unit_id);
+  }
+  group_guard_order(4, 4, caravan_id_4);
+}
+
+//x 1 - 197
+//y 154 - 197
+trigger Movement_Orders_4(object_type_near(4, caravan_unit, 1, x4, y4, 4))
+{
+  clear_group(4);
+  unit_id = find_unit(4, caravan_unit);
+  caravan_id_4 = unit_id;
+  add_to_group(4, unit_id);
+  unit_id = find_unit(4, caravan_unit);
+  add_to_group(4, unit_id);
+  unit_id = find_unit(4, caravan_unit);
+  add_to_group(4, unit_id);
+  
+  x4 = rand_int(start_x4-50, start_x4+50);
+  y4 = rand_int(start_y4-50, start_y4+50);
+  while(!map_is_passable(x4, y4) || !map_is_land(x4, y4)) {
+    x4 = rand_int(start_x4-50, start_x4+50);
+    y4 = rand_int(start_y4-50, start_y4+50);
+  }
+  group_move_order(4, x4, y4);
+  
+  enable_trigger("Movement_Orders_4");
+}
+
+trigger Unit_Spawn_4(timer_expired("Spawn4"))
+{
+  if (num_units(4) < MAX_UNITS) {
+    x = object_position_x(4, caravan_id_4);
+    y = object_position_y(4, caravan_id_4);
+    create_unit_upgrade(4, x, y, "Light Horse", 3);
+    create_unit_upgrade(4, x, y, "Hoplites", 2);
+    create_unit_upgrade(4, x, y, "Slingers", 2);
+    create_unit_upgrade(4, x, y, "Cataphract", 2);
+    create_unit_upgrade(4, x, y, "Machine Gun", 1);
+  }
+  enable_trigger("Unit_Spawn_4");
+  enable_trigger("Guard4");
+  set_timer("Spawn4", rand_int(MIN, MAX));
+    if (get_age() > 2) {
+      disable_trigger("barbarians");
+    }
+    else {
+      enable_trigger("barbarians");
+    }
+}
+
+  trigger barbarians(age(1) == get_ending_age()) {
+    barbarian_upgrade();
+  }
+
+trigger Defeat_Setup_4(num_type_upgrade(4, caravan_unit) < 1)
+{
+  disable_trigger("Guard4");
+  disable_trigger("Movement_Orders_4");
+  disable_trigger("Unit_Spawn_4");
+  city_name = find_capital(1);
+  city_id = find_city_id(city_name);
+  clear_group(4);
+  for (i = 0; i < num_military_units(4); i++) {
+    unit_id = find_military(4);
+    add_to_group(4, unit_id);
+  }
+  group_attack_to_order(4, object_position_x(1, city_id), object_position_y(1, city_id));
+  enable_trigger("Defeat_4");
+}
+
+trigger Defeat_4(num_units(4) < 1)
+{
+  defeat(4);
+}
+
+trigger CityRazeSetup(city_captured(1, "")) {
+  set_timer("CRS", 5);
+  enable_trigger("CityRaze");
+}
+
+trigger CityRaze(timer_expired("CRS")) {
+  int who = -1;
+  if (num_cities(2) > 0) {
+    who = 2;
+  }
+  else if (num_cities(3) > 0) {
+    who = 3;
+  }
+  else if (num_cities(4) > 0) {
+    who = 4;
+  }
+
+  farm_id = -1;
+  for (i = 1; i <= num_cities(who); i++) {
+    city_name = find_city_with_num(who, i);
+    do {
+      farm_id = find_build_at_city(who, city_name, "Farm", 1);
+      destroy_building(who, farm_id);
+    } while(farm_id > -1);
+
+    city_id = find_city_id(city_name);
+
+    build_id = find_build_at_city(who, city_name, "", 1);
+    start_build_id = build_id;
+    do {
+      set_object_health(who, build_id, 5);
+      build_id = find_build_at_city(who, city_name, "", 1);
+    }while(build_id != start_build_id);
+  
+    popup_dialog(parse("The nomads have set fire to $s0! The city center has been razed to the ground!", city_name));
+    destroy_building(who, city_id);
+  }
+  
+  enable_trigger("CityRazeSetup");
+}
+
+}

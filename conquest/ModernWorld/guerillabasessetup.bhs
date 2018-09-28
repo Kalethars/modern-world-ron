@@ -1,0 +1,154 @@
+    include "ctw_lib.bhs"
+
+conquest {
+if (get_ctw_campaign() == "Napoleon") {
+  napoleon_rules();
+}
+
+labels {
+}
+  diff = get_difficulty();
+  disable_city_defeat(2);
+
+  set_time_limit(30);
+
+  //get starting location
+  x = get_starting_loc_x(1);
+  y = get_starting_loc_y(1);
+
+  create_unit_upgrade(1, x, y, "Musketeers", 8);
+  create_unit_upgrade(1, x, y, "Fusiliers", 6);
+  create_unit_upgrade(1, x, y, "Hussar", 4);
+  create_unit_upgrade(1, x, y, "Horse Guard Grenadier", 6);
+  create_unit_upgrade(1, x, y, "Cannon", 2);
+  create_unit_upgrade(1, x, y, "Supply Wagon", 1);
+  create_unit_upgrade(1, x, y, "General", 1);
+  create_unit_upgrade(1, x, y, "Citizen", 6);
+
+  city_name = find_capital(1);
+
+  while (num_type_upgrade(1, "Farm") < 5) {
+    place_building_upgrade(1, "Farm", city_name);
+  }
+
+  place_building_upgrade(1, "University", city_name);
+  place_building_upgrade(1, "Market", city_name);
+  place_building_upgrade(1, "Temple", city_name);
+  place_building_upgrade(1, "Granary", city_name);
+  if (diff < 3) {
+    place_building_upgrade(1, "Tower", city_name);
+  }
+
+  force_transport_ability(2);
+
+  for (i = 0; i < 2; i++) {
+    do{
+      x = rand_int(15, world_x_size()/2);
+      y = rand_int(15, world_y_size()/2);
+    }while(!map_is_buildable(x, y) || object_type_near(1, "General", 1, x, y, 35));
+    if (diff > 2) {
+      create_building(2, x, y, "Tower");
+    }
+    if (map_is_buildable(x+5, y)) {
+      create_building(2, x+5, y, "Barracks");
+    }
+    else {
+      create_building(2, x-5, y, "Barracks");
+    }
+    if (map_is_buildable(x, y+5)) {
+      create_building(2, x, y+5, "Barracks");
+    }
+    else {
+      create_building(2, x, y-5, "Barracks");
+    }
+    create_unit(2, x, y, "General", 1);
+
+    do{
+      x = rand_int(world_x_size()/2, world_x_size() - 15);
+      y = rand_int(15, world_y_size()/2);
+    }while(!map_is_buildable(x, y) || object_type_near(1, "General", 1, x, y, 35));
+    if (diff > 2) {
+      create_building(2, x, y, "Tower");
+    }
+    if (map_is_buildable(x+5, y)) {
+      create_building(2, x+5, y, "Barracks");
+    }
+    else {
+      create_building(2, x-5, y, "Barracks");
+    }
+    if (map_is_buildable(x, y+5)) {
+      create_building(2, x, y+5, "Barracks");
+    }
+    else {
+      create_building(2, x, y-5, "Barracks");
+    }
+    create_unit(2, x, y, "General", 1);
+
+    do{
+      x = rand_int(15, world_x_size()/2);
+      y = rand_int(world_y_size()/2, world_y_size() - 15);
+    }while(!map_is_buildable(x, y) || object_type_near(1, "General", 1, x, y, 35));
+    if (map_is_buildable(x+5, y)) {
+      create_building(2, x+5, y, "Barracks");
+    }
+    else {
+      create_building(2, x-5, y, "Barracks");
+    }
+    if (map_is_buildable(x, y+5)) {
+      create_building(2, x, y+5, "Barracks");
+    }
+    else {
+      create_building(2, x, y-5, "Barracks");
+    }
+    create_unit(2, x, y, "General", 1);
+
+    do{
+      x = rand_int(world_x_size()/2, world_x_size() - 15);
+      y = rand_int(world_y_size()/2, world_y_size() - 15);
+    }while(!map_is_buildable(x, y) || object_type_near(1, "General", 1, x, y, 35));
+    if (map_is_buildable(x+5, y)) {
+      create_building(2, x+5, y, "Barracks");
+    }
+    else {
+      create_building(2, x-5, y, "Barracks");
+    }
+    if (map_is_buildable(x, y+5)) {
+      create_building(2, x, y+5, "Barracks");
+    }
+    else {
+      create_building(2, x, y-5, "Barracks");
+    }
+    create_unit(2, x, y, "General", 1);
+  }
+
+  for (i = 0; i < num_type_upgrade(2, "General"); i++) {
+    unit_id = find_unit(2, "General");
+    x = object_position_x(2, unit_id);
+    y = object_position_y(2, unit_id);
+    clear_group(2);
+    create_unit_in_group(2, x + 1, y, "Musketeers",1);
+    create_unit_in_group(2, x + 1, y, "Royal Tercios", 1);
+    group_stance_order(2, "Raid");
+    group_guard_order(2, 2, unit_id);
+  }
+
+  for (i = 0; i < num_type_upgrade(2, "General"); i++) {
+    unit_id = find_unit(2, "General");
+    general_ambush(2, unit_id);
+  }
+
+  set_unit_type_max_craft("General", 10000);
+
+  disable_tech(1, "Allegiance");
+  disable_building_attrition(2);
+
+  if (diff < 4) {
+    set_good(1, "Food", 400);
+    set_good(1, "Timber", 400);
+    set_good(1, "Metal", 400);
+    set_good(1, "Wealth", 400);
+  }
+
+  gain_tech(1, "Military");
+  gain_tech(1, "Military");
+}

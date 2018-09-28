@@ -1,0 +1,207 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+  
+  new_world_rules();
+  static int red = 1;
+  static int blue = 2;
+  static int purple = 3;
+  static int green = 4;
+  static int yellow = 5;
+  
+  static int first_warning[] = [0,0,0,0,0,0];
+
+  static int diff = get_difficulty();
+  static int end_time = get_time_limit();
+  int cur_time;
+
+  static int metal_goal;
+  int unit;
+  int x;
+  int y;
+  int building;
+  String city_name;
+
+  static int players = num_players();
+  int metal_col[] = [0,0,0,0,0,0];
+  int place_count[] = [0,0,0,0,0,0];
+  int placement[] = [0,1,2,3,4,5];
+  static String leaders[] = ["blank", "Red", "Blue", "Purple", "Green", "Yellow"];
+
+  run_once {
+    if (diff == 1) metal_goal = 1500;
+    else if (diff == 2) metal_goal = 2000;
+    else if (diff == 3) metal_goal = 2500;
+    else if (diff == 4) metal_goal = 3000;
+    else if (diff == 5) metal_goal = 3500;
+    else if (diff == 6) metal_goal = 4000;
+    for (nation = players; nation > 0; nation--) {
+      city_name = get_leader_name(nation);
+      if (nation == red) {
+        leaders[nation] = parse("$STRING0 (Red)", city_name);
+      } else if (nation == blue) {
+        leaders[nation] = parse("$STRING0 (Blue)", city_name);
+      } else if (nation == purple) {
+        leaders[nation] = parse("$STRING0 (Purple)", city_name);
+      } else if (nation == green) {
+        leaders[nation] = parse("$STRING0 (Green)", city_name);
+      } else if (nation == yellow) {
+        leaders[nation] = parse("$STRING0 (Yellow)", city_name);
+      } 
+    }
+    add_objective_text(parse("$STRING0 Metal collected: 0", leaders[1]), 1, "");
+    add_objective_text(parse("$STRING0 Metal collected: 0", leaders[2]), 2, "");
+    if (players > 2) add_objective_text(parse("$STRING0 Metal collected: 0", leaders[3]), 3, "");
+    if (players > 3) add_objective_text(parse("$STRING0 Metal collected: 0", leaders[4]), 4, "");
+    if (players > 4) add_objective_text(parse("$STRING0 Metal collected: 0", leaders[5]), 5, "");
+    if (diff > 2) {
+      set_timer("blue_raid", rand_int(30,60));
+      if (players > 2) set_timer("purple_raid", rand_int(45,75));
+      if (players > 3) set_timer("green_raid", rand_int(60,90));
+      if (players > 4) set_timer("yellow_raid", rand_int(30,90));
+      set_timer("get_metal", 10);
+    }
+    else {
+      set_timer("get_metal", 20);
+    }
+    if (get_age() > 2) {
+      disable_trigger("barbarians");
+    }
+    else {
+      enable_trigger("barbarians");
+    }
+  }
+
+  trigger barbarians(age(1) == get_ending_age()) {
+    barbarian_upgrade();
+  }
+
+  trigger limit_mines() {
+    for (n = 2; n < 6; n++) {
+      while (num_type(n, "Mine") > diff+2) {
+        building = find_build(n, "Mine");
+        destroy_building(n, building);
+      }
+      if (diff > 1) {
+      while (num_type(n, "Fort") > diff-2) {
+        building = find_inactive_build(n, "Fort");        
+        destroy_building(n, building);
+      }     
+      }
+    }
+    enable_trigger("limit_mines");
+  }
+
+  //set_timer("get_metal", 10);
+  if (timer_expired("get_metal")) {
+    for (nation = 2; nation < 6; nation++) {
+      if (!resource_cap_warning(nation, "Metal")) {
+        for (n = num_cities(nation); n > 0; n--) {
+          city_name = find_city_name(nation);
+          place_building(nation, "Mine", city_name);
+        }
+        for (n = num_type(nation, "Mine"); n > 0; n--) {
+          building = find_build(nation, "Mine");
+          x = object_position_x(nation, building);
+         y = object_position_y(nation, building);
+          for (w = max_workers_at_building(nation, building) - num_workers_at_building(nation, building); w > 0; w--) {
+            unit = find_idle_citizen(nation);
+            if (unit > -1) unit_move_order(nation, unit, x, y);
+            else train_unit_with_cost(nation, 1, "Citizen");
+          }
+        }
+      }
+    }
+    set_timer("get_metal", 10);
+  }
+
+  cur_time = time_min();
+  if (cur_time >= end_time) defeat(red);
+
+  metal_col[red] = num_good_collected(red, "Metal");
+  if (metal_col[red] >= metal_goal) victory(red);
+  placement[red] = 1;
+  place_count[1] = metal_col[red];
+  for (nation = players; nation > 1; nation--) {
+    metal_col[nation]= num_good_collected(nation, "Metal");
+    if (metal_col[nation] >= metal_goal) victory(nation);
+    if (metal_col[nation] >= metal_goal - 500 && first_warning[nation] == 0) {
+      show_notice(parse("$STRING0 is within 500 Metal of the goal.", leaders[nation]), "metal_notice", nation);
+      first_warning[nation] = 1;
+    } else if (metal_col[nation] >= metal_goal - 250 && first_warning[nation] == 1) {
+      show_notice(parse("$STRING0 is within 250 Metal of the goal.", leaders[nation]), "metal_notice", nation);
+      first_warning[nation] = 2;
+    }
+    for (n = 1; n < players+1; n++) {
+      if (metal_col[nation] > place_count[n]) {
+        for (z = players; z > n; z--) {
+          place_count[z] = place_count[z-1];
+          placement[z] = placement[z-1];
+        }
+        place_count[n] = metal_col[nation];
+        placement[n] = nation;
+        break;
+      }
+    }
+  }
+
+  change_objective_text(1, parse("$STRING0 Metal collected: $NUM1", leaders[placement[1]], metal_col[placement[1]]));
+  change_objective_text(2, parse("$STRING0 Metal collected: $NUM1", leaders[placement[2]], metal_col[placement[2]]));
+  if (players > 2) {
+    change_objective_text(3, parse("$STRING0 Metal collected: $NUM1", leaders[placement[3]], metal_col[placement[3]]));
+  }
+  if (players > 3) {
+    change_objective_text(4, parse("$STRING0 Metal collected: $NUM1", leaders[placement[4]], metal_col[placement[4]]));
+  }
+  if (players > 4) {
+    change_objective_text(5, parse("$STRING0 Metal collected: $NUM1", leaders[placement[5]], metal_col[placement[5]]));
+  }
+
+  if (timer_expired("blue_raid")) {
+    building = find_build(red, "Mine");
+    for (n = num_military_units(blue); n > 0; n--) {
+      unit = find_military(blue);
+      unit_stance_order(blue, unit, "Raid");
+      unit_attack_order(blue, unit, red, building);
+    }
+    set_timer("blue_raid", rand_int(30,60));
+  }
+
+  if (timer_expired("purple_raid")) {
+    building = find_build(red, "Mine");
+    if (building > 0) {
+      for (n = num_military_units(purple); n > 0; n--) {
+        unit = find_military(purple);
+        unit_stance_order(purple, unit, "Raid");
+        unit_attack_order(purple, unit, red, building);
+      }
+    }
+    set_timer("purple_raid", rand_int(45,75));
+  }
+
+  if (timer_expired("green_raid")) {
+    building = find_build(red, "Mine");
+    if (building > 0) {
+      for (n = num_military_units(green); n > 0; n--) {
+        unit = find_military(green);
+        unit_stance_order(green, unit, "Raid");
+        unit_attack_order(green, unit, red, building);
+      }
+    }
+    set_timer("green_raid", rand_int(60,90));
+  }
+
+  if (timer_expired("yellow_raid")) {
+    building = find_build(red, "Mine");
+    if (building > 0) {
+      for (n = num_military_units(yellow); n > 0; n--) {
+        unit = find_military(yellow);
+        unit_stance_order(yellow, unit, "Raid");
+        unit_attack_order(yellow, unit, red, building);
+      }
+    }
+    set_timer("yellow_raid", rand_int(30,90));
+  }
+
+}

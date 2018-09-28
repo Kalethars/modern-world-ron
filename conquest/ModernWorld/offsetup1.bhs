@@ -1,0 +1,166 @@
+//offensive ambush conquest scenario setup
+
+conquest 
+{
+
+  static int general_id1 = 0;
+  static String def_capital;
+  static int id = 0;
+  static int att_id = 0;
+  static String att_capital;
+  static int city_x = 0;
+  static int city_y = 0;
+  static int x = 0;
+  static int y = 0;
+  static int att_x = 0;
+  static int att_y = 0;
+  static int x2 = 0;
+  static int y2 = 0;
+  static int x3 = 0;
+  static int y3 = 0;
+  static int dir = 0;
+  static int center = 0;
+  static int radius = 0;
+  static int horse_archer = 0;
+  static int light_horse = 0;
+  static int cataphract = 0;
+  static int diff = get_difficulty();
+
+
+  //make it so the 1 can't lose if he takes then loses a city
+  disable_city_defeat(1);
+
+  def_capital = find_capital(2);
+  id = find_city_id(def_capital);
+  att_capital = find_capital(1);
+  att_id = find_city_id(att_capital);
+  
+  city_x = object_position_x(2, id);
+  city_y = object_position_y(2, id);
+  x = city_x + 1;
+  y = city_y + 1;
+  att_x = object_position_x(1, att_id) + 1;
+  att_y = object_position_y(1, att_id) + 1;
+  x2 = att_x;
+  y2 = att_y;
+
+  //ambush!
+   
+  x3 = object_position_x(1, att_id) - 18;
+  y3 = object_position_y(1, att_id) - 28;
+
+  if (x3 < 0) x3 = 1;
+  if (y3 < 0) y3 = 1;
+
+  if (!map_is_land(x, y)) {
+    x3 = x3 + 16;
+    y3 = y3;
+    if (diff == 1) {
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        horse_archer = create_unit_in_group(2, x3 + 15, y3, "horse archer", 1);
+      }  
+    }
+    else if (diff == 2) {
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        horse_archer = create_unit_in_group(2, x3 + 15, y3, "horse archer", 1);
+      }  
+    }
+    else if (diff == 3) {
+      gain_tech(2, "Tactics");
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        light_horse = create_unit_in_group(2, x3 + 15, y3, "light horse", 1);
+      }  
+    }
+    else if (diff == 4) {
+      gain_tech(2, "Operations");
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        light_horse = create_unit_in_group(2, x3 + 15, y3, "light horse", 1);
+        horse_archer = create_unit_in_group(2, x3 + 15, y3, "horse archer", 1);
+      }  
+    }
+    else if (diff == 5) {
+      gain_tech(2, "Strategy");
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        cataphract = create_unit_in_group(2, x3 + 15, y3, "cataphract", 1);  
+      }
+      for (i = 0; i < 1; i++) {
+        light_horse = create_unit_in_group(2, x3 + 15, y3, "light horse", 1);
+        horse_archer = create_unit_in_group(2, x3 + 15, y3, "horse archer", 1);
+      }  
+    }
+    else if (diff == 6) {
+      gain_tech(2, "Strategy");
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        cataphract = create_unit_in_group(2, x3 + 15, y3, "cataphract", 1);  
+        light_horse = create_unit_in_group(2, x3 + 15, y3, "light horse", 1);
+      }
+      for (i = 0; i < 2; i++) {
+        horse_archer = create_unit_in_group(2, x3 + 15, y3, "horse archer", 1);
+      }  
+    }
+  
+    group_stance_order(2, "Raid");
+    group_attack_to_order(2, x2, y2);
+  }
+  else {
+    if (diff == 1) {
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        horse_archer = create_unit_in_group(2, x3 + 15, y3, "horse archer", 1);
+      }  
+    }
+    else if (diff == 2) {
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        horse_archer = create_unit_in_group(2, x3 + 15, y3, "horse archer", 1);
+      }  
+    }
+    else if (diff == 3) {
+      gain_tech(2, "Tactics");
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        light_horse = create_unit_in_group(2, x3 + 15, y3, "light horse", 1);
+      }  
+    }
+    else if (diff == 4) {
+      gain_tech(2, "Operations");
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        light_horse = create_unit_in_group(2, x3 + 15, y3, "light horse", 1);
+        horse_archer = create_unit_in_group(2, x3 + 15, y3, "horse archer", 1);
+      }  
+    }
+    else if (diff == 5) {
+      gain_tech(2, "Strategy");
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        cataphract = create_unit_in_group(2, x3 + 15, y3, "cataphract", 1);  
+      }
+      for (i = 0; i < 1; i++) {
+        light_horse = create_unit_in_group(2, x3 + 15, y3, "light horse", 1);
+        horse_archer = create_unit_in_group(2, x3 + 15, y3, "horse archer", 1);
+      }  
+    }
+    else if (diff == 6) {
+      gain_tech(2, "Strategy");
+      general = create_unit_upgrade(2, x3 + 10, y3, "general", 1);
+      for (i = 0; i < 1; i++) {
+        cataphract = create_unit_in_group(2, x3 + 15, y3, "cataphract", 1);  
+        light_horse = create_unit_in_group(2, x3 + 15, y3, "light horse", 1);
+      }
+      for (i = 0; i < 2; i++) {
+        horse_archer = create_unit_in_group(2, x3 + 15, y3, "horse archer", 1);
+      }  
+    }
+
+    group_stance_order(2, "Raid");
+    group_attack_to_order(2, x2, y2);
+  }
+
+}

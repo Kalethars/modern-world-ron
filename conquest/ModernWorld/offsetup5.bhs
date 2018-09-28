@@ -1,0 +1,78 @@
+//barbarians at the gates! scenario setup
+
+include "ctw_lib.bhs"
+
+conquest 
+{
+
+  labels {
+    ATTACKER,
+    DEFENDER1,
+    DEFENDER2,
+    DEFENDER3,
+  }
+
+  static int diff = get_difficulty();
+  static String my_capital = find_capital(ATTACKER);
+  static String bar_cap_1 = find_capital(DEFENDER1);
+  static String bar_cap_2 = find_capital(DEFENDER2);
+  static String bar_cap_3 = find_capital(DEFENDER3);
+
+  lose_current_age(DEFENDER1);
+  lose_current_age(DEFENDER2);
+  lose_current_age(DEFENDER3);
+
+  place_building_upgrade(DEFENDER1, "barracks", bar_cap_1);
+  place_building_upgrade(DEFENDER1, "stable", bar_cap_1);
+  place_building_upgrade(DEFENDER1, "siege factory", bar_cap_1);
+  place_building_upgrade(DEFENDER2, "barracks", bar_cap_2);
+  place_building_upgrade(DEFENDER2, "stable", bar_cap_2);
+  place_building_upgrade(DEFENDER2, "siege factory", bar_cap_2);
+  place_building_upgrade(DEFENDER3, "barracks", bar_cap_3);
+  place_building_upgrade(DEFENDER3, "stable", bar_cap_3);
+  place_building_upgrade(DEFENDER3, "siege factory", bar_cap_3);
+
+  if (diff <= 3) {
+    place_building_upgrade(ATTACKER, "Tower", my_capital);
+    place_building_upgrade(ATTACKER, "Tower", my_capital);
+  }
+
+  if (diff <= 2) place_building_upgrade(ATTACKER, "Tower", my_capital);
+  if (diff == 1) place_building_upgrade(ATTACKER, "Tower", my_capital);
+
+  if (diff <= 2) place_building_upgrade(ATTACKER, "Tower", my_capital);
+
+  if (diff == 6) {
+    give_good(ATTACKER, "Food", 200);
+    give_good(ATTACKER, "Timber", 200);
+    give_good(ATTACKER, "Metal", 200);
+    give_good(ATTACKER, "Oil", 100);
+    give_good(ATTACKER, "Knowledge", 100);
+    give_good(ATTACKER, "Wealth", 100);
+  }
+  else if (diff == 4 || diff == 5) {
+    give_good(ATTACKER, "Food", 300);
+    give_good(ATTACKER, "Timber", 300);
+    give_good(ATTACKER, "Wealth", 200);
+    give_good(ATTACKER, "Metal", 300);
+    give_good(ATTACKER, "Oil", 200);
+    give_good(ATTACKER, "Knowledge", 200);
+  }
+  else if (diff < 4 && diff > 1) {
+    give_good(ATTACKER, "Food", 400);
+    give_good(ATTACKER, "Timber", 400);
+    give_good(ATTACKER, "Wealth", 200);
+    give_good(ATTACKER, "Metal", 400);
+    give_good(ATTACKER, "Oil", 200);
+    give_good(ATTACKER, "Knowledge", 200);
+  }
+  else if (diff == 1) {
+    give_good(ATTACKER, "Food", 500);
+    give_good(ATTACKER, "Timber", 500);
+    give_good(ATTACKER, "Wealth", 300);
+    give_good(ATTACKER, "Metal", 500);
+    give_good(ATTACKER, "Oil", 300);
+    give_good(ATTACKER, "Knowledge", 300);
+  }
+  
+}

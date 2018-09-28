@@ -1,0 +1,153 @@
+conquest
+{
+
+  static int diff = get_difficulty();
+  int side;
+  int x;
+  int y;
+  int unit;
+  int building;
+  String city_name;
+  static int air_id = find_build(1, "Airbase");
+  static String goods[] = ["Food", "Timber", "Metal", "Wealth", "Oil"];
+  static int amount[] = [75, 35, 75, 60, 50];
+  static int fx;
+  static int fy;
+  static int x0 = object_position_x(1, find_build(1, "Redoubt"));
+  static int y0 = object_position_y(1, find_build(1, "Redoubt"));
+
+  run_once {
+    add_visibility(2,1); 
+    set_timer("anti-air", 1);
+    set_timer("air", 1);
+  }
+
+  if (num_buildings(1) == 0) {
+    defeat(1);
+  }
+
+  if (time() >= get_time_limit()) {
+    victory(1);
+  }
+  
+  if (timer_expired("follow_up")) {
+    unit = create_unit_upgrade(2, fx, fy, "Fighter", ((time_min()%3)+rand_int(0,1)));
+    building = find_unit(1, "Bomber");
+    if (building > 0) {
+      unit_attack_order(2, unit, 1, building);
+    }
+    else {
+      building = find_unit(1, "");
+      unit_attack_order(2, unit, 1, building);
+    }
+  }
+
+  if (timer_expired("anti-air")) {
+    set_timer("anti-air", 33-diff);
+    side = rand_int(0, 4);
+    switch (side) {
+    case 0 :
+      x = 0;
+      y = rand_int(0, get_map_size() - 1);
+      break;
+    case 1 :
+      x = get_map_size() - 1;
+      y = rand_int(0, get_map_size() - 1);
+      break;
+    case 2 :
+      x = rand_int(0, get_map_size() - 1);
+      y = 0;
+      break;
+    case 3 :
+      x = rand_int(0, get_map_size() - 1);
+      y = get_map_size() - 1;
+      break;
+    }
+    create_unit_in_group(2, x, y, "Anti-Aircraft Gun", 1);
+    create_unit_in_group(2, x, y, "General", 1);
+    create_unit_in_group(2, x, y, "Helicopter", 2);
+    side = rand_int(0, 4);
+    switch (side) {
+    case 0:
+      create_unit_in_group(2, x, y, "Slingers", 1);
+      if (diff > 2) {
+        create_unit_in_group(2, x, y, "Light Horse", 1);
+      }
+      if (diff > 4) {
+        create_unit_in_group(2, x, y, "Hoplites", 1);
+      }
+      break;
+    case 1:
+      create_unit_in_group(2, x, y, "Hoplites", 1);
+      if (diff > 2) {
+        create_unit_in_group(2, x, y, "Cataphract", 1);
+      }
+      if (diff > 4) {
+        create_unit_in_group(2, x, y, "Machine Gun", 1);
+      }
+      break;
+    case 2:
+      create_unit_in_group(2, x, y, "Machine Gun", 1);
+      if (diff > 2) {
+        create_unit_in_group(2, x, y, "Catapult", 1);
+      }
+      if (diff > 4) {
+        create_unit_in_group(2, x, y, "Flamethrower", 1);
+      }
+      break;
+    case 3:
+      create_unit_in_group(2, x, y, "Flamethrower", 1);
+      if (diff > 2) {
+        create_unit_in_group(2, x, y, "Spy", 1);
+      }
+      if (diff > 4) {
+        create_unit_in_group(2, x, y, "Slingers", 1);
+      }
+      break;
+    }
+    // unit = find_build(1, "Redoubt");
+    // x = object_position_x(1, unit);
+    // y = object_position_y(1, unit);
+    group_attack_to_order(2, x0, y0);
+  }
+
+  if (timer_expired("air")) {
+    set_timer("air", 25);
+    side = rand_int(0, 4);
+    switch (side) {
+    case 0 :
+      x = 0;
+      y = rand_int(0, get_map_size() - 1);
+      break;
+    case 1 :
+      x = get_map_size() - 1;
+      y = rand_int(0, get_map_size() - 1);
+      break;
+    case 2 :
+      x = rand_int(0, get_map_size() - 1);
+      y = 0;
+      break;
+    case 3 :
+      x = rand_int(0, get_map_size() - 1);
+      y = get_map_size() - 1;
+      break;
+    }
+    fx = x;
+    fy = y;
+    set_timer("follow_up", 5);
+    unit = create_unit_upgrade(1, x, y, "Bomber", 1);
+    air_unit_transfer_order(1, unit, air_id);
+  }
+
+  for (i = 0; i < num_type_upgrade(1, "Bomber"); i++) {
+    unit = find_all_unit(1, "Bomber");
+    if (is_garrisoned(1, unit)) {
+      kill_unit_anim(1, unit, 1);
+      for (g = 0; g < goods.length; g++) {
+        give_good(1, goods[g], amount[g]);
+        bubble_text_obj($S("Supplies have arrived!"), 1, air_id);
+      }
+    }
+  }
+
+}

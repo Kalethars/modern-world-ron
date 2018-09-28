@@ -1,0 +1,88 @@
+include "ctw_lib.bhs"
+
+       conquest
+{
+
+static int diff = get_difficulty();
+static int time_counter = 0;
+static int food_goal = 0;
+
+run_once {
+
+  if (diff < 5) {
+    food_goal = 2000;
+  }
+  else {
+    food_goal = 2500;
+  }
+  add_objective_text(parse("Collect $d0 food.", food_goal), "Hint_id", 0);
+  set_timer("raid_timer", 180);
+  time_counter = 300/diff;
+}
+
+trigger Raid(timer_expired("raid_timer"))
+{
+  x = 0;
+  y = 0;
+  side = rand_int(0, 4);
+  switch (side) {
+  case 0:
+    x = 5;
+    y = rand_int(5, get_map_size() - 5);
+    break;
+  case 1:
+    x = get_map_size() - 5;
+    y = rand_int(5, get_map_size() - 5);
+    break;
+  case 2:
+    x = rand_int(5, get_map_size() - 5);
+    y = 5;
+    break;
+  case 3 :
+    x = rand_int(5, get_map_size() - 5);
+    y = get_map_size() - 5;
+    break;
+  }
+
+  create_unit_in_group(2, x, y, "Slingers", 1);
+  create_unit_in_group(2, x, y, "Hoplites", 1);
+  r = rand_int(0, 2);
+  switch (r) {
+  case 0:
+	create_unit_in_group(2, x, y, "Machine Gun", 1);
+	break;
+  case 1:
+    create_unit_in_group(2, x, y, "Light Horse", 1);
+    break;
+  }
+  if (diff > 2) {
+    create_unit_in_group(2, x, y, "Cataphract", 1);
+  }
+  if (time() > 7 && diff > 3) {
+    create_unit_in_group(2, x, y, "Catapult", 1);
+  }
+
+  city_num = rand_int(1, num_cities(1)+1);
+  city_name = find_city_with_num(1, city_num);
+  city_id = find_city_id(city_name);
+  x = object_position_x(1, city_id);
+  y = object_position_y(1, city_id);
+  group_attack_to_order(2, x, y);
+
+  set_timer("raid_timer", time_counter);
+  time_counter -= 4;
+  if (time_counter < 15) {
+    time_counter = 15;
+  }
+  enable_trigger("Raid");
+}
+
+if (at_least_type(1, food_goal, "Food")) {
+  victory(1);
+}
+
+if (time() >= get_time_limit()) {
+  defeat(1);
+}
+
+}

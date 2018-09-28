@@ -1,0 +1,25 @@
+//runtime script for Conquest style scenarios
+
+conquest {
+
+static int diff = get_difficulty();
+static int who;
+String cap_name;
+
+
+
+run_once {
+  ctw_add_objective_text($S("If your enemy is defeated, its supporters are defeated as well."), "Hint_id", 0);
+}
+
+trigger (time() >= get_time_limit()) {
+  defeat_attacker_and_allies();
+}
+
+if (is_defeated(2)) {
+  for (int nation = 4; nation < 9; nation++){
+    defeat(nation);
+  }
+}
+
+}

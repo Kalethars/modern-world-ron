@@ -1,0 +1,38 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by XMLSPY 5 Professional Ed. Release 2 (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="South Africans">
+  <LEADERS>
+    <LEADER>Herbert Gladstone</LEADER>
+    <LEADER>Nicolaas Jacobus de Wet</LEADER>
+	<LEADER>Nelson Rolihlahla Mandela</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Cape Town</CITY>
+    <CITY>Johannesburg</CITY>
+    <CITY>Pretoria</CITY>
+    <CITY>Soweto</CITY>
+    <CITY>Pietermaritzburg</CITY>
+    <CITY>Benoni</CITY>
+    <CITY>Vereeniging</CITY>
+    <CITY>Bloemfontein</CITY>
+    <CITY>Newcastle</CITY>
+    <CITY>East London</CITY>
+    <CITY>Welkom</CITY>
+    <CITY>Botshabelo</CITY>
+    <CITY>Kimberley</CITY>
+    <CITY>Witbank</CITY>
+    <CITY>Catonville</CITY>
+    <CITY>Klerksdorp</CITY>
+    <CITY>Rustenburg</CITY>
+    <CITY>Kuruman</CITY>
+    <CITY>Carnarvon</CITY>
+    <CITY>Mdantsane</CITY>
+    <CITY>Umtata</CITY>
+    <CITY>Kokstad</CITY>
+    <CITY>Harare</CITY>
+    <CITY>Gaborone</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>4 Iroquois</UNIT_CONTINENT>
+  <BUILD_CONTINENT>7 Colonial</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>7 Colonial</BACKUP_BUILD_CONTINENT>
+</TRIBE>

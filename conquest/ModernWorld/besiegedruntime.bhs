@@ -1,0 +1,31 @@
+include "ctw_lib.bhs"
+//runtime script for Conquest style scenarios
+
+conquest {
+  static time_limit = 60;
+  int random;
+  int building;
+  String city_name;
+  int i,x,y;
+  int map_size;
+  int nation;
+  String nation_name;
+  static int diff = get_difficulty();
+  static int who;
+
+  run_once {
+    time_limit = get_time_limit();
+    city_name = find_capital(1);
+	String build_list[]=["Mine","University","Oil Platform","Market","Senate","Temple","Fort"];
+	for (i=0;i<7;i++){
+		if (num_type(1,build_list[i])==0){
+			place_building(1,build_list[i],city_name);
+		}
+	}
+  }
+  cur_time = time();
+  
+  trigger (cur_time >= time_limit) {
+    victory(1);
+  }
+}

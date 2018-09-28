@@ -1,0 +1,147 @@
+//defensive scenario 0 setup
+
+conquest
+{
+  labels {
+    DEFENDER,
+    ATTACKER,
+  }
+
+  static int x;
+  static int y;
+  static int def_id;
+  static String def_capital;
+  static int diff;
+
+  //have war
+  if (have_war(1, 2));
+  else declare_war(2, 1);
+
+  //setup your base
+  diff = get_difficulty();
+  def_capital = find_capital(1);
+  def_id = find_city_id(def_capital);
+  x = object_position_x(DEFENDER, def_id);
+  y = object_position_y(DEFENDER, def_id);
+  switch(diff) {
+    case 1 :
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      create_unit_upgrade(DEFENDER, x, y, "hoplites", 2);
+      create_unit_upgrade(DEFENDER, x, y, "Anti-Aircraft Gun", 2);
+      create_unit_upgrade(DEFENDER, x, y, "slingers", 2);
+      create_unit_upgrade(DEFENDER, x, y, "general", 1);
+      break;
+    case 2 :
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      create_unit_upgrade(DEFENDER, x, y, "hoplites", 1);
+      create_unit_upgrade(DEFENDER, x, y, "Anti-Aircraft Gun", 1);
+      create_unit_upgrade(DEFENDER, x, y, "slingers", 1);
+      create_unit_upgrade(DEFENDER, x, y, "general", 1);
+      break;
+    case 3 :
+      place_building_upgrade(DEFENDER, "tower", def_capital);
+      create_unit_upgrade(DEFENDER, x, y, "hoplites", 1);
+      create_unit_upgrade(DEFENDER, x, y, "Anti-Aircraft Gun", 1);
+      create_unit_upgrade(DEFENDER, x, y, "general", 1);
+      break;
+    case 4 :
+      create_unit_upgrade(DEFENDER, x, y, "hoplites", 1);
+      create_unit_upgrade(DEFENDER, x, y, "Anti-Aircraft Gun", 1);
+      create_unit_upgrade(DEFENDER, x, y, "general", 1);
+      break;
+    case 5 :
+      create_unit_upgrade(DEFENDER, x, y, "Anti-Aircraft Gun", 1);
+      create_unit_upgrade(DEFENDER, x, y, "general", 1);
+      break;
+    case 6:
+      create_unit_upgrade(DEFENDER, x, y, "general", 1);
+      break;
+  }
+  place_building_upgrade(DEFENDER, "senate", def_capital);
+  place_building_upgrade(DEFENDER, "barracks", def_capital);
+  place_building_upgrade(DEFENDER, "dock", def_capital);
+  if (age(DEFENDER) > 0) place_building_upgrade(DEFENDER, "stable", def_capital);
+  gain_tech(DEFENDER, "Military");
+  gain_tech(DEFENDER, "Civic");
+  gain_tech(DEFENDER, "Commerce");
+  gain_tech(DEFENDER, "Science");
+
+  //make it so the attacker can't lose if he takes then loses a city
+  disable_city_defeat(ATTACKER);
+
+
+  //set-up of outposts
+  num_outposts = 6;
+  radius = 32;
+  center_x = get_map_size() / 2;
+  center_y = center_x;
+  increment =  360.0 / num_outposts;
+  
+  for (scan = 0; scan < num_outposts; scan++) {
+    angle = scan * increment;
+    rand_angle = angle + (rand_int(0, 10) - 5);
+    rand_radius = radius - rand_int(1, 4) + 2;
+    x = (int)(rand_radius * sin(rand_angle) + center_x);
+    y = (int)(rand_radius * cos(rand_angle) + center_y);    
+    
+    if (map_is_buildable(x, y)) {
+      create_building_near(DEFENDER, x, y, "lookout", 8);           
+    }
+  }  
+
+  //give resources
+  switch(diff) {
+    case 1 :
+      give_good(DEFENDER, "Food", 400);
+      give_good(DEFENDER, "Timber", 400);
+      give_good(DEFENDER, "Wealth", 600);
+      give_good(DEFENDER, "Metal", 600);
+      give_good(DEFENDER, "Oil", 600);
+      give_good(DEFENDER, "Knowledge", 600);
+      break;
+    case 2 :
+      give_good(DEFENDER, "Food", 400);
+      give_good(DEFENDER, "Timber", 400);
+      give_good(DEFENDER, "Wealth", 500);
+      give_good(DEFENDER, "Metal", 500);
+      give_good(DEFENDER, "Oil", 500);
+      give_good(DEFENDER, "Knowledge", 500);
+      break;
+    case 3 :
+      give_good(DEFENDER, "Food", 400);
+      give_good(DEFENDER, "Timber", 400);
+      give_good(DEFENDER, "Wealth", 400);
+      give_good(DEFENDER, "Metal", 400);
+      give_good(DEFENDER, "Oil", 400);
+      give_good(DEFENDER, "Knowledge", 400);
+      break;
+    case 4 :
+      give_good(DEFENDER, "Food", 400);
+      give_good(DEFENDER, "Timber", 400);
+      give_good(DEFENDER, "Wealth", 400);
+      give_good(DEFENDER, "Metal", 400);
+      give_good(DEFENDER, "Oil", 400);
+      give_good(DEFENDER, "Knowledge", 400);
+      break;
+    case 5 :
+      give_good(DEFENDER, "Food", 400);
+      give_good(DEFENDER, "Timber", 400);
+      give_good(DEFENDER, "Wealth", 300);
+      give_good(DEFENDER, "Metal", 300);
+      give_good(DEFENDER, "Oil", 300);
+      give_good(DEFENDER, "Knowledge", 300);
+      break;
+    case 6 :
+      give_good(DEFENDER, "Food", 400);
+      give_good(DEFENDER, "Timber", 400);
+      give_good(DEFENDER, "Wealth", 200);
+      give_good(DEFENDER, "Metal", 200);
+      give_good(DEFENDER, "Oil", 200);
+      give_good(DEFENDER, "Knowledge", 200);
+      break;
+  }  
+  
+}

@@ -1,0 +1,26 @@
+conquest
+{
+
+  labels {
+    ATTACKER,
+    DEFENDER,
+  }
+  
+  static int end_time = get_time_limit();
+  int cur_time;
+  static int diff = get_difficulty();
+
+  run_once {
+  }
+
+  cur_time = time_min();
+
+  trigger (cur_time >= end_time) {
+    defeat_attacker_and_allies();
+  }
+   
+  trigger (num_units(ATTACKER) == 0) {
+    defeat_attacker_and_allies();
+  }
+
+}

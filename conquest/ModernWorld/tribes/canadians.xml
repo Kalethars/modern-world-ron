@@ -1,0 +1,49 @@
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Brian Reynolds (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Canadians">
+  <LEADERS>
+    <LEADER>Robert Borden</LEADER>
+    <LEADER>William Lyon Mackenzie King</LEADER>
+    <LEADER>Jean Chrétien</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Ottawa</CITY>
+    <CITY>Toronto</CITY>
+    <CITY>Montreal</CITY>
+    <CITY>Calgary</CITY>
+    <CITY>Edmonton</CITY>
+    <CITY>Mississauga</CITY>
+    <CITY>Winnipeg</CITY>
+    <CITY>Vancouver</CITY>
+    <CITY>Brampton</CITY>
+    <CITY>Hamilton</CITY>
+    <CITY>Quebec City</CITY>
+    <CITY>Surrey</CITY>
+    <CITY>Laval</CITY>
+    <CITY>Halifax</CITY>
+    <CITY>London</CITY>
+    <CITY>Markham</CITY>
+    <CITY>Vaughan</CITY>
+    <CITY>Gatineau</CITY>
+    <CITY>Saskatoon</CITY>
+    <CITY>Longueuil</CITY>
+    <CITY>Kitchener</CITY>
+    <CITY>Burnaby</CITY>
+    <CITY>Windsor</CITY>
+    <CITY>Regina</CITY>
+    <CITY>Richmond</CITY>
+    <CITY>Oakville</CITY>
+    <CITY>Burlington</CITY>
+    <CITY>Greater Sudbury</CITY>
+    <CITY>Sherbrooke</CITY>
+    <CITY>Oshawa</CITY>
+    <CITY>Saguenay</CITY>
+    <CITY>Lévis</CITY>
+    <CITY>Barrie</CITY>
+    <CITY>Abbotsford</CITY>
+    <CITY>Coquitlam</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>0 Europe</UNIT_CONTINENT>
+  <BUILD_CONTINENT>7 Colonial</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>7 Colonial</BACKUP_BUILD_CONTINENT>
+</TRIBE>

@@ -1,0 +1,46 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by XMLSPY 5 Professional Ed. Release 2, Installed Multi for 15 users (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Indians">
+  <LEADERS>
+    <LEADER>Charles Hardinge</LEADER>
+    <LEADER>Archibald Wavell</LEADER>
+    <LEADER>Manmohan Singh</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Delhi</CITY>
+    <CITY>Mumbai</CITY>
+    <CITY>Kolkata</CITY>
+    <CITY>Chennai</CITY>
+    <CITY>Bangalore</CITY>
+    <CITY>Hyderabad</CITY>
+    <CITY>Ahmedabad</CITY>
+    <CITY>Pune</CITY>
+    <CITY>Surat</CITY>
+    <CITY>Kanpur</CITY>
+    <CITY>Jaipur</CITY>
+    <CITY>Lucknow</CITY>
+    <CITY>Nagpur</CITY>
+    <CITY>Pataliputra</CITY>
+    <CITY>Indore</CITY>
+    <CITY>Vadodara</CITY>
+    <CITY>Bhopal</CITY>
+    <CITY>Coimbatore</CITY>
+    <CITY>Ludhiana</CITY>
+    <CITY>Kochi</CITY>
+    <CITY>Agra</CITY>
+    <CITY>Varanasi</CITY>
+    <CITY>Madurai</CITY>
+    <CITY>Meerut</CITY>
+    <CITY>Nashik</CITY>
+    <CITY>Jabalpur</CITY>
+    <CITY>Jamshedpur</CITY>
+    <CITY>Asansol</CITY>
+    <CITY>Dhanbad</CITY>
+    <CITY>Faridabad</CITY>
+    <CITY>Amritsar</CITY>
+    <CITY>Rajkot</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>5 EIndian</UNIT_CONTINENT>
+  <BUILD_CONTINENT>8 EIndian</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>8 EIndian</BACKUP_BUILD_CONTINENT>
+</TRIBE>

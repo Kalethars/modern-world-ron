@@ -1,0 +1,54 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Brian Reynolds (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute-->
+<TRIBE name="Germans">
+  <LEADERS>
+    <LEADER>Theobald von Bethmann-Hollweg</LEADER>
+    <LEADER>Adolf Hitler</LEADER>
+    <LEADER>Helmut Kohl</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Berlin</CITY>
+    <CITY>Hamburg</CITY>
+    <CITY>München</CITY>
+    <CITY>Köln</CITY>
+    <CITY>Frankfurt</CITY>
+    <CITY>Stuttgart</CITY>
+    <CITY>Düsseldorf</CITY>
+    <CITY>Dortmund</CITY>
+    <CITY>Essen</CITY>
+    <CITY>Leipzig</CITY>
+    <CITY>Bremen</CITY>
+    <CITY>Dresden</CITY>
+    <CITY>Hannover</CITY>
+    <CITY>Nürnberg</CITY>
+    <CITY>Duisburg</CITY>
+    <CITY>Bochum</CITY>
+    <CITY>Wuppertal</CITY>
+    <CITY>Bielefeld</CITY>
+    <CITY>Bonn</CITY>
+    <CITY>Münster</CITY>
+    <CITY>Karlsruhe</CITY>
+    <CITY>Mannheim</CITY>
+    <CITY>Augsburg</CITY>
+    <CITY>Wiesbaden</CITY>
+    <CITY>Gelsenkirchen</CITY>
+    <CITY>Mönchengladbach</CITY>
+    <CITY>Braunschweig</CITY>
+    <CITY>Chemnitz</CITY>
+    <CITY>Kiel</CITY>
+    <CITY>Aachen</CITY>
+    <CITY>Wolfsburg</CITY>
+    <CITY>Magdeburg</CITY>
+    <CITY>Freiburg</CITY>
+    <CITY>Leverkusen</CITY>
+    <CITY>Lübeck</CITY>
+    <CITY>Oberhausen</CITY>
+    <CITY>Trier</CITY>
+    <CITY>Mainz</CITY>
+    <CITY>Rostock</CITY>
+    <CITY>Ingolstadt</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>0 European</UNIT_CONTINENT>
+  <BUILD_CONTINENT>1 NEuro</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>0 Med</BACKUP_BUILD_CONTINENT>
+</TRIBE>

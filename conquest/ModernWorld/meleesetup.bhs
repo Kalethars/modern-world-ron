@@ -1,0 +1,218 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+  String cap_name;
+  
+  int i, j, x, y, x2, y2, building, flag, dist, count, size, mindist;
+  int diff = get_difficulty();
+
+  for (i = 2; i < 9; i++) {
+    disable_city_defeat(i);
+    set_leader_difficulty (i, diff);
+  }
+
+  set_leader_difficulty(3, 2);
+  
+  for (i = 4; i < 9; i++) {
+	declare_war(i, 1);
+	declare_war(i, 1);
+	declare_war(i, 3);
+	declare_war(i, 3);
+	make_alliance(i, 2);
+	for (j = 4; j < 9; j++){
+	  make_alliance(i, j);
+	}
+  }
+  
+  declare_war(2, 3);
+  make_alliance(1, 3);
+    
+  int xi[], yi[];
+  count=0;
+  size=get_map_size();
+  for (x=10;x<=size-10;x++){
+	for (y=10;y<=size-10;y++){
+		if (map_is_buildable(x,y)){
+			xi[count]=x;
+			yi[count]=y;
+			count++;
+		}
+	}
+  }
+  mindist=-20+count/125;
+  if (count>=10000) {mindist=60;}
+  if (count<5000) {mindist=20;}
+    
+  cap_name = find_capital(1);
+  building = find_city_id(cap_name);
+  place_building(1, "Barracks", cap_name);
+  place_building(1, "Stable", cap_name);
+  place_building(1, "Tower", cap_name);
+  place_building(1, "Temple", cap_name);
+  place_building(1, "Senate", cap_name);
+  place_building(1, "Market", cap_name);
+  place_building(1, "University", cap_name);
+  x = object_position_x(1, building);
+  y = object_position_y(1, building);
+  create_unit_upgrade(1, x, y, "Cataphract", 2);
+  create_unit_upgrade(1, x, y, "General", 1);
+  gain_tech(1,"Military");
+  gain_tech(1,"Science");
+  gain_tech(1,"Commerce");
+  
+  cap_name = find_capital(2);
+  building = find_city_id(cap_name);
+  place_building(2, "Tower", cap_name);
+  place_building(2, "Temple", cap_name);
+  x = object_position_x(2, building);
+  y = object_position_y(2, building);
+  create_unit_upgrade(2, x, y, "General", 1);
+  
+  for (i = 3; i < 9; i++){
+    add_visibility(1,i);
+	if (num_cities(i)==1){
+		cap_name = find_city_name(i);
+		building=find_city_id(cap_name);
+		x=object_position_x(i,building);
+		y=object_position_y(i,building);
+		destroy_building(i,find_build_at_city(i,cap_name,"Woodcutter's Camp",1));
+		destroy_building(i,find_build_at_city(i,cap_name,"Library",1));
+		destroy_building(i,find_build_at_city(i,cap_name,"Farm",1));
+		destroy_building(i,find_build_at_city(i,cap_name,"Farm",1));
+		destroy_building(i,find_build_at_city(i,cap_name,"Farm",1));
+		destroy_building(i,building);
+		create_building_near(i, x, y, "Large City", 1);
+	}
+	if (num_cities(i)==0) {
+		dist=300;
+        while (num_cities(i)==0) {
+		  flag = 1;
+		  j=rand_int(0,count);
+		  x=xi[j];
+		  y=yi[j];
+		  for (j = 1; j < i; j++){
+			cap_name = find_city_name(j);
+			building = find_city_id(cap_name);
+			x2 = object_position_x(j, building);
+			y2 = object_position_y(j, building);
+			if ((x-x2)*(x-x2)+(y-y2)*(y-y2)<=dist*dist){
+				if (dist>mindist) dist--;
+				flag = 0;
+				break;
+			}
+		  }
+		  if (map_is_buildable(x,y) && flag==1){
+		    if (i>=4){
+		      create_building_near(i, x, y, "Large City", 5);
+			} else {
+			  create_building_near(i, x, y, "Major City", 5);
+			}
+		  }
+		}
+	}
+  }
+  for (i = 3; i < 9; i++){
+	cap_name = find_city_name(i);
+	set_capital(i, cap_name);
+	building=find_city_id(cap_name);
+	x=object_position_x(i,building);
+	y=object_position_y(i,building);
+	place_building(i, "Farm", cap_name);
+	place_building(i, "Farm", cap_name);
+	place_building(i, "Farm", cap_name);
+	set_base_rate(i, "Food", get_base_rate(i,"Food")+30-10*(num_type(i,"Farm")));
+	place_building(i, "Woodcutter's Camp", cap_name);
+	place_building(i, "Library", cap_name);
+	if (i>=4){
+		place_building(i, "Senate", cap_name);
+		if (diff>1) {
+		  place_building(i, "Tower", cap_name);
+		}
+		if (diff>3) {
+		  place_building(i, "Tower", cap_name);
+		}
+		if (diff==6) {
+		  place_building(i, "Temple", cap_name);
+		}
+	} else{
+		place_building(i, "Barracks", cap_name);
+		place_building(i, "Stable", cap_name);
+		place_building(i, "Tower", cap_name);
+		place_building(i, "Temple", cap_name);
+		place_building(i, "Senate", cap_name);
+		place_building(i, "Market", cap_name);
+		place_building(i, "University", cap_name);
+	}
+	if (num_type(i,"Citizen")>0){
+		for (j=1;j<=5;j++){
+			unit=find_unit(i,"Citizen");
+			add_to_group(i,unit);
+		}
+		unit=find_unit(i,"Scout");
+		add_to_group(i,unit);
+		group_jump_move(i, x, y, 135);
+		create_unit_upgrade(i, x, y, "Slingers", 4);
+		create_unit_upgrade(i, x, y, "Light Horse", 2);
+		create_unit_upgrade(i, x, y, "Hoplites", 2);
+	}
+	if (num_type(i,"Citizen")==0) {
+		create_unit_upgrade(i, x, y, "Citizen", 5);
+	}
+	if (num_military_units(i) == 0) {
+		create_unit_upgrade(i, x, y, "Slingers", 4);
+		create_unit_upgrade(i, x, y, "Light Horse", 2);
+		create_unit_upgrade(i, x, y, "Hoplites", 2);
+		create_unit_upgrade(i, x, y, "Scout", 1);
+	}
+	group_jump_move(i, x, y, 135);
+	
+	if (num_type(i,"Woodcutter's Camp")==0){
+		place_building(i, "Dock", cap_name);
+		set_base_rate(i, "Timber", get_base_rate(i,"Timber")+10);
+	}
+	if (num_type(i,"Library")==0){
+		gain_tech(i,"Civic");
+		gain_tech(i,"Commerce");
+		gain_tech(i,"Commerce");
+		gain_tech(i,"Science");
+	}
+	if (num_type(i,"Mine")==0) {
+		place_building(i, "Mine", cap_name);
+		if (num_type(i,"Mine")==0){
+			set_base_rate(i, "Metal", get_base_rate(i,"Metal")+10);
+		} else{
+			destroy_building(i,find_build(i,"Mine"));
+		}
+	}
+	if (num_type(i,"University")==0) {
+		place_building(i, "University", cap_name);
+		if (num_type(i,"University")==0){
+			set_base_rate(i, "Knowledge", get_base_rate(i,"Knowledge")+10);
+		} else{
+			destroy_building(i,find_build(i,"University"));
+		}
+	}
+	if (num_type(i,"Market")==0) {
+		place_building(i, "Market", cap_name);
+		if (num_type(i,"Market")==0){
+			set_base_rate(i, "Wealth", get_base_rate(i,"Wealth")+10);
+		} else{
+			destroy_building(i,find_build(i,"Market"));
+		}
+	}
+  }
+
+  for (i = 1; i < 9; i++){
+	  give_good(i, "Food", 200);
+	  give_good(i, "Timber", 200);
+	  give_good(i, "Metal", 200);
+	  give_good(i, "Oil", 100);
+	  give_good(i, "Knowledge", 100);
+	  give_good(i, "Wealth", 100);
+  }
+  
+  for (i = 2; i < 9; i++) {
+    enable_city_defeat(i);
+  }
+}

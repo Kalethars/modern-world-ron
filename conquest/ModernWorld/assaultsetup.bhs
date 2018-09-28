@@ -1,0 +1,55 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+  labels {
+    ATTACKER,
+    DEFENDER,
+  }
+  int nation;
+  int unit;
+  int x;
+  int y;
+  String nation_name;
+  String city_name;
+  String campaign = get_ctw_campaign();
+  int diff = get_difficulty();
+
+  disable_city_defeat(ATTACKER);
+  lose_current_age(ATTACKER);
+  gain_tech(ATTACKER, "Science");
+  gain_tech(ATTACKER, "Commerce");
+  gain_tech(ATTACKER, "Military");
+
+  give_good(ATTACKER, "Food", 680-80*diff);
+  give_good(ATTACKER, "Timber", 680-80*diff);
+  give_good(ATTACKER, "Metal", 680-80*diff);
+  give_good(ATTACKER, "Oil", 340-40*diff);
+  give_good(ATTACKER, "Knowledge", 340-40*diff);
+  give_good(ATTACKER, "Wealth", 340-40*diff);
+
+  force_transport_ability(ATTACKER);
+  dir = get_conquest_invasion_dir();
+  center = get_map_size() / 2;
+  radius = center - 5;
+  x = (int)(radius * sin(dir) + center);
+  y = (int)(center - (radius * cos(dir)));
+  
+  create_unit_upgrade(ATTACKER, x, y, "slingers", 3);
+  create_unit_upgrade(ATTACKER, x, y, "hoplites", 2);
+  create_unit_upgrade(ATTACKER, x, y, "Light Horse", 4);
+  create_unit_upgrade(ATTACKER, x, y, "Cataphract", 3);
+  create_unit_upgrade(ATTACKER, x, y, "Scout", 2);
+  create_unit_upgrade(ATTACKER, x, y, "General", 1);
+  create_unit_upgrade(ATTACKER, x, y, "Citizen", 5);
+  create_unit_upgrade(ATTACKER, x, y, "Supply Wagon", 1);
+  create_unit_upgrade(ATTACKER, x, y, "catapult", 2);
+
+  dir = get_conquest_invasion_dir();
+  dir = dir + 180;
+  if (dir >= 360) {
+    dir = dir - 360;
+  }
+
+  group_jump_move(ATTACKER, x, y, dir);
+}

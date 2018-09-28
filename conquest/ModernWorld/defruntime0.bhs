@@ -1,0 +1,1786 @@
+//defensive scenario runtime- barbarian assault from all sides
+
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  labels {
+    DEFENDER,
+    ATTACKER,
+  }
+  static String bowmen_type = "Helicopter";
+  static String hoplites_type = "Hoplites";
+  static String slingers_type = "Slingers";
+  static int center_x;
+  int catapult;
+  int cat;
+  int unit;
+  int catapult_g;
+  static int supply;
+  static int center_y;
+  static int radius;
+  static int phase1;
+  static int phase2;
+  static int time_limit;  
+  static int capital_id;
+  static int diff;
+  static int attack_count;
+  static int pick_value;
+  static int start_age;
+  static int x;
+  static int y;
+  static int impale_units;
+  static int impale;
+  static int attack_here;
+  static String my_capital = find_capital(DEFENDER);
+  static int my_capital_id;
+  static int raze_or_raid = 0;
+  static int cur_time;
+  static int catapult_in_group;
+  static int spawn_dir = get_conquest_invasion_dir();
+
+  cur_time = time();
+
+  run_once {
+    if (get_age() < 3) {
+      barbarian_rules();
+      if (get_country_owner(get_attack_to()) == "") {
+        bowmen_type = "Barbarian Archers";
+        hoplites_type = "Barbarian Phalanx";
+        slingers_type = "Barbarian Javelineers";
+      }
+    }
+    set_timer("attack_cor", 60);
+    enable_trigger("middle_attack");
+    my_capital_id = find_city_id(my_capital);
+    start_age = get_starting_age();
+    pick_value = 1;
+    force_transport_ability(ATTACKER);
+
+    disable_city_defeat(ATTACKER);
+
+    center_x = get_map_size() / 2;
+    center_y = center_x;
+
+    diff = get_difficulty();
+
+    //how long until barbarian troops are spawned
+    switch (diff) {    
+      case 1 :
+        set_timer ("units", 25);  
+        break;
+      case 2 :
+        set_timer ("units", 20);      
+        break;
+      case 3 :
+        set_timer ("units", 15);     
+        break;
+      case 4 :
+        set_timer ("units", 10);   
+        break;
+      case 5 :
+        set_timer ("units", 5);      
+        break;
+      case 6: 
+        set_timer("units", 1);
+        break;
+    }
+    time_limit = get_time_limit();
+
+    capital_name = find_capital(DEFENDER);
+    capital_id = find_city_id(capital_name);
+    attack_count = 0;
+    if (get_age() > 2) {
+      disable_trigger("barbarians");
+    }
+    else {
+      enable_trigger("barbarians");
+    }
+  }
+
+  trigger barbarians(age(1) == get_ending_age()) {
+    barbarian_upgrade();
+  }
+
+  //help your siege computer
+  if (timer_expired("cat_check")) {
+    set_timer("cat_check", 5);
+    for (n = num_type(ATTACKER, "catapult"); n > 0; n--) {
+      cat = find_unit(ATTACKER, "catapult");
+      if (object_health(ATTACKER, cat) < 70) {
+        for (n = 0; n > 3; n++) {
+          unit = find_military(ATTACKER);
+          x = object_position_x(ATTACKER, cat);
+          y = object_position_y(ATTACKER, cat);
+          unit_clear_orders(ATTACKER, unit);
+          unit_attack_to_order(ATTACKER, unit, x, y);
+        }
+      }
+    }
+  }    
+
+  int wagon_x, wagon_y;
+
+  //make it attack from another side
+  if (timer_expired("units2")) {
+    //////print_game_msg("attack count is: " + attack_count);
+    //find a spot
+    side = rand_int(0, 4);
+    switch (side) {
+    case 0 :
+      x = 0;
+      y = rand_int(0, get_map_size() - 1);
+      wagon_x = center_x - 20;
+      wagon_y = center_y;
+      break;
+    case 1 :
+      x = get_map_size() - 1;
+      y = rand_int(0, get_map_size() - 1);
+      wagon_x = center_x;
+      wagon_y = center_y + 20;
+      break;
+    case 2 :
+      x = rand_int(0, get_map_size() - 1);
+      y = 0;
+      wagon_x = center_x;
+      wagon_y = center_y - 20;
+      break;
+    case 3 :
+      x = rand_int(0, get_map_size() - 1);
+      y = get_map_size() - 1;
+      wagon_x = center_x;
+      wagon_y = center_y + 20;
+      break;
+    }
+
+    //moderate
+    if (diff == 3) {
+      //add the units
+      if (attack_count >= 0 && attack_count <= 4) {  
+        if (start_age > 1) create_unit_upgrade(ATTACKER, x, y, "horse archer", 1);
+        else create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        if (attack_count == 2) create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 4 && attack_count <= 5 && start_age == 1) {  
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 6 && start_age == 1) {
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 6 && attack_count <= 9 && start_age == 1) {
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 9 && attack_count <= 16 && start_age == 1) {         
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count == 17 && start_age == 1) {   //ancient age 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);                  
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 18 && start_age == 1) {   //ancient age
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);  
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);                
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 18 && attack_count <= 24 && start_age == 1) {   //ancient age             
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count == 25 && start_age == 1) {  //ancient age 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);               
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 4 && attack_count <= 7 && start_age > 1) {   //classical age
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 7 && attack_count <= 9 && start_age > 1) { //classical age           
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count == 10 && start_age > 1) { //classical age            
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count == 11 && start_age > 1) { //classical age            
+        create_unit_upgrade(ATTACKER, x, y, "cataphract", 1);
+        group_stance_order(ATTACKER, "Raze"); 
+      } else if (attack_count == 12 && start_age > 1) { //classical age        
+        create_unit_upgrade(ATTACKER, x, y, "light_horse", 1);  
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count == 13 && start_age > 1) { //classical age        
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 2); 
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 13 && attack_count <= 15 && start_age > 1) {   //classical age 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1); 
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);              
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count >= 16 && attack_count <= 17 && start_age > 1) {   //classical age 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);             
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 18 && start_age > 1) {   //classical age 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 2);  
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);         
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 18 && attack_count <= 24 && start_age > 1) { //classical age
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);               
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        if (attack_count > 20) create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } 
+    //tough
+    } else if (diff == 4) {
+      //add the units
+      if (attack_count >= 0 && attack_count <= 4) {  
+        if (start_age > 1) create_unit_upgrade(ATTACKER, x, y, "horse archer", 1);
+        else create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 4 && attack_count <= 5 && start_age == 1) {  
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 6 && start_age == 1) {
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 6 && attack_count <= 9 && start_age == 1) {
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 9 && attack_count <= 15 && start_age == 1) {         
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 2);
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count > 15 && attack_count <= 17 && start_age == 1) {   //ancient age 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);                  
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 18 && start_age == 1) {   //ancient age
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);  
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);                
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 18 && attack_count <= 22 && start_age == 1) {   //ancient age             
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 22 && attack_count <= 25 && start_age == 1) {  //ancient age 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);               
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 4 && attack_count <= 7 && start_age > 1) {   //classical age
+        create_unit_upgrade(ATTACKER, x, y, "horse archer", 2);
+        create_unit_in_group(ATTACKER, x, y, "cataphract", 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 7 && attack_count <= 9 && start_age > 1) { //classical age           
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count == 10 && start_age > 1) { //classical age            
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count == 11 && start_age > 1) { //classical age            
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze"); 
+      } else if (attack_count == 12 && start_age > 1) { //classical age        
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);  
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count == 13 && start_age > 1) { //classical age        
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1); 
+        create_unit_in_group(ATTACKER, x, y, "light horse", 1);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 13 && attack_count <= 15 && start_age > 1) {   //classical age 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1); 
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);             
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count >= 16 && attack_count <= 17 && start_age > 1) {   //classical age 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 2);             
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 18 && start_age > 1) {   //classical age 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 2);             
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 18 && attack_count <= 24 && start_age > 1) { //classical age
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);   
+        if (attack_count > 20) create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);     
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);         
+        group_stance_order(ATTACKER, "Raze");
+      } 
+    //tougher
+    } else if (diff == 5) {
+      //add the units
+      if (attack_count >= 0 && attack_count <= 4) {  
+        if (start_age > 1) create_unit_upgrade(ATTACKER, x, y, "horse archer", 1);
+        else create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 4 && attack_count <= 5 && start_age == 1) {  
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 6 && start_age == 1) {
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 6 && attack_count <= 9 && start_age == 1) {
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 9 && attack_count <= 15 && start_age == 1) {         
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count > 15 && attack_count <= 17 && start_age == 1) {   //ancient age 
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 18 && start_age == 1) {   //ancient age
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);   
+        create_unit_in_group(ATTACKER, x, y, "light horse", 1);               
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 18 && attack_count <= 21 && start_age == 1) {   //ancient age             
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 21 && attack_count <= 25 && start_age == 1) {  //ancient age 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 4 && attack_count <= 7 && start_age > 1) {   //classical age
+        create_unit_upgrade(ATTACKER, x, y, "horse archer", 2);
+        create_unit_in_group(ATTACKER, x, y, "cataphract", 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 7 && attack_count <= 9 && start_age > 1) { //classical age           
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count >= 10 && attack_count <= 11 && start_age > 1) { //classical age            
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 11 && attack_count <= 13 && start_age > 1) { //classical age        
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, "light horse", 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);  
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count > 13 && attack_count <= 15 && start_age > 1) {   //classical age 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1); 
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);             
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 15 && attack_count <= 18 && start_age > 1) {   //classical age 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 2);             
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 18 && attack_count <= 22 && start_age > 1) {
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);    
+        if (attack_count > 20) create_unit_in_group(ATTACKER, x, y, hoplites_type, 2);     
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);         
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 23 && start_age > 1) { //classical age
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);     
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 2);             
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } 
+    //toughest
+    } else if (diff == 6) {
+      //add the units
+      if (attack_count == 0) {  
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 0 && attack_count <= 3 && start_age == 1) {   
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count == 4 && start_age == 1) {   
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 4 && attack_count <= 6 && start_age == 1) {   
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 6 && attack_count <= 9 && start_age == 1) {          
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count == 10 && start_age == 1) {        
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 10 && attack_count <= 12 && start_age == 1) {           
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 12 && attack_count <= 15 && start_age == 1) {                  
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 2);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 16 && start_age == 1) {   
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);  
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 16 && attack_count <= 19 && start_age == 1) {   
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);               
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 19 && attack_count <= 23 && start_age == 1) { 
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);  
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);                
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      //-----------------------------------------------------------------------------------
+      //------------------------classical age start----------------------------------------
+      //-----------------------------------------------------------------------------------
+      } else if (attack_count > 0 && attack_count <= 3 && start_age > 1) {   
+        create_unit_upgrade(ATTACKER, x, y, "horse archer", 2); 
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count == 4 && start_age > 1) {   
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 2);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 4 && attack_count <= 6 && start_age > 1) {    
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        create_unit_in_group(ATTACKER, x, y, "cataphract", 1);
+        create_unit_in_group(ATTACKER, x, y, "cataphract", 1);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 6 && attack_count <= 9 && start_age > 1) {     
+        create_unit_upgrade(ATTACKER, x, y, "cataphract", 2);
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count == 10 && start_age > 1) {         
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 10 && attack_count <= 13 && start_age > 1) {    
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, "cataphract", 1);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 13 && attack_count <= 27 && start_age > 1) {   
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);  
+        if (attack_count > 21) create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        if (attack_count > 23) create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        if (attack_count > 23) create_unit_in_group(ATTACKER, x, y, "cataphract", 1); 
+        create_unit_in_group(ATTACKER, x, y, "general", 1);
+        group_stance_order(ATTACKER, "Raze");
+      }    
+      if (attack_count > 19 && start_age > 1) {
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);  
+      }         
+    }
+    group_attack_to_order(ATTACKER, center_x, center_y);
+  } 
+
+  if (timer_expired("units")) {
+    //////print_game_msg("attack count is: " + attack_count);
+    //find a spot
+    side = rand_int(0, 3);
+    switch (side) {
+    case 0 :
+      x = 0;
+      y = rand_int(0, get_map_size() - 1);
+      wagon_x = center_x - 20;
+      wagon_y = center_y;
+      break;
+    case 1 :
+      x = get_map_size() - 1;
+      y = rand_int(0, get_map_size() - 1);
+      wagon_x = center_x;
+      wagon_y = center_y + 20;
+      break;
+    case 2 :
+      x = rand_int(0, get_map_size() - 1);
+      y = 0;
+      wagon_x = center_x;
+      wagon_y = center_y - 20;
+      break;
+    case 3 :
+      x = rand_int(0, get_map_size() - 1);
+      y = get_map_size() - 1;
+      wagon_x = center_x;
+      wagon_y = center_y + 20;
+      break;
+    }
+
+    catapult_in_group = 0;
+  
+    if (object_health(DEFENDER, my_capital_id) < 50 && diff < 3) {
+      create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+    }
+    else {
+    switch (diff) {
+    case 1 : //EASIEST
+      //add the units
+      if (attack_count >= 0 && attack_count <= 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 2);
+        set_timer("units", 20);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count >= 2 && attack_count <= 10) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 2);
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 11) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        if (start_age > 1) {
+          wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+          unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);  
+        }
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 2);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 2);
+        set_timer("units", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count > 11 && attack_count <= 18) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        if (start_age == 1) create_unit_upgrade(ATTACKER, x, y, "light horse", 2);
+        else create_unit_upgrade(ATTACKER, x, y, "horse archer", 2);
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 18 && attack_count <= 30) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        if (start_age > 1) {
+          create_unit_in_group(ATTACKER, x, y, "supply wagon", 1);
+        }
+        set_timer("units", 15);     
+        group_stance_order(ATTACKER, "Raze");    
+      } else if (attack_count > 30 && attack_count <= 39) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 2);        
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 39 && attack_count <= 45) {
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 2);             
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 45 && attack_count <= 48) {
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 2);  
+        if (start_age > 1) {
+          create_unit_in_group(ATTACKER, x, y, "horse archer", 1);
+          create_unit_in_group(ATTACKER, x, y, "supply wagon", 1);
+        }       
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count == 49) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);  
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        if (start_age > 1) {
+          create_unit_in_group(ATTACKER, x, y, "cataphract", 1);
+          create_unit_in_group(ATTACKER, x, y, "general", 1);
+          create_unit_in_group(ATTACKER, x, y, "supply wagon", 1);
+        }
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");
+        catapult_in_group = 1;
+    } 
+      break;
+    case 2 : //EASY
+      //add the units
+      if (attack_count >= 0 && attack_count <= 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 2);
+        set_timer("units", 20);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count >= 2 && attack_count <= 10) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 2);
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 11) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        if (start_age > 1) {
+          wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+          unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);  
+        }
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 2);
+        set_timer("units", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count > 11 && attack_count <= 18) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        if (start_age == 1) create_unit_upgrade(ATTACKER, x, y, "light horse", 2);
+        else create_unit_upgrade(ATTACKER, x, y, "horse archer", 2);
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 18 && attack_count <= 30) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        if (start_age > 1) {
+          create_unit_in_group(ATTACKER, x, y, "supply wagon", 1);
+        }
+        set_timer("units", 15);     
+        group_stance_order(ATTACKER, "Raze");    
+      } else if (attack_count > 30 && attack_count <= 39) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 2);        
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 39 && attack_count <= 45) {
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 2);             
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 45 && attack_count <= 48) {
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 2);  
+        if (start_age > 1) {
+          create_unit_in_group(ATTACKER, x, y, "horse archer", 1);
+          create_unit_in_group(ATTACKER, x, y, "supply wagon", 1);
+        }       
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count == 49) { 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);  
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        if (start_age > 1) {
+          create_unit_in_group(ATTACKER, x, y, "cataphract", 1);
+          create_unit_in_group(ATTACKER, x, y, "general", 1);
+          create_unit_in_group(ATTACKER, x, y, "supply wagon", 1);
+        }
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        set_timer("units", 15);
+        group_stance_order(ATTACKER, "Raze");
+        catapult_in_group = 1;
+     } 
+      break;
+    case 3 : //moderate
+      //add the units
+     if (attack_count >= 0 && attack_count <= 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        if (age(ATTACKER) == 0) create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        else create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count >= 2 && attack_count <= 4) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        if (age(ATTACKER) == 0) create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        else create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        set_timer("units", 30);
+        set_timer("units2", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count > 4 && attack_count <= 5 && start_age == 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count == 6 && start_age == 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 6 && attack_count <= 9 && start_age == 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 9 && attack_count <= 15 && start_age == 1) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        set_timer("units", 35);   
+        set_timer("units2", 15);  
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count > 15 && attack_count <= 17 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);                  
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 18 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);                  
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 19 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);                
+        set_timer("units", 30);
+        set_timer("units2", 5);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 20 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        set_timer("units", 30);
+        set_timer("units2", 4);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 21 && start_age == 1) {  //ancient age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);                  
+        set_timer("units", 30);
+        set_timer("units2", 8);
+        group_stance_order(ATTACKER, "Raze");   
+      } else if (attack_count == 22 && start_age == 1) {  //ancient age 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);                 
+        set_timer("units", 30);
+        set_timer("units2", 8);
+        group_stance_order(ATTACKER, "Raze");      
+      } else if (attack_count > 22 && attack_count <= 24 && start_age == 1) {  //ancient age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);              
+        set_timer("units", 30);
+        set_timer("units2", 4);
+        group_stance_order(ATTACKER, "Raze");
+        catapult_in_group = 1;
+      } else if (attack_count > 4 && attack_count <= 5 && start_age > 1) {   //classical age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count == 6 && start_age > 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 6 && attack_count <= 7 && start_age > 1) {   //classical age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 7 && attack_count <= 11 && start_age > 1) { //classical age    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);    
+        if (start_age < 8) create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        set_timer("units", 35);     
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count >= 12 && attack_count <= 14 && start_age > 1) { //classical age    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);
+        set_timer("units", 30);   
+        set_timer("units2", 1);  
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 14 && attack_count <= 16 && start_age > 1) { //classical age             
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);    
+        create_unit_upgrade(ATTACKER, x, y, "cataphract", 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);
+        set_timer("units", 30);   
+        set_timer("units2", 3);  
+        group_stance_order(ATTACKER, "Raze");  
+        catapult_in_group = 1;   
+      }
+      if (attack_count > 16 && attack_count <= 25 && start_age > 1) {   //classical age
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1); 
+        if (attack_count > 22) create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        if (attack_count > 22) create_unit_in_group(ATTACKER, x, y, "general", 1);  
+
+        if (attack_count <= 22) set_timer("units", 30);
+        if (attack_count > 22) set_timer("units", 25);
+        set_timer("units2", 8);
+        group_stance_order(ATTACKER, "Raze");
+      } 
+      if (attack_count > 22) {
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);    
+        catapult_in_group = 1;
+      }    
+      if (attack_count > 16 && attack_count <= 25 && start_age > 1) {   //classical age
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);  
+      }       
+      break;
+    case 4: //tough
+      //add the units
+     if (attack_count >= 0 && attack_count <= 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        if (age(ATTACKER) == 0) create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        else create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count >= 2 && attack_count <= 4) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        set_timer("units", 30);
+        set_timer("units2", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count > 4 && attack_count <= 5 && start_age == 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count == 6 && start_age == 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 6 && attack_count <= 9 && start_age == 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 9 && attack_count <= 15 && start_age == 1) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        set_timer("units", 35);   
+        set_timer("units2", 15);  
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count > 15 && attack_count <= 17 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);                  
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 18 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);                  
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 19 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        set_timer("units", 30);
+        set_timer("units2", 5);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 20 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);               
+        set_timer("units", 30);
+        set_timer("units2", 4);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 21 && start_age == 1) {  //ancient age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        set_timer("units", 30);
+        set_timer("units2", 8);
+        group_stance_order(ATTACKER, "Raze");   
+      } else if (attack_count == 22 && start_age == 1) {  //ancient age 
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        set_timer("units", 30);
+        set_timer("units2", 8);
+        group_stance_order(ATTACKER, "Raze");      
+      } else if (attack_count > 22 && attack_count <= 24 && start_age == 1) {  //ancient age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);    
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);             
+        set_timer("units", 30);
+        set_timer("units2", 4);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 4 && attack_count <= 5 && start_age > 1) {   //classical age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count == 6 && start_age > 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 6 && attack_count <= 7 && start_age > 1) {   //classical age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 7 && attack_count <= 11 && start_age > 1) { //classical age    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);    
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        set_timer("units", 35);     
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count >= 12 && attack_count <= 14 && start_age > 1) { //classical age    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        create_unit_upgrade(ATTACKER, x, y, "cataphract", 1);
+        set_timer("units", 30);   
+        set_timer("units2", 1);  
+        group_stance_order(ATTACKER, "Raze");  
+      }
+      if (attack_count > 14 && attack_count <= 16 && start_age > 1) { //classical age    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);    
+        create_unit_upgrade(ATTACKER, x, y, "cataphract", 1);
+        catapult_g = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult_g);   
+        set_timer("units", 30);   
+        set_timer("units2", 3);  
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count > 16 && attack_count <= 25 && start_age > 1) {   //classical age
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);    
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1); 
+        create_unit_in_group(ATTACKER, x, y, "cataphract", 1);     
+        if (attack_count > 22) create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        if (attack_count > 22) create_unit_in_group(ATTACKER, x, y, "general", 1);    
+        if (attack_count <= 22) set_timer("units", 30);
+        if (attack_count > 22) set_timer("units", 10);
+        if (start_age > 2) create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        group_stance_order(ATTACKER, "Raze");
+      } 
+      if ((attack_count > 22)) {
+        catapult_g = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult_g);   
+      }
+      break;
+    case 5: //tougher
+      //add the units
+     if (attack_count >= 0 && attack_count <= 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        if (age(ATTACKER) == 0) create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        else create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count >= 2 && attack_count <= 4) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        set_timer("units", 30);
+        set_timer("units2", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count > 4 && attack_count <= 5 && start_age == 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count == 6 && start_age == 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 6 && attack_count <= 9 && start_age == 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 2);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 9 && attack_count <= 15 && start_age == 1) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        set_timer("units", 35);   
+        set_timer("units2", 15);  
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count > 15 && attack_count <= 18 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);                  
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 19 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        set_timer("units", 30);
+        set_timer("units2", 5);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 20 && start_age == 1) {   //ancient age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);  
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 30);
+        set_timer("units2", 4);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 20 && attack_count <= 22 && start_age == 1) {  //ancient age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 2);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        set_timer("units", 30);
+        set_timer("units2", 8);
+        group_stance_order(ATTACKER, "Raze");      
+      } else if (attack_count > 22 && attack_count <= 24 && start_age == 1) {  //ancient age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);    
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);                 
+        set_timer("units", 30);
+        set_timer("units2", 4);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 4 && attack_count <= 5 && start_age > 1) {   //classical age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count == 6 && start_age > 1) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 6 && attack_count <= 7 && start_age > 1) {   //classical age 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 2);
+        set_timer("units", 35);
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 7 && attack_count <= 11 && start_age > 1) { //classical age    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);    
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        set_timer("units", 35);     
+        set_timer("units2", 15);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count >= 12 && attack_count <= 14 && start_age > 1) { //classical age    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);    
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);
+        if (start_age > 1) {
+          create_unit_in_group(ATTACKER, x, y, "cataphract", 1);
+        }
+        set_timer("units", 30);   
+        set_timer("units2", 1);  
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 14 && attack_count <= 16 && start_age > 1) { //classical age    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);    
+        create_unit_upgrade(ATTACKER, x, y, "cataphract", 2);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 30);   
+        set_timer("units2", 3);  
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count > 16 && attack_count <= 18 && start_age > 1) {   //classical age
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);    
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);   
+        set_timer("units", 30);
+        set_timer("units2", 8);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 18 && attack_count <= 25 && start_age > 1) {   //classical age
+        if (!map_is_land(x, y)) create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+        if (!map_is_land(x, y)) create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+        group_attack_to_order(ATTACKER, center_x, center_y);
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);    
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);   
+        create_unit_in_group(ATTACKER, x, y, "cataphract", 1);           
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        if (attack_count <= 22) set_timer("units", 30);
+        if (attack_count > 22) set_timer("units", 25);
+        set_timer("units2", 5);
+        group_stance_order(ATTACKER, "Raze");
+      } 
+      break;
+    case 6 : //toughest
+      //add the units
+      if (attack_count == 0) {  
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }    
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count > 0 && attack_count <= 4 && start_age == 1) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 1);
+        if (age(ATTACKER) > 0) create_unit_in_group(ATTACKER, x, y, "horse archer", 1);
+        else create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count == 5 && start_age == 1) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 5 && attack_count <= 8 && start_age == 1) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        if (age(ATTACKER) > 0) create_unit_upgrade(ATTACKER, x, y, "horse archer", 1);
+        else create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 8 && attack_count <= 11 && start_age == 1) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        set_timer("units", 30);
+        set_timer("units2", 10);     
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count == 12 && start_age == 1) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        set_timer("units", 30); 
+        set_timer("units2", 5);    
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 12 && attack_count <= 15 && start_age == 1) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        set_timer("units", 30);
+        set_timer("units2", 8);     
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 15 && attack_count <= 18 && start_age == 1) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }         
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1); 
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 30);
+        set_timer("units2", 3);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count == 19 && start_age == 1) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);                 
+        set_timer("units", 30);
+        set_timer("units2", 5);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 19 && attack_count <= 22 && start_age == 1) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);  
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        set_timer("units", 30);
+        set_timer("units2", 5);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 22 && attack_count <= 27 && start_age == 1) { 
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);  
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);                 
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 25);
+        set_timer("units2", 10);
+        group_stance_order(ATTACKER, "Raze");
+      //-----------------------------------------------------------------------------------
+      //------------------------classical age start----------------------------------------
+      //-----------------------------------------------------------------------------------
+      } else if (attack_count > 0 && attack_count <= 4 && start_age > 1) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, "light horse", 2);
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        if (raze_or_raid == 0) {
+          raze_or_raid = 1;
+          group_stance_order(ATTACKER, "Raze");
+        }
+        else if (raze_or_raid == 1) {
+          raze_or_raid = 0;
+          group_stance_order(ATTACKER, "Raid");
+        }
+      } else if (attack_count == 5 && start_age > 1) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (attack_count > 5 && attack_count <= 8 && start_age > 1) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        } 
+        create_unit_upgrade(ATTACKER, x, y, "horse archer", 1);
+        set_timer("units", 30);
+        set_timer("units2", 10);
+        group_stance_order(ATTACKER, "Raid");
+      } else if (attack_count > 8 && attack_count <= 12 && start_age > 1) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);
+        create_unit_upgrade(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        set_timer("units", 30);  
+        set_timer("units2", 6);   
+        group_stance_order(ATTACKER, "Raze");     
+      } else if (attack_count == 13 && start_age > 1) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }  
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);        
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 2);
+        set_timer("units", 30);    
+        set_timer("units2", 5); 
+        group_stance_order(ATTACKER, "Raze");  
+      } else if (attack_count > 13 && attack_count <= 16 && start_age > 1) {    
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }          
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);
+        create_unit_upgrade(ATTACKER, x, y, bowmen_type, 1);
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        set_timer("units", 30);     
+        set_timer("units2", 3);
+        group_stance_order(ATTACKER, "Raze");  
+      } else if ((attack_count > 16 && attack_count <= 22) && start_age > 1) {   
+        if (!map_is_land(x, y)) {
+          create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+          create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+          group_attack_to_order(ATTACKER, center_x, center_y);
+        }
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);
+        create_unit_in_group(ATTACKER, x, y, "cataphract", 1);
+        create_unit_in_group(ATTACKER, x, y, "general", 1);
+        set_timer("units", 30);
+        set_timer("units2", 6);
+        group_stance_order(ATTACKER, "Raze");
+      } else if (((attack_count > 22  && attack_count <= 26)) && start_age > 1) { 
+        if (!map_is_land(x, y)) create_unit_upgrade(ATTACKER, x, y, "bark", 1);
+        if (!map_is_land(x, y)) create_unit_in_group(ATTACKER, x, y, "trireme", 1);
+        group_attack_to_order(ATTACKER, center_x, center_y);
+        wagon = create_unit_upgrade(ATTACKER, x, y, "supply wagon", 1);
+        unit_move_order(ATTACKER, wagon, wagon_x, wagon_y);          
+        create_unit_upgrade(ATTACKER, x, y, hoplites_type, 1);  
+        create_unit_in_group(ATTACKER, x, y, slingers_type, 1);
+        create_unit_in_group(ATTACKER, x, y, bowmen_type, 1);                  
+        create_unit_in_group(ATTACKER, x, y, "cataphract", 1);
+        if (start_age == 4) create_unit_in_group(ATTACKER, x, y, hoplites_type, 1);
+        catapult = create_unit_in_group(ATTACKER, x, y, "catapult", 1);
+        group_guard_order(ATTACKER, ATTACKER, catapult);   
+        set_timer("units", 25);
+        set_timer("units2", 5);
+        group_stance_order(ATTACKER, "Raze");
+      } 
+      break;
+    }
+    }
+
+    attack_count++;
+    impale = rand_int(1,4);
+    if (diff == 2 && impale < 4) impale_units = 1;
+    else if (diff == 3 && impale < 4 && age(ATTACKER) == 0) impale_units = 1;
+    else if (diff == 3 && impale < 3 && age(ATTACKER) > 0) impale_units = 1;
+    else if (diff == 1) impale_units = 1;
+    else if (catapult_in_group == 1) impale_units = 0;
+    else impale_units = 0;
+    if (diff == 3 && time_later_than(10)) impale = 2;
+    if (diff < 4 && impale_units == 1) {
+      attack_here = find_build(DEFENDER, "tower");
+      if (attack_here <= 0) {
+        attack_here = find_build(DEFENDER, "farm");
+        if (attack_here <= 0) {
+          attack_here = find_build(DEFENDER, "");
+          if (attack_here == my_capital_id) {
+            attack_here = find_build(DEFENDER, "");
+          }
+        }
+      }
+      set_seen(ATTACKER, DEFENDER, attack_here);
+      group_attack_order(ATTACKER, DEFENDER, attack_here);
+    } else group_attack_to_order(ATTACKER, center_x, center_y);
+  }
+  
+  trigger middle_attack(timer_expired("attack_cor")) {
+    for (n = num_military_units(ATTACKER); n > 0; n--) {
+      unit = find_unit(ATTACKER, "");
+      impale = rand_int(1,4);
+      if (diff == 2 && impale < 4) impale_units = 1;
+      else if (diff == 3 && impale < 4 && age(ATTACKER) == 0) impale_units = 1;
+      else if (diff == 3 && impale < 3 && age(ATTACKER) > 0) impale_units = 1;
+      else if (diff == 1) impale_units = 1;
+      else if (catapult_in_group == 1) impale_units = 0;
+      else impale_units = 0;
+      if (diff == 3 && time_later_than(10)) impale = 2;
+      if (diff < 4 && impale_units == 1) {
+        attack_here = find_build(DEFENDER, "tower");
+        if (attack_here <= 0) {
+          attack_here = find_build(DEFENDER, "farm");
+          if (attack_here <= 0) {
+            attack_here = find_build(DEFENDER, "");
+            if (attack_here == my_capital_id) {
+              attack_here = find_build(DEFENDER, "");
+            }
+          }
+        }
+        set_seen(ATTACKER, DEFENDER, attack_here);
+        unit_attack_order(ATTACKER, unit, DEFENDER, attack_here);
+      } else unit_attack_to_order(ATTACKER, unit, center_x, center_y);
+    }
+    enable_trigger("supply_stop");
+    enable_trigger("middle_attack");
+    set_timer("attack_cor", 30);
+  }
+
+  trigger supply_stop() {
+    for (n = num_type(ATTACKER, "supply wagon"); n > 0; n--) {
+      supply = find_unit(ATTACKER, "supply wagon");
+      unit_clear_orders(ATTACKER, supply);
+    }
+    disable_trigger("supply_stop");
+  }
+
+  trigger (cur_time >= time_limit) {
+    victory(DEFENDER);
+  }
+       
+}

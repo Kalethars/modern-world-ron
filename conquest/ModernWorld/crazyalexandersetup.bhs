@@ -1,0 +1,84 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  labels {
+  }
+  diff = get_difficulty();
+
+  for (i = 2; i < 9; i++) {
+    set_leader_difficulty (i, diff);
+  }
+
+  int dir = get_conquest_invasion_dir();
+  //create alexander's army
+  int center = get_map_size() / 2;
+  int radius = center - 10;
+  int x = (int)(radius * sin(dir) + center);
+  int y = (int)(center - (radius * cos(dir)));
+
+  disable_city_defeat(2);
+  
+  create_unit_upgrade(1, x, y, "Slingers", 4);
+  create_unit_upgrade(1, x, y, "Hoplites", 4);
+  create_unit_upgrade(1, x, y, "Machine Gun", 2);
+  create_unit_upgrade(1, x, y, "Light Horse", 6);
+  create_unit_upgrade(1, x, y, "Cataphract", 10);
+  create_unit_upgrade(1, x, y, "Supply Wagon", 1);
+  create_unit_upgrade(1, x, y, "The CEO", 1);
+  create_unit_upgrade(1, x, y, "Scout", 1);
+  create_unit_upgrade(1, x, y, "General", 1);
+  
+  dir = dir + 180;
+  if (dir >= 360) {
+    dir = dir - 360;
+  }
+  group_jump_move(1, x, y, dir);
+
+  set_time_limit(10);
+
+  city_name = find_capital(2);
+  city_id = find_city_id(city_name);
+
+  x = object_position_x(2, city_id);
+  y = object_position_y(2, city_id);
+
+  if (diff < 3) {
+    place_building_upgrade(2, "Barracks", city_name);
+    place_building_upgrade(2, "Stable", city_name);
+  }
+  else if (diff < 5) {
+    place_building_upgrade(2, "Barracks", city_name);
+    place_building_upgrade(2, "Stable", city_name);
+    place_building_upgrade(2, "Tower", city_name);
+    set_good(2, "Food", 500);
+    set_good(2, "Timber", 500);
+    set_good(2, "Metal", 500);
+    set_good(2, "Wealth", 500);
+  }
+  else {
+    place_building_upgrade(2, "Temple", city_name);
+    place_building_upgrade(2, "Market", city_name);
+    place_building_upgrade(2, "Barracks", city_name);
+    place_building_upgrade(2, "Stable", city_name);
+    place_building_upgrade(2, "Barracks", city_name);
+    place_building_upgrade(2, "Stable", city_name);
+    place_building_upgrade(2, "Tower", city_name);
+    place_building_upgrade(2, "Tower", city_name);
+    set_good(2, "Food", 2000);
+    set_good(2, "Timber", 2000);
+    set_good(2, "Metal", 2000);
+    set_good(2, "Wealth", 2000);
+  }
+
+  create_unit(2, x, y, "Javelineers", diff/2);
+  create_unit_in_group(2, x, y, "Phalanx", diff/2);
+  create_unit_in_group(2, x, y, "Machine Gun", diff/2);
+  create_unit_in_group(2, x, y, "Light Horse", diff/2);
+  create_unit_in_group(2, x, y, "Cataphract", diff/2);
+
+  set_unit_type_speed("The CEO", 14+3*diff);
+  set_object_type_max_health("The CEO", 1400-150*diff);
+  set_unit_type_speed("Supply Wagon", 40-diff*2);
+}

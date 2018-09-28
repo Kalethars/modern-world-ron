@@ -1,0 +1,49 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Robert Nicaise (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="East Asians">
+  <LEADERS>
+    <LEADER>Maha Vajiravudh of Siam</LEADER>
+    <LEADER>Bogd Khan of Mongolia</LEADER>
+    <LEADER>Thành Thái of Đai Nam</LEADER>
+    <LEADER>Wasif Ali Mirza of Bengal</LEADER>
+    <LEADER>Sisowath of Cambodia</LEADER>
+    <LEADER>Sisavang Vong of Laos</LEADER>
+    <LEADER>Tribhuvan of Nepal</LEADER>
+    <LEADER>Ugyen Wangchuck of Bhutan</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Bangkok</CITY>
+    <CITY>Ulan Bator</CITY>
+    <CITY>Hanoi</CITY>
+    <CITY>Dhaka</CITY>
+    <CITY>Phnom Penh</CITY>
+    <CITY>Vientiane</CITY>
+    <CITY>Kathmandu</CITY>
+    <CITY>Thimphu</CITY>
+    <CITY>Kuala Lumpur</CITY>
+    <CITY>Jakarta</CITY>
+    <CITY>Manila</CITY>
+    <CITY>Singapore</CITY>
+    <CITY>Naypyidaw</CITY>
+    <CITY>Colombo</CITY>
+    <CITY>Malé</CITY>
+    <CITY>Bandar Seri Begawan</CITY>
+    <CITY>Dili</CITY>
+    <CITY>Malacca</CITY>
+    <CITY>Chiang Mai</CITY>
+    <CITY>Surabaya</CITY>
+    <CITY>Davao City</CITY>
+    <CITY>Saigon</CITY>
+    <CITY>Rangoon</CITY>
+    <CITY>Chittagong</CITY>
+    <CITY>Öndörkhaan</CITY>
+    <CITY>Battambang</CITY>
+    <CITY>Pakse</CITY>
+    <CITY>Gangtok</CITY>
+    <CITY>Pokhara Lekhnath</CITY>
+    <CITY>Phuntsholing</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>3 Asian   </UNIT_CONTINENT>
+  <BUILD_CONTINENT>2 Asian</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>2 Asian</BACKUP_BUILD_CONTINENT>
+</TRIBE>

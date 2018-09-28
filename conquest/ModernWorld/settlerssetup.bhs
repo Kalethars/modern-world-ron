@@ -1,0 +1,24 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  int nation;
+  int x;
+  int y;
+
+  for (nation = 1; nation < num_players(); nation++) {
+    if (nation != 1) {
+      disable_city_defeat(nation);
+      diplomacy_set_wait(nation);
+      set_contact(1, nation, 0);
+    }
+    else {
+      x = get_starting_loc_x(nation);
+      y = get_starting_loc_y(nation);
+      place_new_world_army(1,x,y);
+      place_new_world_army(1,x,y);
+    }
+  }
+
+}

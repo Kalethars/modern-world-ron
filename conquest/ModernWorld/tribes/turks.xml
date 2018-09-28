@@ -1,0 +1,38 @@
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Turks">
+  <LEADERS>
+    <LEADER>Mehmed V</LEADER>
+    <LEADER>İsmet İnönü</LEADER>
+    <LEADER>Recep Tayyip Erdoğan</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Ankara</CITY>
+    <CITY>Istanbul</CITY>
+    <CITY>İzmir</CITY>
+    <CITY>Bursa</CITY>
+    <CITY>Adana</CITY>
+    <CITY>Gaziantep</CITY>
+    <CITY>Konya</CITY>
+    <CITY>Antalya</CITY>
+    <CITY>Kayseri</CITY>
+    <CITY>Mersin</CITY>
+    <CITY>Eskişehir</CITY>
+    <CITY>Diyarbakır</CITY>
+    <CITY>Samsun</CITY>
+    <CITY>Denizli</CITY>
+    <CITY>Şanlıurfa</CITY>
+    <CITY>Adapazarı</CITY>
+    <CITY>Malatya</CITY>
+    <CITY>Kahramanmaraş</CITY>
+    <CITY>Erzurum</CITY>
+    <CITY>Van</CITY>
+    <CITY>Batman</CITY>
+    <CITY>Elâzığ</CITY>
+    <CITY>İzmit</CITY>
+    <CITY>Manisa</CITY>
+    <CITY>Sivas</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>0 Europe</UNIT_CONTINENT>
+  <BUILD_CONTINENT>5 Turk</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>4 American</BACKUP_BUILD_CONTINENT>
+</TRIBE>

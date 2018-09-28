@@ -1,0 +1,40 @@
+include "ctw_lib.bhs"
+//runtime script for Conquest style scenarios
+
+conquest {
+  labels {
+    ATTACKER,
+    DEFENDER,
+  }
+  static time_limit = 90;
+  int random;
+  int building;
+  String city_name;
+  int x;
+  int y;
+  int map_size;
+  int nation;
+  String nation_name;
+  static int diff = get_difficulty();
+  static int who;
+
+  run_once {
+    time_limit = get_time_limit();
+    set_timer("NextAge", 900+300*diff);
+  }
+  cur_time = time();
+  
+  trigger (cur_time >= time_limit) {
+    defeat_attacker_and_allies();
+  }
+
+  trigger (timer_expired("NextAge")) {
+    gain_next_age(ATTACKER);
+  }
+
+  trigger setcapital(num_cities(ATTACKER)>0) {
+    city_name = find_city_name(ATTACKER);
+    set_capital(ATTACKER, city_name);
+    enable_city_defeat(ATTACKER);
+  }
+}

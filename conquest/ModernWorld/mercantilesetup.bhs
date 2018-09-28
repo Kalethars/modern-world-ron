@@ -1,0 +1,49 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  int red = 1;
+  int blue = 2;
+  int purple = 3;
+  int green = 4;
+  int yellow = 5;
+  int nation;
+  String city_name;
+  int building;
+  int x;
+  int y;
+  
+  for (nation = 1; nation < num_players(); nation++) {
+    gain_tech(nation, "Commerce");
+    city_name = find_capital(nation);
+    place_building(nation, "Market", city_name);
+    building = find_build(nation, "Market");
+    x = object_position_x(nation, building) + 5;
+    y = object_position_y(nation, building);
+    if (find_nation(nation) == "Dutch") {
+      create_unit(nation, x, y, "Armed Merchant", 1);
+    } else {
+      create_unit(nation, x, y, "Merchant", 1);
+    }
+    place_new_world_army(nation,x,y);  
+  }
+  
+  
+  
+  for (nation = 2; nation < num_players(); nation++) {
+    set_explored(nation);
+    disable_tech(nation, "Allegiance");
+    disable_tech(nation, "Oath of Fealty");
+    disable_tech(nation, "Patriotism");
+    disable_tech(nation, "Nationalism");
+  }
+
+  disable_tech(1, "Allegiance");
+  disable_tech(1, "Oath of Fealty");
+  disable_tech(1, "Patriotism");
+  disable_tech(1, "Nationalism");
+
+  //set_object_type_max_health("Merchant", 250);
+
+}

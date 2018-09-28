@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<ROOT>
+	<OFFENSIVE>
+		<ENTRY name="CONQUEST">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="FIELD BATTLE">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="TACTICS">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="AMBUSH">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="HIDEAWAY">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="LIBERATION">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="TECH RAID">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="AIRLIFT">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="WAR PARTY">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="GUERRILLA BASES">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="SURPRISE ATTACK!">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="PILLAGE">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="SKIRMISH">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="ASSAULT">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="OVERWHELM">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="BRIBERY">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="SPEECH OF THE SUPREME LEADER"><STRING/></ENTRY><ENTRY name="GUERILLA WARFARE"><STRING/></ENTRY><ENTRY name="MELEE"><STRING/></ENTRY><ENTRY name="BESIEGED"><STRING/></ENTRY><ENTRY name="BLITZKRIEG"><STRING/></ENTRY></OFFENSIVE>
+	<DEFENSIVE>
+		<ENTRY name="SURPRISE ATTACK!">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="CONQUEST">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="GUERRILLA WARFARE">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="AIRLIFT">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="AMBUSH">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="THE CRAZY CEO">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="ASSAULT">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="OVERWHELM">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="MERCENARY">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="HIDEAWAY"><STRING/></ENTRY><ENTRY name="SKIRMISH"><STRING/></ENTRY><ENTRY name="MELEE"><STRING/></ENTRY><ENTRY name="BESIEGED"><STRING/></ENTRY><ENTRY name="LIBERATION"><STRING/></ENTRY></DEFENSIVE>
+	<BARBARIAN>
+		<ENTRY name="MELEE">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="TACTICS">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="BARBARIAN RALLY">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="FIELD BATTLE">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="SUDDEN DEATH">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="WHEEL AND DEAL">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="BARBARIANS AT THE GATES!">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="NOMAD">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="WAR PARTY">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="HIDEAWAY">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="AIRLIFT">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="FOOD FOR THE WINTER">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="FEDERATION">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="LIBERATION">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="MERCANTILE">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="SETTLERS">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="PILLAGE">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="GUERRILLA BASES">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="SKIRMISH">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="BRIBERY">
+			<STRING/>
+		</ENTRY>
+		<ENTRY name="SPEECH OF THE SUPREME LEADER"><STRING/></ENTRY><ENTRY name="GUERILLA WARFARE"><STRING/></ENTRY><ENTRY name="METAL RUSH!"><STRING/></ENTRY><ENTRY name="BESIEGED"><STRING/></ENTRY><ENTRY name="BLITZKRIEG"><STRING/></ENTRY></BARBARIAN>
+</ROOT>

@@ -1,0 +1,167 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+  int r,i,j,x,y,x2,y2,dist,mindist,flag,dir,center,radius,building;
+  String cap_name;
+  r=rand_int(0,2);
+  if (r==0){
+    gain_tech(3, "Despotism");
+  } else{
+    gain_tech(3, "Republic");
+  }
+  r=rand_int(0,2);
+  if (r==0){
+    gain_tech(3, "Monarchy");
+  } else{
+    gain_tech(3, "Democracy");
+  }
+  r=rand_int(0,2);
+  if (r==0){
+    gain_tech(3, "Socialism");
+  } else{
+    gain_tech(3, "Capitalism");
+  }
+
+  int diff = get_difficulty();
+
+  for (i = 2; i < 9; i++) {
+    set_leader_difficulty (i, diff);
+  }
+  
+  declare_war(1, 3);
+  declare_war(1, 3);
+
+  make_alliance(2, 3);
+  
+  i=3;
+  if (num_cities(i)==0) {
+	dist=300;
+	mindist=60;
+	while (num_cities(i)==0) {
+	  flag = 1;
+	  dir = get_conquest_invasion_dir() + rand_int(30,150)*(rand_int(0,2)*2-1);
+	  center = get_map_size() / 2;
+	  radius = rand_int(0,(int)(center*1.4));
+	  x = (int)(radius * sin(dir) + center);
+	  y = (int)(center - (radius * cos(dir)));
+	  for (j = 1; j < i; j++){
+		if  (x<10 || x>get_map_size()-10 || y<10 || y>get_map_size()-10){
+			flag=0;
+			break;
+		}
+		cap_name = find_city_name(j);
+		building = find_city_id(cap_name);
+		x2 = object_position_x(j, building);
+		y2 = object_position_y(j, building);
+		if ((x-x2)*(x-x2)+(y-y2)*(y-y2)<=dist*dist){
+			if (dist>mindist) dist--;
+			flag = 0;
+			break;
+		}
+	  }
+	  if (map_is_buildable(x,y) && flag==1){
+		create_building_near(i, x, y, "Small City", 1);
+	  }
+	}
+	cap_name = find_city_name(i);
+	set_capital(i, cap_name);
+	place_building(i, "Farm", cap_name);
+	place_building(i, "Farm", cap_name);
+	place_building(i, "Farm", cap_name);
+	set_base_rate(i, "Food", get_base_rate(i,"Food")+30-10*(num_type(i,"Farm")));
+	place_building(i, "Woodcutter's Camp", cap_name);
+	place_building(i, "Library", cap_name);
+  }
+  cap_name = find_capital(i);
+  building = find_city_id(cap_name);
+  x = object_position_x(i, building);
+  y = object_position_y(i, building);
+  if (num_type(i,"Citizen")>0){
+	for (j=1;j<=5;j++){
+		unit=find_unit(i,"Citizen");
+		add_to_group(i,unit);
+	}
+	unit=find_unit(i,"Scout");
+	add_to_group(i,unit);
+	group_jump_move(i, x, y, 135);
+  }
+  if (num_type(i,"Citizen")==0) {
+	create_unit_upgrade(i, x, y, "Citizen", 5);
+	create_unit_upgrade(i, x, y, "Scout", 1);
+  }
+  group_jump_move(i, x, y, 135);
+
+  if (num_type(i,"Woodcutter's Camp")==0){
+	place_building(i, "Dock", cap_name);
+	set_base_rate(i, "Timber", get_base_rate(i,"Timber")+10);
+  }
+  if (num_type(i,"Library")==0){
+	gain_tech(i,"Civic");
+	gain_tech(i,"Commerce");
+	gain_tech(i,"Commerce");
+	gain_tech(i,"Science");
+  }
+  if (num_type(i,"Mine")==0) {
+	place_building(i, "Mine", cap_name);
+	if (num_type(i,"Mine")==0){
+		set_base_rate(i, "Metal", get_base_rate(i,"Metal")+10);
+	} else{
+		destroy_building(i,find_build(i,"Mine"));
+	}
+  }
+  if (num_type(i,"University")==0) {
+	place_building(i, "University", cap_name);
+	if (num_type(i,"University")==0){
+		set_base_rate(i, "Knowledge", get_base_rate(i,"Knowledge")+10);
+	} else{
+		destroy_building(i,find_build(i,"University"));
+	}
+  }
+  if (num_type(i,"Market")==0) {
+	place_building(i, "Market", cap_name);
+	if (num_type(i,"Market")==0){
+		set_base_rate(i, "Wealth", get_base_rate(i,"Wealth")+10);
+	} else{
+		destroy_building(i,find_build(i,"Market"));
+	}
+  }
+  place_building(i, "Senate", cap_name);
+    
+  if (num_military_units(1) <= 1){
+	  city_name = find_capital(1);
+	  city_id = find_city_id(city_name);
+
+	  x = object_position_x(1, city_id);
+	  y = object_position_y(1, city_id);
+
+	  create_unit_upgrade(1, x, y, "Slingers", 6);
+	  create_unit_upgrade(1, x, y, "Pikemen", 2);
+	  create_unit_upgrade(1, x, y, "Light Horse", 2);
+	  create_unit_upgrade(1, x, y, "General", 1);
+	  create_unit_upgrade(1, x, y, "Supply Wagon", 1);
+  }
+  
+  city_name = find_capital(3);
+  city_id = find_city_id(city_name);
+
+  x = object_position_x(3, city_id);
+  y = object_position_y(3, city_id);
+
+  create_unit_upgrade(3, x, y, "Slingers", diff/2);
+  create_unit_upgrade(3, x, y, "Pikemen", diff/2);
+  create_unit_upgrade(3, x, y, "Light Horse", diff/2);
+  create_unit_upgrade(3, x, y, "Cataphract", diff/2);
+
+  set_good(2, "Food", 500);
+  set_good(2, "Timber", 500);
+  set_good(2, "Metal", 500);
+  set_good(2, "Wealth", 500);
+  set_good(2, "Oil", 500);
+  
+  set_good(3, "Food", 500);
+  set_good(3, "Timber", 500);
+  set_good(3, "Metal", 500);
+  set_good(3, "Wealth", 500);
+  set_good(3, "Oil", 500);
+}

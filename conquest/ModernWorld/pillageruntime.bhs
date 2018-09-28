@@ -1,0 +1,480 @@
+conquest
+{
+
+  static int map_size = get_map_size();
+
+  //Alexander
+  static int alexander = find_unit(1, "General");
+
+  //get nation numbers
+  static int player = 1;
+  static int enemy1 = 2;
+
+  static int time_value = 4;
+
+  //enemy1 cities
+  static String enemy1_cap_name = find_capital(enemy1);
+
+  static int old_units_killed;
+  int new_units_killed;
+  int reinforce_num;
+  static int armies_received = 0;
+  static int alex_triumphs_count;
+
+  int building;
+  String city_name;
+  int nation;
+  int new_unit;
+  int unit;
+  int amount;
+  static int step = 1;
+  static int time_limit = get_time_limit();
+  static int diff = get_difficulty();
+  int cur_time;
+
+  static int enemy_build = num_buildings(enemy1);
+
+  static int attack_count;
+  int x;
+  int y;
+  int who;
+  int who_unit;
+  int unit_x;
+  int unit_y;
+  int x_check;
+  int y_check;
+  int building_id;
+  int building_x;
+  int building_y;
+  int x_distance;
+  int y_distance;
+  int x_distance_absl;
+  int y_distance_absl;
+  int x_check_absl;
+  int y_check_absl;
+
+  run_once {
+    enable_all_triggers();
+    enable_trigger("attack");
+    set_timer("upset_attack", 16);
+    enemy_builds = num_buildings(enemy1);
+    enable_trigger("what_next");
+    set_timer("come_home", 181);
+    city_name = find_capital(2);
+    building = find_city_id(city_name);
+    set_seen(1,2,building);
+    ctw_add_objective_text($S("Hint: Capture enemy military production buildings by reducing their health by half."), 10, "");
+    ctw_add_objective_text($S("Hint: Get resources by destroying enemy buildings or finding Ruins."), 11, "");
+  }
+
+  trigger attack(timer_expired("upset_attack")) {
+    who = 2;
+    //find human army
+    who_unit = find_unit(1, "");
+    unit_x = object_position_x(1, who_unit);
+    unit_y = object_position_y(1, who_unit);
+    x_check = unit_x;
+    y_check = unit_y;
+
+    building_id = find_military_build(who);
+    building_x = object_position_x(who, building_id);
+    building_y = object_position_y(who, building_id);
+    x_distance = x_check - building_x;
+    y_distance = y_check - building_y;
+    x_distance_absl = absl_int(x_distance);
+    y_distance_absl = absl_int(y_distance);
+    if (x_check_absl > y_check_absl) {
+      if ((x_check - building_x) > 0) {
+        x = x_check - 20;
+        if (age(enemy1) >= 2) {
+          x = x - 5;
+        }
+        if (age(enemy1) >= 5) {
+          x = x - 2;
+        }
+        if (age(enemy1) >= 6) {
+          x = x - 2;
+        }
+        if (age(enemy1) >= 7) {
+          x = x - 3;
+        }
+        if (any_object_near(player, 1, x, y, 5)) {
+          x = x_check - 25;
+        }
+      }
+      else {
+        x = x_check + 20;
+        if (age(enemy1) >= 2) {
+          x = x + 5;
+        }
+        if (age(enemy1) >= 5) {
+          x = x + 2;
+        }
+        if (age(enemy1) >= 6) {
+          x = x + 2;
+        }
+        if (age(enemy1) >= 7) {
+          x = x + 3;
+        }
+        if (any_object_near(player, 1, x, y, 5)) {
+          x = x_check + 25;
+        }
+      }
+      if ((y_check - building_y) > 0) {
+        y = y_check - 15;
+        if (age(enemy1) >= 2) {
+          y = y - 5;
+        }
+        if (age(enemy1) >= 5) {
+          y = y - 2;
+        }
+        if (age(enemy1) >= 6) {
+          y = y - 2;
+        }
+        if (age(enemy1) >= 7) {
+          y = y - 3;
+        }
+        if (any_object_near(player, 1, x, y, 5)) {
+          y = x_check - 20;
+        }
+      }
+      else {
+        y = y_check + 15;
+        if (age(enemy1) >= 2) {
+          y = y + 5;
+        }
+        if (age(enemy1) >= 5) {
+          y = y + 2;
+        }
+        if (age(enemy1) >= 6) {
+          y = y + 2;
+        }
+        if (age(enemy1) >= 7) {
+          y = y + 3;
+        }
+        if (any_object_near(player, 1, x, y, 5)) {
+          y = y_check - 20;
+        }
+      }
+    }
+    else {
+      if ((y_check - building_y) > 0) {
+        y = y_check - 20;
+        if (age(enemy1) >= 2) {
+          y = y - 5;
+        }
+        if (age(enemy1) >= 5) {
+          y = y - 2;
+        }
+        if (age(enemy1) >= 6) {
+          y = y - 2;
+        }
+        if (age(enemy1) >= 7) {
+          y = y - 3;
+        }
+        if (any_object_near(player, 1, x, y, 5)) {
+          y = y_check - 25;
+        }
+      }
+      else {
+        y = y_check + 20;
+        if (age(enemy1) >= 2) {
+          y = y + 5;
+        }
+        if (age(enemy1) >= 5) {
+          y = y + 2;
+        }
+        if (age(enemy1) >= 6) {
+          y = y + 2;
+        }
+        if (age(enemy1) >= 7) {
+          y = y + 3;
+        }
+        if (any_object_near(player, 1, x, y, 5)) {
+          y = y_check + 25;
+        }
+      }
+      if ((x_check - building_x) > 0) {
+        x = x_check - 15;
+        if (age(enemy1) >= 2) {
+          x = x - 5;
+        }
+        if (age(enemy1) >= 5) {
+          x = x - 2;
+        }
+        if (age(enemy1) >= 6) {
+          x = x - 2;
+        }
+        if (age(enemy1) >= 7) {
+          x = x - 3;
+        }
+        if (any_object_near(player, 1, x, y, 5)) {
+          x = x_check - 20;
+        }
+      }
+      else {
+        x = x_check + 15;
+        if (age(enemy1) >= 2) {
+          x = x + 5;
+        }
+        if (age(enemy1) >= 5) {
+          x = x + 2;
+        }
+        if (age(enemy1) >= 6) {
+          x = x + 2;
+        }
+        if (age(enemy1) >= 7) {
+          x = x + 3;
+        }
+        if (any_object_near(player, 1, x, y, 5)) {
+          x = x_check - 20;
+        }
+      }
+    }
+    if (x < 0) x = 1;
+    if (y < 0) y = 1;
+    
+    create_unit(who, x, y, "militia", diff);
+    group_attack_to_order(who, x_check, y_check);
+
+    //if (time_earlier_than(2)) {
+      set_timer("upset_attack", 25 - diff);
+      attack_count++;
+      enable_trigger("attack");
+    //}
+  }
+
+  if (time_later_than(3) && timer_expired("come_home")) {
+    for (n = num_units(enemy1); n > 0; n--) {
+      unit = find_unit(enemy1, "");
+      building = get_map_size()/2;
+      unit_attack_to_order(enemy1, unit, building, building);
+    }
+    set_timer("come_home", 25);
+  }
+
+  for (n = 0; n < num_type(enemy1, "Barracks"); n++) {
+    building = find_build(enemy1, "Barracks");
+    if (object_health(enemy1, building) < 50) {
+      switch_teams(player, enemy1, building);
+    }
+  }
+
+  for (n = 0; n < num_type(enemy1, "Stable"); n++) {
+    building = find_build(enemy1, "Stable");
+    if (object_health(enemy1, building) < 50) {
+      switch_teams(player, enemy1, building);
+    }
+  }
+
+  for (n = 0; n < num_type(enemy1, "Auto Plant"); n++) {
+    building = find_build(enemy1, "Auto Plant");
+    if (object_health(enemy1, building) < 50) {
+      switch_teams(player, enemy1, building);
+    }
+  }
+
+  for (n = 0; n < num_type(enemy1, "Siege Factory"); n++) {
+    building = find_build(enemy1, "Siege Factory");
+    if (object_health(enemy1, building) < 50) {
+      switch_teams(player, enemy1, building);
+    }
+  }
+
+  for (n = 0; n < num_type(enemy1, "Factory"); n++) {
+    building = find_build(enemy1, "Factory");
+    if (object_health(enemy1, building) < 50) {
+      switch_teams(player, enemy1, building);
+    }
+  }
+
+  //find if player has captured enemy city
+
+  trigger alex_triumphs(city_captured_by(enemy1, player, enemy1_cap_name)) {
+    building = find_city_id(enemy1_cap_name);
+    if (building == 0) building = find_build(player, "Large City");
+    if (building == 0) building = find_build(player, "Small City");
+    x = object_position_x(player, building);
+    y = object_position_y(player, building);
+    for (n = num_units(enemy1); n > 0; n--) {
+      unit = find_unit(enemy1, "");
+      unit_attack_to_order(enemy1, unit, x, y);
+    }
+    //create_unit_upgrade(enemy1, x + 40, y, "Militia", diff + 1 - alex_triumphs_count * 2);
+    //create_unit_in_group(enemy1, x - 40, y, "Militia", diff + 1 - (alex_triumphs_count * 2));
+    //create_unit_in_group(enemy1, x, y - 40, "Militia", diff + 2 - alex_triumphs_count * 2);
+    //create_unit_in_group(enemy1, x, y + 40, "Militia", diff + 2 - (alex_triumphs_count * 2));
+    for (n = num_type(enemy1, "Barracks")/2; n > 0; n--) {
+      building = find_build(enemy1, "Barracks");
+      x = object_position_x(enemy1, building) + 2;
+      y = object_position_y(enemy1, building);
+      create_unit_in_group(enemy1, x, y, "Slingers", 1);
+    }
+    for (n = num_type(enemy1, "Stable")/2; n > 0; n--) {
+      building = find_build(enemy1, "Stable");
+      x = object_position_x(enemy1, building) + 2;
+      y = object_position_y(enemy1, building);
+      create_unit_in_group(enemy1, x, y, "Light Horse", 1);
+    }
+    for (n = num_type(enemy1, "Auto Plant")/2; n > 0; n--) {
+      building = find_build(enemy1, "Auto Plant");
+      x = object_position_x(enemy1, building) + 2;
+      y = object_position_y(enemy1, building);
+      create_unit_in_group(enemy1, x, y, "Light Horse", 1);
+    }
+    for (n = num_civilian_buildings(enemy1)/2; n > 0; n--) {
+      building = find_civilian_build(enemy1);
+      x = object_position_x(enemy1, building) + 2;
+      y = object_position_y(enemy1, building);
+      create_unit_in_group(enemy1, x, y, "Militia", 1);
+    }
+    for (n = num_type(enemy1, "Siege Factory")/2; n > 0; n--) {
+      building = find_build(enemy1, "Siege Factory");
+      x = object_position_x(enemy1, building) + 2;
+      y = object_position_y(enemy1, building);
+      create_unit_in_group(enemy1, x, y, "Catapult", 1);
+    }    
+    for (n = num_type(enemy1, "Factory")/2; n > 0; n--) {
+      building = find_build(enemy1, "Factory");
+      x = object_position_x(enemy1, building) + 2;
+      y = object_position_y(enemy1, building);
+      create_unit_in_group(enemy1, x, y, "Catapult", 1);
+    }    
+    for (n = num_type(enemy1, "Tower")/2; n > 0; n--) {
+      building = find_build(enemy1, "Tower");
+      x = object_position_x(enemy1, building) + 2;
+      y = object_position_y(enemy1, building);
+      create_unit_in_group(enemy1, x, y, "Hoplites", 1);
+    }
+    building = find_city_id(enemy1_cap_name);
+    if (building == 0) building = find_build(player, "Large City");
+    if (building == 0) building = find_build(player, "Small City");
+    x = object_position_x(player, building);
+    y = object_position_y(player, building);
+    group_attack_to_order(enemy1, x, y);
+    set_timer("too_long", 120);
+    alex_triumphs_count++;
+    //unit_costs_enable();
+  }
+
+  if (enemy_build < num_buildings(enemy1)) {
+    enemy_build = num_buildings(enemy1);
+  }
+
+  if (enemy_build > num_buildings(enemy1) && num_civilian_buildings(enemy1) > 0) {
+    city_name = find_capital(enemy1);
+    building = find_city_id(city_name);
+    x = object_position_x(enemy1, building) + 2;
+    y = object_position_y(enemy1, building);
+    create_unit(enemy1, x, y, "Militia", diff/2 + 1);
+    unit = find_unit(player, "");
+    x = object_position_x(player, unit);
+    y = object_position_y(player, unit);
+    group_attack_to_order(enemy1, x, y);
+    enemy_build = num_buildings(enemy1);
+  }
+
+  if (num_type(player, "Small City") == 1 || num_type(player, "Large City") == 1) {
+    if (num_type(player, "Temple") == 0) {
+      if (num_type(player, "University") == 0) {
+        if (num_type(player, "Farm") == 0) {
+          if (num_type(player, "Library") == 0) {
+            if (num_type(player, "Senate") == 0) {
+              if (num_type(player, "Market") == 0) {
+                building = find_city_id(enemy1_cap_name);
+                destroy_building(player, building);
+                set_timer("game_over", 1);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  trigger what_next(time_later_than(time_value) || num_units(enemy1) < 6) {
+    building = find_city_id(enemy1_cap_name);
+    if (building == 0) building = find_build(player, "Large City");
+    if (building == 0) building = find_build(player, "Small City");
+    x = object_position_x(player, building);
+    y = object_position_y(player, building);
+    for (n = num_units(enemy1); n > 0; n--) {
+      unit = find_unit(enemy1, "");
+      unit_attack_to_order(enemy1, unit, x, y);
+    }
+    building = rand_int(1,4);
+    if (building == 1) create_unit_upgrade(enemy1, x + 40, y, "Militia", 3);
+    else if (building == 2) create_unit_in_group(enemy1, x - 40, y, "Militia", 2);
+    else if (building == 3) create_unit_in_group(enemy1, x, y - 40, "Militia", 3);
+    else if (building == 4) create_unit_in_group(enemy1, x, y + 40, "Militia", 2);
+    group_attack_to_order(enemy1, x, y);
+    time_value++;
+    //unit_costs_enable();
+    enable_trigger("what_next");
+  }
+
+  if (enemy_build < num_buildings(enemy1)) {
+    enemy_build = num_buildings(enemy1);
+  }
+
+  if (enemy_build > num_buildings(enemy1) && num_civilian_buildings(enemy1) > 0) {
+    city_name = find_capital(enemy1);
+    building = find_city_id(city_name);
+    x = object_position_x(enemy1, building) + 2;
+    y = object_position_y(enemy1, building);
+    create_unit(enemy1, x, y, "Phalanx", diff/2 + 1);
+    unit = find_unit(player, "");
+    x = object_position_x(player, unit);
+    y = object_position_y(player, unit);
+    group_attack_to_order(enemy1, x, y);
+    enemy_build = num_buildings(enemy1);
+  }
+
+  /*if (num_type(player, "Small City") == 1 || num_type(player, "Large City") == 1) {
+    if (num_type(player, "Temple") == 0) {
+      if (num_type(player, "University") == 0) {
+        if (num_type(player, "Farm") == 0) {
+          if (num_type(player, "Library") == 0) {
+            if (num_type(player, "Senate") == 0) {
+              if (num_type(player, "Market") == 0) {
+                building = find_city_id(enemy1_cap_name);
+                destroy_building(player, building);
+                set_timer("game_over", 1);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+*/
+
+  /*if (num_buildings(player) == 1) {
+    building = find_city_id(enemy1_cap_name);
+    destroy_building(player, building);
+    set_timer("game_over", 1);
+    for (n = num_buildings(enemy1); n > 0; n--) {
+      building = find_build(enemy1, "");
+      destroy_building(enemy1, building);
+    }
+    for (n = num_units(enemy1); n > 0; n--) {
+      unit = find_unit(enemy1, "");
+      kill_unit_anim(enemy1, unit, 1);
+    }
+  }
+*/
+
+  if (timer_expired("game_over")) {
+    defeat(enemy1);
+  }
+
+  cur_time = time();
+
+  if (cur_time >= time_limit) {
+    victory(enemy1);
+  }
+
+  if (num_units(player) == 0) defeat(player);
+
+}
+

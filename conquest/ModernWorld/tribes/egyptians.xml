@@ -1,0 +1,39 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Brian Reynolds (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Egyptians">
+  <LEADERS>
+    <LEADER>Abbas Helmi II</LEADER>
+    <LEADER>Farouk I</LEADER>
+    <LEADER>Hosni Mubarak</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Cairo</CITY>
+    <CITY>Alexandria</CITY>
+    <CITY>Giza</CITY>
+    <CITY>Shubra El Kheima</CITY>
+    <CITY>Port Said</CITY>
+    <CITY>Suez</CITY>
+    <CITY>El Mahalla El Kubra</CITY>
+    <CITY>Luxor</CITY>
+    <CITY>Mansoura</CITY>
+    <CITY>Tanta</CITY>
+    <CITY>Asyut</CITY>
+    <CITY>Ismailia</CITY>
+    <CITY>Faiyum</CITY>
+    <CITY>Zagazig</CITY>
+    <CITY>Damietta</CITY>
+    <CITY>Aswan</CITY>
+    <CITY>Minya</CITY>
+    <CITY>Damanhur</CITY>
+    <CITY>Beni Suef</CITY>
+    <CITY>Hurghada</CITY>
+    <CITY>Qena</CITY>
+    <CITY>Sohag</CITY>
+    <CITY>Shibin El Kom</CITY>
+    <CITY>Banha</CITY>
+    <CITY>Arish</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>1 Arab</UNIT_CONTINENT>
+  <BUILD_CONTINENT>5 Turk</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>4 American</BACKUP_BUILD_CONTINENT>
+</TRIBE>

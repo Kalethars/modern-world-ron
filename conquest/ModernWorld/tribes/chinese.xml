@@ -1,0 +1,53 @@
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Chinese">
+  <LEADERS>
+    <LEADER>Sun Yat-sen</LEADER>
+    <LEADER>Mao Zedong</LEADER>
+    <LEADER>Jiang Zemin</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Beijing</CITY>
+    <CITY>Shanghai</CITY>
+    <CITY>Guangzhou</CITY>
+    <CITY>Chongqing</CITY>
+    <CITY>Tianjin</CITY>
+    <CITY>Nanjing</CITY>
+    <CITY>Shenzhen</CITY>
+    <CITY>Xian</CITY>
+    <CITY>Wuhan</CITY>
+    <CITY>Chengdu</CITY>
+    <CITY>Hangzhou</CITY>
+    <CITY>Harbin</CITY>
+    <CITY>Zhengzhou</CITY>
+    <CITY>Jinan</CITY>
+    <CITY>Changsha</CITY>
+    <CITY>Changchun</CITY>
+    <CITY>Shenyang</CITY>
+    <CITY>Fuzhou</CITY>
+    <CITY>Hefei</CITY>
+    <CITY>Urumqi</CITY>
+    <CITY>Taiyuan</CITY>
+    <CITY>Shijiazhuang</CITY>
+    <CITY>Kunming</CITY>
+    <CITY>Suzhou</CITY>
+    <CITY>Nanchang</CITY>
+    <CITY>Nanning</CITY>
+    <CITY>Hong Kong</CITY>
+    <CITY>Macau</CITY>
+    <CITY>Guiyang</CITY>
+    <CITY>Lanzhou</CITY>
+    <CITY>Huhehot</CITY>
+    <CITY>Xining</CITY>
+    <CITY>Yinchuan</CITY>
+    <CITY>Lhasa</CITY>
+    <CITY>Haikou</CITY>
+    <CITY>Taipei</CITY>
+    <CITY>Dalian</CITY>
+    <CITY>Qingdao</CITY>
+    <CITY>Xiamen</CITY>
+    <CITY>Ningbo</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>3 Asian   </UNIT_CONTINENT>
+  <BUILD_CONTINENT>2 Asian</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>2 Asian</BACKUP_BUILD_CONTINENT>
+</TRIBE>

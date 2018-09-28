@@ -1,0 +1,131 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  if (get_ctw_campaign() == "Napoleon") {
+    napoleon_rules();
+  }
+
+
+  static int map_size = get_map_size();
+
+
+  //get nation numbers
+  String building_name;
+  static int player = 1;
+  static int enemy1 = 2;
+
+  int count;
+
+  int step = 1;
+
+  int diff = get_difficulty();
+
+  //enemy1 cities
+  static String enemy1_cap_name = find_capital(enemy1);
+  static int enemy1_cap_id = find_city_id(enemy1_cap_name);
+  static int enemy1_cap_x = object_position_x(enemy1, enemy1_cap_id);
+  static int enemy1_cap_y = object_position_y(enemy1, enemy1_cap_id);
+
+  int building;
+  String city_name;
+  int nation;
+  int new_unit;
+  int amount;
+
+  //disable these types
+  disable_type("Small City");
+
+  //disable these techs from being researched
+  disable_tech(enemy1, "Allegiance");
+
+  //set time limit
+  set_population_cap(player, 50);
+  gain_tech(player, "Military");
+
+  //dont let player get defeated
+  disable_city_defeat(player);
+  disable_city_defeat(enemy1);
+
+  //unit_costs_disable();
+
+  if (diff == 1) set_time_limit(15);
+  //if (diff == 2) set_time_limit(12);
+  //if (diff == 3) set_time_limit(10);
+  //if (diff == 4) set_time_limit(8);
+  //if (diff == 5) set_time_limit(6);
+  //if (diff == 6) set_time_limit(5);
+
+  //enemy1 city
+  force_transport_ability(enemy1);
+  place_building_upgrade(enemy1, "Market", enemy1_cap_name);
+  place_building_upgrade(enemy1, "Tower", enemy1_cap_name);
+  place_building_upgrade(enemy1, "University", enemy1_cap_name);
+  place_building_upgrade(enemy1, "Farm", enemy1_cap_name);
+  place_building_upgrade(enemy1, "Farm", enemy1_cap_name);
+  place_building_upgrade(enemy1, "Barracks", enemy1_cap_name);
+  place_building_upgrade(enemy1, "Stable", enemy1_cap_name);
+  place_building_upgrade(enemy1, "Siege Factory", enemy1_cap_name);
+  place_building_upgrade(enemy1, "Senate", enemy1_cap_name);
+  place_building_upgrade(enemy1, "Temple", enemy1_cap_name);
+  create_unit_upgrade(enemy1, enemy1_cap_x, enemy1_cap_y + 2, "Hoplites", 2);
+  create_unit_upgrade(enemy1, enemy1_cap_x, enemy1_cap_y + 2, "Machine Gun", 1);
+  create_unit_upgrade(enemy1, enemy1_cap_x, enemy1_cap_y + 2, "Light Horse", 1);
+  create_unit_upgrade(enemy1, enemy1_cap_x, enemy1_cap_y + 2, "Slingers", diff);
+
+  //player 1's army
+  force_transport_ability(player);
+  dir = get_conquest_invasion_dir();
+  center = get_map_size() / 2;
+  radius = center - 10;
+  px = (int)(radius * sin(dir) + center);
+  py = (int)(center - (radius * cos(dir)));
+
+  create_unit_upgrade(player, px, py, "General", 1);
+  if (diff < 3) {
+    create_unit_in_group(player, px - 4, py, "Hoplites", 1);
+    create_unit_in_group(player, px - 4, py, "Slingers", 1);
+    create_unit_in_group(player, px - 3, py, "Machine Gun", 1);
+    create_unit_in_group(player, px - 1, py, "Catapult", 1);
+  } else if (diff < 5) {
+    create_unit_in_group(player, px - 1, py, "Catapult", 1);
+  }
+  create_unit_in_group(player, px - 4, py, "Hoplites", 4);
+  create_unit_in_group(player, px - 4, py, "Slingers", 4);
+  create_unit_in_group(player, px - 3, py, "Machine Gun", 2);
+  create_unit_in_group(player, px - 5, py, "Cataphract", 3);
+  create_unit_in_group(player, px - 6, py, "Light Horse", 3);
+  create_unit_in_group(player, px - 2, py, "Supply Wagon", 2);
+  create_unit_in_group(player, px - 1, py, "Catapult", 2);
+  create_unit_in_group(player, px, py, "Scout", 2);
+
+  //get the proper angle
+  dir = get_conquest_invasion_dir();
+  dir = dir + 180;
+  if (dir >= 360) {
+    dir = dir - 360;
+  }
+
+  group_jump_move(player, px, py, dir);
+
+  int x;
+  int y;
+  int times = 12;
+  
+  //for (n = num_military_buildings(enemy1); n > 0; n--) {
+   // building = find_military_build(enemy1);
+   // set_seen(player, enemy1, building);
+  //}
+
+  //set_good(player, "Food", 0);
+  //set_good(player, "Timber", 0);
+  //set_good(player, "Wealth", 0);
+  //set_good(player, "Metal", 0);
+  //set_good(player, "Knowledge", 0);
+
+  set_plunder_scale(player, 5);
+
+
+
+}

@@ -1,0 +1,166 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  if (get_ctw_campaign() == "The New World") {
+    new_world_rules();
+    new_world_setup();
+  } 
+  else if (get_ctw_campaign() == "Napoleon") {
+    napoleon_rules();
+  }
+  else if (get_ctw_campaign() == "Alexander the Great") {
+    alexander_setup();
+  }
+  else if (get_ctw_campaign() == "The Cold War") {
+    coldwar_rules();
+  }
+
+  static int attacker = 1;
+  static int defender = 2;
+
+  int x = get_starting_loc_x(defender);
+  int y = get_starting_loc_y(defender);
+  
+  String cap_name = find_capital(attacker);
+  
+  int diff = get_difficulty();
+  
+  disable_city_defeat(defender);
+  force_transport_ability(defender);
+
+  disable_take_attrition(defender);
+  disable_tech(attacker, "Allegiance");
+
+  int amount;
+  
+  if (diff < 3) {
+    amount = 500;
+  } else if (diff < 5) {
+    amount = 250;
+  } else {
+    amount = 100;
+  }
+
+  give_good(attacker, "Food", amount);
+  give_good(attacker, "Timber", amount);
+  give_good(attacker, "Wealth", amount);
+  give_good(attacker, "Metal", amount);
+  give_good(attacker, "Knowledge", amount);
+
+  if (diff > 4) set_time_limit(20);
+  else if (diff > 2) set_time_limit(25);
+  
+  if (diff > 1) gain_tech(defender, "Tactics");
+  if (diff > 3) gain_tech(defender, "Operations");
+  if (diff > 5) gain_tech(defender, "Strategy");
+
+  x = get_map_size()/2;
+  y = x;
+  
+  int x_coords[] = [0,0,0,0,0,0,0,0,0,0];
+  int y_coords[] = [0,0,0,0,0,0,0,0,0,0];
+
+  int x2, y2, flag, building;
+
+  for (n = 0; n < 10; n++) {
+    while (1) {
+		x=rand_int(10,get_map_size()-9);
+		y=rand_int(10,get_map_size()-9);
+		if (map_is_land(x,y) && map_is_passable(x,y)){
+			building=find_city_id(cap_name);
+			x2=object_position_x(1,building);
+			y2=object_position_y(1,building);
+			if ((x-x2)*(x-x2)+(y-y2)*(y-y2)>=2500) break;
+		}
+    }
+    create_unit(defender, x, y, "general", 1);
+    x_coords[n] = x;
+    y_coords[n] = y;
+    x = rand_int(1, get_map_size() - 1);
+    y = rand_int(1, get_map_size() - 1);
+    count = 0;
+  }
+  
+  count = 0;
+  
+  for (n = num_type_upgrade(defender, "general"); n < 10; n++) {
+    create_unit(defender, x_coords[count], y_coords[count], "general", 1);
+    count++;
+  }
+
+  for (n = num_type_upgrade(defender, "general"); n > 0; n--) {
+    unit = find_unit(defender, "general");
+    x = object_position_x(defender, unit)+2;
+    y = object_position_y(defender, unit);
+    if (diff < 3) {
+      create_unit_in_group(defender, x, y, "Light Horse", diff);
+      create_unit_in_group(defender, x, y, "Cataphract", diff);
+      create_unit_in_group(defender, x, y, "Slingers", diff);
+      create_unit_in_group(defender, x, y, "Hoplites", diff);
+      create_unit_in_group(defender, x, y, "Anti-Aircraft Gun", 2);
+    }
+    else {
+      create_unit_in_group(defender, x, y, "Light Horse", 2);
+      create_unit_in_group(defender, x, y, "Cataphract", 2);
+      create_unit_in_group(defender, x, y, "Slingers", 2);
+      create_unit_in_group(defender, x, y, "Hoplites", 2);
+      create_unit_in_group(defender, x, y, "Anti-Aircraft Gun", 1);
+    }    
+    general_ambush(defender, unit);
+  }
+
+  building = find_city_id(find_capital(attacker));
+  x = object_position_x(attacker, building) + 5;
+  y = object_position_y(attacker, building) + 5;
+
+  String campaign = get_ctw_campaign();
+
+  if (campaign == "The New World") {
+    place_new_world_army(attacker, x, y);
+  }
+  else {
+  if (campaign == "Alexander the Great") create_unit_upgrade(attacker, x + 2, y, "alexander", 1);
+  else if (campaign == "Napoleon") create_unit_upgrade(attacker, x + 2, y, "napoleon", 1);
+  else create_unit_upgrade(attacker, x + 2, y, "general", 1);
+  create_unit_upgrade(attacker, x + 3, y, "archers", 2);
+  create_unit_in_group(attacker, x + 3, y, "javelineers", 2);
+  if (find_nation(attacker) == "Iroquois") {
+    create_unit_in_group(attacker, x + 4, y, "spearmen", 5);
+  }
+  else if (find_nation(attacker) == "Nubians" && campaign == "The New World") {
+    create_unit_in_group(attacker, x + 4, y, "bandeirantes", 5);
+  }
+  else {
+    create_unit_in_group(attacker, x + 4, y, "phalanx", 5);
+  }
+  create_unit_in_group(attacker, x + 5, y, "cataphract", 3);
+  create_unit_in_group(attacker, x + 5, y, "light horse", 2);
+  if (diff < 5) {
+    create_unit_in_group(attacker, x + 5, y, "cataphract", 1);
+    create_unit_in_group(attacker, x + 5, y, "light horse", 1);
+    create_unit_in_group(attacker, x + 5, y, "horse archer", 1);
+  }
+  if (diff < 3) {
+    create_unit_in_group(attacker, x + 3, y, "archers", 1);
+    create_unit_in_group(attacker, x + 3, y, "javelineers", 1);
+  }
+  }
+
+  place_building(attacker, "Barracks", cap_name);
+  place_building(attacker, "Stable", cap_name);
+  if (diff < 5) place_building(attacker, "Market", cap_name);
+  if (diff < 3) place_building(attacker, "Temple", cap_name);
+  //if (diff < 5) place_building(attacker, "University", cap_name);
+  if (diff < 5) place_building(attacker, "Tower", cap_name);
+
+  set_unit_type_max_craft("General", 10000);
+  
+  gain_tech(attacker, "military");
+  
+  gain_tech(defender, "Tactics");
+  gain_tech(defender, "Operations");
+  gain_tech(defender, "Strategy");
+  
+}

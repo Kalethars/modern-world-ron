@@ -1,0 +1,45 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Warroom (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Australians">
+  <LEADERS>
+    <LEADER>Billy Hughes</LEADER>
+    <LEADER>John Curtin</LEADER>
+    <LEADER>John Howard</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Canberra</CITY>
+    <CITY>Sydney</CITY>
+    <CITY>Melbourne</CITY>
+    <CITY>Brisbane</CITY>
+    <CITY>Adelaide</CITY>
+    <CITY>Springfield</CITY>
+    <CITY>Port Lincoln</CITY>
+    <CITY>Dampier</CITY>
+    <CITY>Darwin</CITY>
+    <CITY>Port Moresby</CITY>
+    <CITY>Townsville</CITY>
+    <CITY>Gladstone</CITY>
+    <CITY>Newcastle</CITY>
+    <CITY>Perth</CITY>
+    <CITY>Fremantle</CITY>
+    <CITY>Alice Springs</CITY>
+    <CITY>Mackay</CITY>
+    <CITY>Cairns</CITY>
+    <CITY>Launceston</CITY>
+    <CITY>Hobart</CITY>
+    <CITY>Port Hedland</CITY>
+    <CITY>Gold Coast</CITY>
+    <CITY>Blue Mountains</CITY>
+    <CITY>Albany</CITY>
+    <CITY>Sunshine Coast</CITY>
+    <CITY>Palmerston</CITY>
+    <CITY>Orange</CITY>
+    <CITY>Maryborough</CITY>
+    <CITY>Lae</CITY>
+    <CITY>Hamilton</CITY>
+    <CITY>Kalgoorlie</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>0 Europe</UNIT_CONTINENT>
+  <BUILD_CONTINENT>7 Colonial</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>7 Colonial</BACKUP_BUILD_CONTINENT>
+</TRIBE>

@@ -1,0 +1,24 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  int nation;
+  int unit;
+  int x;
+  int y;
+  String nation_name;
+  String city_name;
+  String campaign = get_ctw_campaign();
+  int diff = get_difficulty();
+
+  for (i = 3; i < 9; i++) {
+    set_leader_difficulty (i, diff);
+    cap_name = find_capital(i);
+	building = find_city_id(cap_name);
+	x = object_position_x(i, building);
+    y = object_position_y(i, building);
+	create_unit_upgrade(i, x, y, "Slingers", 4);
+	create_unit_upgrade(i, x, y, "Light Horse", 2);
+  }
+}

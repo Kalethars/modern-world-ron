@@ -1,0 +1,42 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+  
+  int diff = get_difficulty();
+  int amount, i;
+
+  for (i = 0; i < num_players()+1; i++) {
+    disable_city_defeat(i);
+  }
+
+  if (diff == 1) amount = 1500;
+  else if (diff == 2) amount = 2000;
+  else if (diff == 3) amount = 2500;
+  else if (diff == 4) amount = 3000;
+  else if (diff == 5) amount = 3500;
+  else if (diff == 6) amount = 4000;
+
+  if (diff == 2) {
+    set_time_limit(25);
+  }
+  else if (diff == 3) {
+    set_time_limit(20);
+  }
+  else if (diff > 3) {
+    set_time_limit(15);
+  }
+
+  ctw_add_objective_text(parse("Be the first to collect $NUM0 Metal.", amount), 10, "");
+  
+  for (i = 1; i < num_players()+1; i++) {
+    city_name = find_capital(i);
+    building = find_city_id(city_name);
+    x = object_position_x(i, building);
+    y = object_position_y(i, building);  
+  
+    place_new_world_army(i,x,y);
+	place_building(i, "Mine", city_name);
+  }
+  
+}

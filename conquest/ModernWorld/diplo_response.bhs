@@ -1,0 +1,1057 @@
+     include "game_structs.bhs"
+include "ctw_lib.bhs"
+
+//ctw diplomacy function library
+String conquest capitalize(String nation);
+int[] conquest sum_bonus_cards_value(ConquestDiploOffer offer);
+int conquest get_territory_value(String tribe, String territory);
+int[] conquest sum_territory_value(ConquestDiploOffer offer);
+int conquest total_deal_value_tribe(ConquestDiploOffer offer, int offerer);
+int conquest nation_worth(String tribe);
+String conquest add_territory(ref ConquestDiploOffer offer); 
+String conquest add_card(ref ConquestDiploOffer offer);
+int conquest add_tribute(ref ConquestDiploOffer offer);
+int [] conquest do_counter_offer(ref ConquestDiploOffer offer, int deal_value1, int deal_value2, String preference);
+
+int conquest diplo_response (ref ConquestDiploOffer offer)
+{
+  int their_value = 0;
+  int your_value = 0;
+  int their_trib = get_num_tribute(offer.tribe2);
+  int i = 0;
+  int n = 0;
+  int num = 0;
+  int random_response = 0;
+  int counter_value = 0;
+  int time_held = 1;
+  int you = 0;
+  int them = 1;
+  static int deal_value[] = [0,0];
+  deal_value[0] = total_deal_value_tribe(offer, 0);
+  deal_value[1] = total_deal_value_tribe(offer, 1);
+  String capital_name = ctw_get_nation_capital(offer.tribe2);
+  int peace_cost = 20; //base cost
+  int ally_cost = 10000; //base cost
+  int vassal_cost = 100; //base cost
+
+  int attitude_adjustment = 0; ////positive value means they hate you, negative value means they like you
+
+  int ctw_territory_min_emp_size = 4;
+  int num_active_leaders = get_num_active_nations();
+  int ctw_additional_ally_inc = 100;
+  int ctw_base_build_cost = 20;
+  int ctw_build_cost_time_held_x = 5;
+  int max_turns = ctw_get_num_campaign_turns();
+  int ctw_colony_modifier = 0;
+
+  int ctw_colony_trib_income = 0;
+
+  int num_left_modifier = 1000;
+  if (get_num_active_nations() < 5 && get_num_territories(offer.tribe) < get_num_territories(offer.tribe2)) {
+    num_left_modifier /= get_num_active_nations();
+  }
+  else {
+    num_left_modifier = 0;
+  }
+
+  if (offer.offer_type == "Exchange") {
+    if (offer.tribe_terr.length == 0 && offer.tribe2_terr.length == 0) {
+      if (offer.tribe_cards.length == 0 && offer.tribe2_cards.length == 0) {
+        offer.accepted = false;
+        random_response = rand_int(1,5);
+        switch(random_response) {
+          case 1:
+            offer.response = $S("Are you here to negotiate, or to waste our time?");
+            break;
+          case 2:
+            offer.response = $S("We tire of your games. Offer us a real proposal, or be done with it!");
+            break;
+          case 3:
+            offer.response = $S("Apparently negotiation is not one of the finer points of education in your nation.");
+            break;
+          case 4:
+            offer.response = $S("We did not come here to play around. If this is the best you can offer, then perhaps we should end these negotiations.");
+            break;
+          default:
+            offer.response = $S("That is one of the worst offers I have ever seen. Is it some kind of joke?");
+            break;  
+        }
+        return 0;
+      }
+    }
+  }
+
+  peace_cost += num_left_modifier;
+  ally_cost += ctw_get_num_allies(offer.tribe) * ctw_additional_ally_inc + ctw_get_num_allies(offer.tribe2) * ctw_additional_ally_inc + num_left_modifier;
+  vassal_cost += (get_num_territories(offer.tribe2)-1) * 40 + num_left_modifier;
+
+  ///put in new variable values here if you want to be nation specific:
+  //if (offer.tribe2 == "British") {
+  //  attitude_adjustment += 20;
+  //  peace_cost += 100;
+  //  ally_cost += 200;
+  //  vassal_cost += 1000;
+  //}
+
+////////////////////////////////////////////////////////////////////////////
+////////////////////Default Responses for all Nations///////////////////////
+////////////////////////////////////////////////////////////////////////////
+  //if they have not much territory, they want territory themselves, or they want more stuff..........
+
+  if (offer.offer_type == "Ally") {
+    deal_value[them] += ally_cost;
+  }
+  else if (offer.offer_type == "Peace") {
+    deal_value[them] += peace_cost;
+  }
+  else if (offer.offer_type == "Vassal") {
+    deal_value[them] += vassal_cost;
+  }
+  deal_value[them] += attitude_adjustment;
+
+  //if the player just doesn't have enough
+  if (deal_value[them] > nation_worth(ctw_get_player_nation())) {
+    offer.accepted = false;
+    random_response = rand_int(1,5);
+    switch (random_response) {
+      case 1:
+        offer.response = $S("Unfortunately you have nothing of interest to us at present.");
+        break;
+      case 2:
+        offer.response = $S("You will need to find more to offer us if you want us to agree to deal.");
+        break;
+      case 3:
+        offer.response = $S("Conquer more territories and maybe then we will negotiate.");
+        break;
+      default:
+        offer.response = $S("There is nothing you presently have that would compell us to sign that agreement.");
+        break;
+    }
+    return 0;
+  }
+
+  if (offer.tribe2_terr.length > 0 && (get_num_territories(offer.tribe2) - offer.tribe2_terr.length + offer.tribe_terr.length) < ctw_territory_min_emp_size) {
+    deal_value = do_counter_offer(offer, deal_value[0], deal_value[1], "territory");
+    if (deal_value[you] < deal_value[them]) {
+      offer.accepted = false;
+      offer.response = $S("Hi");
+    }
+    return 0;
+  }
+
+  /////If there are only two nations left the other guy won't sign any deals or trade anything
+  if (get_num_active_nations() == 2) {
+    offer.accepted = false;
+    offer.response = $S("We have no interest in negotiating with you. All we need to do is conquer your nation and the world will be ours.");
+    return 0;
+  }
+
+  your_value = deal_value[you];
+  their_value = deal_value[them];
+
+  //////////////////////Peace Proposal//////////////////////////
+  if (offer.offer_type == "Peace") {
+    if (ctw_is_ally(offer.tribe, offer.tribe2)) {
+      offer.accepted = false;
+      random_response = rand_int(1, 5);
+      switch (random_response) {
+        default:
+          offer.response = $S("There is no need for a peace agreement between us since we are already allies.");
+          break;
+      }
+      return 0;
+    }
+    //////////////evaluate deal//////////////////////
+    if (your_value > their_value) {/////////value for peace
+      offer.accepted = true;
+      random_response = rand_int(1, 6);
+      switch (random_response) {
+        case 1:
+          offer.response = $S("Yes, let us end this terrible war!");
+          break;
+        case 2:
+          offer.response = $S("Very well. We will end this war and sign your peace treaty.");
+          break;
+        case 3:
+          offer.response = $S("Alright, we need some time to prepare for a new assault as well.");
+          break;
+        case 4:
+          offer.response = $S("Yes, we agree. Peace is in the best interests of everyone.");
+          break;
+        default:
+          offer.response = $S("These are excellent terms! We will agree to this peace treaty.");
+          break;
+      }
+    }
+    else {//counter-offer
+      deal_value = do_counter_offer(offer, deal_value[0], deal_value[1], "territory");
+//      random_response = rand_int(1, 6);
+     // switch (random_response) {
+        //case 1:
+        //  offer.response = $S("Why would we agree to such a thing? Here is a deal that is much more to our liking.");
+         // break;
+        //case 2:
+         // offer.response = $S("Only a fool would sign such a treaty! Here is one more to our liking.");
+         // break;
+        //case 3:
+         // offer.response = $S("Only terms along these lines will end this war.");
+         // break;
+        //case 4:
+         // offer.response = $S("We are not as weak as you, we will see this war through until the very end. However, there is room for negotiation.");
+         // break;
+        //default:
+         // offer.response = $S("We do not see how this benefits us. Consider our counter-proposal instead.");
+         // break;
+      //}
+      return 0;
+    }
+  }
+  //////////////////////Alliance Proposal//////////////////////////
+  else if (offer.offer_type == "Ally") {
+    if (ctw_is_war(offer.tribe, offer.tribe2)) {
+      offer.accepted = false;
+      random_response = rand_int(1, 5);
+      switch (random_response) {
+        default:
+          offer.response = $S("Perhaps it would be better if we negotiated peace before talking about alliances.");
+          break;
+      }
+      return 0;
+    }
+
+    if (ctw_get_num_allies(offer.tribe2) > 1) {
+      offer.accepted = false;
+      random_response = rand_int(1, 5);
+      switch (random_response) {
+        default:
+          offer.response = $S("No thank you. We have enough allies at the moment.");
+          break;
+      }
+      return 0;
+    }
+    ////////////////evaluate deal////////////////
+    if (your_value > their_value) {/////////alliance value
+      offer.accepted = true;
+      random_response = rand_int(1, 6);
+      switch (random_response) {
+        case 1:
+          offer.response = $S("We had been considering a similar offer to yours. We believe our nations will work well together.");
+          break;
+        case 2:
+          offer.response = $S("Yes! Who shall we destroy first?");
+          break;
+        case 3:
+          nation1 = capitalize(offer.tribe);
+          nation2 = capitalize(offer.tribe2);
+          offer.response = parse("Yes! Now no one will be able to stop the $s0! Oh, um, I mean the $s0 and the $s1!", nation2, nation1);
+          break;
+        default:
+          offer.response = $S("These are excellent terms! We will agree to this alliance.");
+          break;
+      }
+    }
+    else {
+      deal_value = do_counter_offer(offer, deal_value[0], deal_value[1], "territory");
+      return 0;
+    }
+  }
+  //////////////////////Vassal Proposal//////////////////////////
+  else if (offer.offer_type == "Vassal") {
+    //////////evaluate deal///////////////
+    if (your_value > their_value) {/////////vassal value
+      offer.accepted = true;
+      random_response = rand_int(1, 6);
+      switch (random_response) {
+        case 1:
+          offer.response = $S("Yes. Who would not want to join with your great nation?");
+          break;
+        case 2:
+          offer.response = $S("Your offer is a fair one, and our armies will now march alongside yours.");
+          break;
+        case 3:
+          offer.response = $S("We needed a change of government anyways.");
+          break;
+        case 4:
+          offer.response = $S("We agree. Who do we have to kill first?");
+          break;
+        default:
+          offer.response = $S("That is a fair offer. We will become your vassal.");
+          break;
+      }
+    }
+    else {//counter-offer
+      deal_value = do_counter_offer(offer, deal_value[0], deal_value[1], "territory");
+      random_response = rand_int(1, 6);
+      switch (random_response) {
+        case 1:
+          offer.response = $S("You have nothing to offer us that will make us give up our independence.");
+          break;
+        default:
+          offer.response = $S("We will never sell our nation for so little. You do not have enough to interest us at present.");
+          break;
+      }
+    }
+  }
+  /////////////straight up trading////////////////////////
+  else {
+    ///trading/selling territories and colonies
+    if (offer.tribe_cards.length > 0 || offer.tribe2_cards.length > 0 || offer.tribe_terr.length > 0 || offer.tribe_col.length > 0 || offer.tribe2_terr.length > 0 || offer.tribe2_col.length > 0) {
+      ////////if the two countries are at war/////////////////
+      if (ctw_is_war(offer.tribe, offer.tribe2)) {
+        if ((offer.tribe_terr.length > 0 || offer.tribe_col.length > 0) && offer.tribe2_terr.length == 0 && offer.tribe2_col.length == 0 && offer.tribe2_trib == 0) {
+          offer.accepted = true;
+          random_response = rand_int(1, 5);
+          switch (random_response) {
+            case 1:
+              offer.response = $S("Well we have always considered your land ours anyway.");
+              break;
+            default:
+              offer.response = $S("We appreciate this gesture. It saves us a lot of time.");
+              break;
+          }
+        }
+        else {//counter-offer HIGHLY SUSPECT
+          deal_value = do_counter_offer(offer, deal_value[0], deal_value[1], "territory");
+          random_response = rand_int(1, 5);
+          switch (random_response) {
+            default:
+              offer.response = $S("Even though we are at war, we are willing to make a deal, but only according to our terms.");
+              break;
+          }
+        }
+        return 0;
+      }
+      //////////evaluate deal//////////////
+      if (your_value > their_value) {
+        offer.accepted = true;
+        random_response = rand_int(1, 6);
+        switch (random_response) {
+          case 1:
+            offer.response = $S("This is a fair trade. We accept.");
+            break;
+          case 2:
+            offer.response = $S("This deal seems more than fair. No refunds!");
+            break;
+          case 3:
+            offer.response = $S("Very well, I suppose we can agree to this.");
+            break;
+          case 4:
+            offer.response = $S("Well, if this is the best you can do I guess we can agree.");
+            break;
+          default:
+            offer.response = $S("This seems fair. I accept.");
+            break;
+        }
+      }
+      else {
+        //if (their_value <= get_num_tribute(offer.tribe) && get_num_tribute(offer.tribe) >= 25) {
+          //deal_value[them] += attitude_adjustment;
+          deal_value = do_counter_offer(offer, deal_value[0], deal_value[1], "territory");
+          random_response = rand_int(1, 5);
+          switch (random_response) {
+            case 1:
+              offer.response = $S("No, that is not fair to our nation. We believe it should be something like this.");
+              break;
+            case 2:
+              offer.response = $S("We do not agree to your offer, but perhaps you will agree to this?");
+              break;
+            case 3:
+              offer.response = $S("That was a good offer. Here's a better one.");
+              break;
+            default:
+              offer.response = $S("That deal does not seem fair to us. Consider this proposal instead.");
+              break;
+          }
+       // }
+      }
+    }
+    //////////giving tribute to///////
+    else if (offer.tribe_trib - offer.tribe2_trib > 0) {
+      offer.accepted = true;
+      random_response = rand_int(1, 6);
+      switch (random_response) {
+        case 1:
+          offer.response = $S("We accept your tribute with gratitude.");
+          break;
+        case 2:
+          offer.response = $S("Thank you very much!");
+          break;
+        case 3:
+          offer.response = $S("And you want nothing in return? Well ok if you say so.");
+          break;
+        case 4:
+          offer.response = $S("Your gift comes at the perfect time! Now we can upgrade our capital's defenses and make it invulnerable.");
+          break;
+        default:
+          offer.response = $S("Our leader is always happy to accept such gifts.");
+          break;
+      }
+    }
+    //////////demanding tribute from///////
+    else if ((offer.tribe2_trib + attitude_adjustment) - offer.tribe_trib > 0) {
+      if (get_num_territories(offer.tribe) * 3 > get_num_territories(offer.tribe2) + 1 && offer.tribe2_trib > 25 && offer.tribe2_trib + attitude_adjustment - offer.tribe_trib < offer.tribe2_trib / 3) {
+        offer.accepted = true;
+        random_response = rand_int(1, 5);
+        switch (random_response) {
+          case 1:
+            offer.response = $S("We yield. We will pay this tribute to you.");
+            break;
+          case 2:
+            offer.response = $S("We feel it would be prudent to give in to your demands at this time.");
+            break;
+          default:
+            offer.response = $S("OK! OK! Please don't squash us.");
+            break;
+        }
+      }
+      else {
+        offer.accepted = false;
+        random_response = rand_int(1, 5);
+        switch (random_response) {
+          case 1:
+            offer.response = $S("Why should we pay you? If anything, you should pay us!");
+            break;
+          case 2:
+            offer.response = $S("This is outrageous! We will never acquiesce to such extortion.");
+            break;
+          default:
+            offer.response = $S("Is this a joke? You are kidding aren't you?");
+            break;
+        }
+      }
+    }
+  }
+
+}
+
+//////////////////////////////////////////////////////
+/////////////DIPLOMACY LIBRARY////////////////////////
+//////////////////////////////////////////////////////
+
+int conquest get_bonus_card_value( String card )
+{
+
+  int value = ctw_get_card_value(card);
+
+  return value;
+
+}
+
+int[] conquest sum_bonus_cards_value(ConquestDiploOffer offer)
+{
+
+  int tribe_value[] = [0,0];
+
+  for (n = 0; n < offer.tribe_cards.length; n++) {
+    tribe_value[0] += ctw_get_card_value(offer.tribe_cards[n]);
+  }
+
+  for (n = 0; n < offer.tribe2_cards.length; n++) {
+    tribe_value[1] += ctw_get_card_value(offer.tribe2_cards[n]);
+  }
+
+  return tribe_value;
+
+}
+
+int conquest get_territory_value( String tribe, String territory )
+{
+
+  int value = (get_territory_strength(territory) * 40) + ctw_get_territory_value(territory);
+  if (tribe != ctw_get_player_nation()) {
+    value += 100 / get_num_territories(tribe);
+  }
+
+  return value;
+
+}
+
+int[] conquest sum_territory_value(ConquestDiploOffer offer)
+{
+
+  int tribe_value[] = [0,0];
+
+  for (n = 0; n < offer.tribe_terr.length; n++) {
+    tribe_value[0] += get_territory_value(offer.tribe, offer.tribe_terr[n]);
+  }
+
+  for (n = 0; n < offer.tribe2_terr.length; n++) {
+    tribe_value[1] += get_territory_value(offer.tribe2, offer.tribe2_terr[n]);
+  }
+
+  return tribe_value;
+
+}
+
+
+int conquest get_colony_value( String tribe, String colony )
+{
+
+  int max_turns = ctw_get_num_campaign_turns();
+  int value;
+
+  if (max_turns - get_turn() < 9) {
+    value = ctw_get_colony_tribute(colony) * 3;
+  }
+  else {
+    value = ctw_get_colony_tribute(colony) * (max_turns - get_turn()) / 3;
+  }
+  value += ctw_get_colony_value(colony) + value;
+  
+  return value;
+
+}
+
+int[] conquest sum_colony_value(ConquestDiploOffer offer)
+{
+
+  int tribe_value[] = [0,0];
+
+  for (n = 0; n < offer.tribe_col.length; n++) {
+    tribe_value[0] += ctw_get_colony_value(offer.tribe_col[n]);
+  }
+  for (n = 0; n < offer.tribe2_col.length; n++) {
+    tribe_value[1] += ctw_get_colony_value(offer.tribe2_col[n]);
+  }
+
+  return tribe_value;
+
+}
+
+int conquest total_deal_value_tribe(ConquestDiploOffer offer, int offerer) 
+{
+
+  int tribe_value;
+  int bonus_value[] = [0,0];
+  int territory_value[] = [0,0];
+  int colony_value[] = [0,0];
+
+  bonus_value = sum_bonus_cards_value(offer);
+  territory_value = sum_territory_value(offer);
+  colony_value = sum_colony_value(offer);
+  
+  int tribute;
+  if (offerer == 0) {
+    tribute = offer.tribe_trib;
+  } 
+  else if (offerer == 1) {
+    tribute = offer.tribe2_trib;
+  }
+  else {
+    return - 1;
+  }
+
+  tribe_value += tribute + bonus_value[offerer] + territory_value[offerer] + colony_value[offerer];
+
+  return tribe_value;
+
+}
+
+int conquest nation_worth(String tribe)
+{
+
+  String territory_list[];
+  String colony_list[];
+  String bonus_card_list[];
+  int value = get_num_tribute(tribe);
+  String capital_list[] = ["Paris", "Austria", "Tuscany", "Castile", "Portugal", "Great Britain", "Holland", "Sweden", "Saxony", "Brandenburg", "Russia", "Poland", "Bavaria", "Turkey", "Egypt", "Tunisia", "Sardina", "Switzerland"];
+  String tribe_list[] = ["French", "Greeks", "Romans", "Spanish", "Inca", "British", "Dutch", "Maya", "Aztecs", "Germans", "Russians", "Koreans", "Bantu", "Turks", "Egyptians", "Americans", "Mongols", "Iroquois"];
+  String capital;
+  
+  for (i = 0; i < tribe_list.length; i++) {
+    if (tribe == tribe_list[i]) {
+      capital = capital_list[i];
+      break;
+    }
+  }
+  
+  ctw_territory_list(tribe, territory_list, 0);
+  ctw_colony_list(tribe, colony_list);
+  ctw_bonus_card_list(tribe, bonus_card_list);
+  
+  for (i = 0; i < territory_list.length; i++) {
+    if (territory_list[i] == capital) {
+      i++;
+    }
+    if (i == territory_list.length) {
+      break;
+    }
+    value += get_territory_value(tribe, territory_list[i]);
+  }
+  
+  for (i = 0; i < colony_list.length; i++) {
+    value += ctw_get_colony_value(colony_list[i]);
+  }
+  
+  for (i = 0; i < bonus_card_list.length; i++) {
+    value += ctw_get_card_value(bonus_card_list[i]);
+  }
+  
+  return value;
+
+}
+
+String conquest add_territory(ref ConquestDiploOffer offer) 
+{
+
+  String territory_list[];
+  int random_territory;
+  String name = "";
+  int count;
+  int try_again;
+  String player = ctw_get_player_nation();
+  String capital = ctw_get_nation_capital(player);
+
+  if (offer.tribe_terr.length < 3) {    
+    ctw_territory_list(player, territory_list, 0);
+    if (territory_list.length == 1) {
+      return name;
+    }
+    if (territory_list.length > offer.tribe_terr.length) {
+      random_territory = rand_int(0, (territory_list.length - 1));
+      for (d = 0; d < territory_list.length; d++) {
+        random_territory++;
+        if (random_territory >= territory_list.length) {
+          random_territory = 0;
+        }
+        name = territory_list[random_territory];
+        count = 0;
+        try_again = 1;
+        do {
+          for (t = 0; t < offer.tribe_terr.length; t++) {
+            if (name == offer.tribe_terr[t] || name == capital) {
+              random_territory++;
+              if (random_territory >= territory_list.length) {
+                random_territory = 0;
+              }
+              name == territory_list[random_territory];
+              try_again = 1;
+              break;
+            } else {
+              try_again = 0;
+            }
+          }
+          if (try_again == 0) {
+            offer.tribe_terr[offer.tribe_terr.length] = name;
+            return name;
+          }
+          if (offer.tribe_terr.length == 0 && name != capital) {
+            try_again = 0;
+            offer.tribe_terr[offer.tribe_terr.length] = name;
+            return name;
+          }
+          count++;
+          if (count > 3) {
+            name = "";
+            return name;
+          }
+        } while (try_again == 1);
+        if (try_again == 0) {
+          offer.tribe_terr[offer.tribe_terr.length] = name;
+          return name;
+        }
+      }
+    } else {
+      return name;
+    }
+  }
+  
+  return name;
+
+}
+
+String conquest add_card(ref ConquestDiploOffer offer) 
+{
+
+  String card_list[];
+  int random_card;
+  String name = "";
+  int count;
+  int try_again;
+  String player = ctw_get_player_nation();
+
+  if (offer.tribe_cards.length < 3) {    
+    ctw_bonus_card_list(player, card_list);
+    if (card_list.length > offer.tribe_cards.length) {
+      random_card = rand_int(0, (card_list.length - 1));
+      name = card_list[random_card];
+      if (offer.tribe_cards.length == 0) {
+        try_again = 0;
+        offer.tribe_cards[offer.tribe_cards.length] = name;
+        return name;
+      }
+      else {      
+      for (d = 0; d < offer.tribe_cards.length; d++) {
+        random_card++;
+        if (random_card >= card_list.length) {
+          random_colony = 0;
+        }
+        name = card_list[random_card];
+        count = 0;
+        try_again = 1;
+        do {
+          for (t = 0; t < 3; t++) {
+            if (name == offer.tribe_cards[t]) {
+              if (random_card >= card_list.length - 1) {
+                random_card = -1;
+              }
+              name == card_list[random_card+1];
+              try_again = 1;
+              break;
+            } else try_again = 0;
+          }
+          count++;
+          if (count > card_list.length) {
+            return name;
+          }
+        } while (try_again == 1);
+        if (try_again == 0) {
+          offer.tribe_cards[offer.tribe_cards.length] = name;
+          return name;
+        }
+      }
+      }
+    } else {
+      return name;
+    }
+  }
+  
+  return name;
+
+}
+
+int conquest add_tribute(ref ConquestDiploOffer offer)
+{
+
+  int tribute;
+  int max = 25;
+  int min = 10;
+  String nation_name = ctw_get_player_nation();
+  
+  if (get_num_tribute(nation_name) - offer.tribe_trib > 0) {
+    tribute = rand_int(10,25);
+  }
+  
+  if (tribute > get_num_tribute(nation_name) - offer.tribe_trib) {
+    tribute = get_num_tribute(nation_name) - offer.tribe_trib;
+  }
+
+  offer.tribe_trib += tribute;
+  
+  return tribute;
+
+}
+
+int [] conquest do_counter_offer(ref ConquestDiploOffer offer, int deal_value1, int deal_value2, String preference)
+{
+
+  int random_territory = rand_int(0,3);
+  String name;
+  int territory_fail;
+  int card_fail;
+  int tribute_fail;
+  int you = 0; 
+  int them = 1;
+  int deal_values[] = [0,0];
+  int tribute_amount;
+
+  if (preference == "territory") {
+    random_territory = 0;
+  } else if (preference == "card") {
+    random_territory = 1;
+  } else if (preference == "tribute") {
+    random_territory = 2;
+  }
+
+  do {
+    switch (random_territory) {
+      case 0:
+        name = add_territory(offer);
+        if (name == "") {
+          territory_fail = 1;
+        } else {
+          deal_value1 += get_territory_value(ctw_get_player_nation(), name);
+        }
+        break;
+      case 1:
+        //name = add_card(offer);
+        //if (name == "") {
+        //  card_fail = 1;
+        //} else {
+        //  deal_value1 += get_bonus_card_value(name);
+        //}
+        tribute_value = add_tribute(offer);
+        if (tribute_value == 0) {
+          card_fail = 1;
+        } else {
+          deal_value1 += tribute_value;
+        }
+        break;
+      case 2:
+        tribute_value = add_tribute(offer);
+        if (tribute_value == 0) {
+          tribute_fail = 1;
+        } else {
+          deal_value1 += tribute_value;
+        }
+        break;
+    }     
+    if (territory_fail == 1 && card_fail == 1 && tribute_fail == 1) {//counter-offer
+      if (offer.tribe2_trib > 0) {
+        tribute_amount = deal_value2 - deal_value1;
+        if (tribute_amount >= offer.tribe2_trib) {
+          deal_value2 += -tribute_amount;
+          offer.tribe2_trib += - tribute_amount;
+          break;
+        } else {
+          offer.accepted = false;
+          if (offer.offer_type == "Vassal") {
+            random_response = rand_int(1, 2);
+            switch (random_response) {
+              case 1:
+                offer.response = $S("You have nothing to offer us that will make us give up our independence.");
+                break;
+              case 2:
+                offer.response = $S("We will not give up our freedom for such a paltry sum.");
+                break;
+              case 3:
+                offer.response = $S("You will have to give us much more than that if you expect us to listen to you.");
+                break;
+              case 4:
+                offer.response = $S("Our great nation will never bow before the boot of tyranny.");
+                break;
+              default:
+                offer.response = $S("We will never sell our nation for so little. You do not have enough to interest us at present.");
+                break;
+            }
+          }
+          else if (offer.offer_type == "Peace") {
+            random_response = rand_int(1,6);
+            switch(random_response) {
+              case 1:
+                offer.response = $S("Why would we agree to peace? We have so much yet to gain from the spoils of your country.");
+                break;
+              case 2:
+                offer.response = $S("Only a fool would sign that treaty!");
+                break;
+              case 3:
+                offer.response = $S("Only your utter destruction will end this war");
+                break;
+              case 4:
+                offer.response = $S("We are not as weak as you, and we will see this war through until the very end.");
+                break;
+              default:
+                offer.response = $S("We do not see how this benefits us. Our answer is no.");
+                break;
+            }
+          }
+          else if (offer.offer_type == "Alliance") {
+            random_response = rand_int(1,6);
+            switch(random_response) {
+              case 1:
+                offer.response = $S("Our great nation has no need to ally with the likes of you. Besides, we enjoy trampling the weak.");
+                break;
+              case 2:
+                offer.response = $S("Under different circumstances we might have welcomed an alliance with you. Unfortunately for you, that means we cannot accept your offer.");
+                break;
+              case 3: 
+                offer.response = $S("We do not see how this benefits us. Our answer is no.");
+                break;
+              default:
+                offer.response = $S("Your nation is not capable of offering serious help to anybody. We have no time for the likes of you.");
+                break;
+            }
+          }
+          else {
+            random_response = rand_int(1, 6);
+            switch (random_response) {
+              case 1:
+                offer.response = $S("Come back in a few turns when you have things that interest us.");
+                break;
+              default:
+                offer.response = $S("You do not have enough to interest us at present.");
+                break;
+            }
+          }
+          return deal_values;
+          break;
+        }
+      } else {
+          offer.accepted = false;
+          if (offer.offer_type == "Vassal") {
+            random_response = rand_int(1, 2);
+            switch (random_response) {
+              case 1:
+                offer.response = $S("You have nothing to offer us that will make us give up our independence.");
+                break;
+              case 2:
+                offer.response = $S("We will not give up our freedom for such a paltry sum.");
+                break;
+              case 3:
+                offer.response = $S("You will have to give us much more than that if you expect us to listen to you.");
+                break;
+              case 4:
+                offer.response = $S("Our great nation will never bow before the boot of tyranny.");
+                break;
+              default:
+                offer.response = $S("We will never sell our nation for so little. You do not have enough to interest us at present.");
+                break;
+            }
+          }
+          else if (offer.offer_type == "Peace") {
+            random_response = rand_int(1,6);
+            switch(random_response) {
+              case 1:
+                offer.response = $S("Why would we agree to peace? We have so much yet to gain from the spoils of your country.");
+                break;
+              case 2:
+                offer.response = $S("Only a fool would sign that treaty!");
+                break;
+              case 3:
+                offer.response = $S("Only your utter destruction will end this war");
+                break;
+              case 4:
+                offer.response = $S("We are not as weak as you, and we will see this war through until the very end.");
+                break;
+              default:
+                offer.response = $S("We do not see how this benefits us. Our answer is no.");
+                break;
+            }
+          }
+          else if (offer.offer_type == "Alliance") {
+            random_response = rand_int(1,6);
+            switch(random_response) {
+              case 1:
+                offer.response = $S("Our great nation has no need to ally with the likes of you. Besides, we enjoy trampling the weak.");
+                break;
+              case 2:
+                offer.response = $S("Under different circumstances we might have welcomed an alliance with you. Unfortunately for you, that means we cannot accept your offer.");
+                break;
+              case 3: 
+                offer.response = $S("We do not see how this benefits us. Our answer is no.");
+                break;
+              default:
+                offer.response = $S("Your nation is not capable of offering serious help to anybody. We have no time for the likes of you.");
+                break;
+            }
+          }
+          else {
+          random_response = rand_int(1, 6);
+          switch (random_response) {
+            case 1:
+              offer.response = $S("Come back in a few turns when you have things that interest us.");
+              break;
+            default:
+              offer.response = $S("You do not have enough to interest us at present.");
+              break;
+          }
+        }
+        return deal_values;
+        break;
+      }
+    }
+    random_territory++;
+    if (random_territory == 3) {
+      random_territory = 0;
+    }
+    if (random_territory == 2) {
+      if (tribute_fail == 1) {
+        random_territory--;
+      }
+    }
+    if (random_territory == 1) {
+      if (card_fail == 1) {
+        random_territory--;
+      }
+    }
+    if (random_territory == 0) {
+      if (territory_fail == 1) {
+        if (tribute_fail == 0) {
+          random_territory = 2;
+        } else if (card_fail == 0) {
+          random_territory = 1;
+        } else {
+          offer.accepted = false;
+          if (offer.offer_type == "Vassal") {
+            random_response = rand_int(1, 2);
+            switch (random_response) {
+              case 1:
+                offer.response = $S("You have nothing to offer us that will make us give up our independence.");
+                break;
+              case 2:
+                offer.response = $S("We will not give up our freedom for such a paltry sum.");
+                break;
+              case 3:
+                offer.response = $S("You will have to give us much more than that if you expect us to listen to you.");
+                break;
+              case 4:
+                offer.response = $S("Our great nation will never bow before the boot of tyranny.");
+                break;
+              default:
+                offer.response = $S("We will never sell our nation for so little. You do not have enough to interest us at present.");
+                break;
+            }
+          }
+          else if (offer.offer_type == "Peace") {
+            random_response = rand_int(1,6);
+            switch(random_response) {
+              case 1:
+                offer.response = $S("Why would we agree to peace? We have so much yet to gain from the spoils of your country.");
+                break;
+              case 2:
+                offer.response = $S("Only a fool would sign that treaty!");
+                break;
+              case 3:
+                offer.response = $S("Only your utter destruction will end this war");
+                break;
+              case 4:
+                offer.response = $S("We are not as weak as you, and we will see this war through until the very end.");
+                break;
+              default:
+                offer.response = $S("We do not see how this benefits us. Our answer is no.");
+                break;
+            }
+          }
+          else if (offer.offer_type == "Alliance") {
+            random_response = rand_int(1,6);
+            switch(random_response) {
+              case 1:
+                offer.response = $S("Our great nation has no need to ally with the likes of you. Besides, we enjoy trampling the weak.");
+                break;
+              case 2:
+                offer.response = $S("Under different circumstances we might have welcomed an alliance with you. Unfortunately for you, that means we cannot accept your offer.");
+                break;
+              case 3: 
+                offer.response = $S("We do not see how this benefits us. Our answer is no.");
+                break;
+              default:
+                offer.response = $S("Your nation is not capable of offering serious help to anybody. We have no time for the likes of you.");
+                break;
+            }
+          }
+          else {
+            random_response = rand_int(1, 6);
+            switch (random_response) {
+              case 1:
+                offer.response = $S("Come back in a few turns when you have things that interest us.");
+                break;
+              default:
+                offer.response = $S("You do not have enough to interest us at present.");
+                break;
+            }
+          }
+          return deal_values;
+          break;
+        }
+      }
+    }
+  } while (deal_value1 < deal_value2);
+  offer.response = $S("This deal would be more to our liking.");
+  offer.counter_offer = true;
+  
+  deal_values[you] = deal_value1;
+  deal_values[them] = deal_value2;
+  
+  return deal_values;
+
+}

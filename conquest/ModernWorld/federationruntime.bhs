@@ -1,0 +1,157 @@
+include "ctw_lib.bhs"
+
+       conquest
+{
+
+static int diff = get_difficulty();
+static int federation_num = 1;
+static String capitals[];
+
+run_once {
+  set_timer("AF", 300);
+  ctw_add_objective_text($S("Capture all of the enemy capitals."), "Hint_id", 0);
+  for (int i = 3; i < 7; i++) {
+    city_name = find_capital(i);
+    capitals[i-3] = city_name;
+  }
+}
+
+if (is_defeated(2)) {
+  disable_trigger("AllianceForm");
+}
+
+if (is_defeated(3) && is_defeated(4) && is_defeated(5) && is_defeated(6) && is_defeated(7)) {
+  disable_trigger("AllianceForm");
+}
+
+trigger AllianceForm(timer_expired("AF"))
+{ 
+  int i = 0;
+  int j = 0;
+  success = 0;
+
+  for (j = 3; j < 8; j++) {
+    if (have_alliance(2, j) || have_alliance(1, j) || is_defeated(j)) {
+      success = 0;
+    }
+    else {
+      success = 1;
+      break;
+    }
+  }
+
+  if (success > 0) {
+    ally_num = rand_int(3, 7);
+    while (have_alliance(2, ally_num) || have_alliance(1, ally_num) || is_defeated(ally_num)) {
+      ally_num = rand_int(3, 8);
+    }
+
+    for (i = 3; i < 8; i++) {
+      if (have_alliance(2, i)) {
+        make_alliance(ally_num, i);
+      }
+    }
+
+    if (make_alliance(2, ally_num) > -1) {
+      federation_num++;
+      ally_color = "None";
+      switch (ally_num) {
+        case 3:
+          ally_color = "Purple";
+          break;
+        case 4:
+          ally_color = "Green";
+          break;
+        case 5:
+          ally_color = "Yellow";
+          break;
+        case 6:
+          ally_color = "Light Blue";
+          break;
+        case 7:
+          ally_color = "White";
+          break;
+        case 8:
+          ally_color = "Orange";
+          break;
+      }
+      fed_leader = get_leader_name(2);
+      leader_name = get_leader_name(ally_num);
+
+      popup_dialog(parse("$s0($s1) has joined the federation of $s2(Blue)!", leader_name, ally_color, fed_leader));
+    }
+
+    success = 0;
+    for (j = 3; j < 8; j++) {
+      if (have_alliance(2, j) || have_alliance(1, j) || is_defeated(j)) {
+        success = 0;
+      }
+      else {
+        success = 1;
+        break;
+      }
+    }
+    if (success > 0) {
+      enable_trigger("AllianceForm");
+      set_timer("AF", rand_int(450, 620));
+    }
+  }
+}
+
+trigger GetALittleHelp(federation_num > 2)
+{
+  helper_guy = -1;
+  for (int i = 3; i < num_players(); i++) {
+    if (!have_alliance(2, i) && !is_defeated(i)) {
+      helper_guy = i;
+      break;
+    }
+  }
+
+  if (helper_guy > -1) {
+    helper_color = "None";
+    switch (helper_guy) {
+      case 3:
+        helper_color = "Purple";
+        break;
+      case 4:
+        helper_color = "Green";
+        break;
+      case 5:
+        helper_color = "Yellow";
+        break;
+      case 6:
+        helper_color = "Light Blue";
+        break;
+      case 7:
+        helper_color = "White";
+        break;
+      case 8:
+        helper_color = "Orange";
+        break;
+    }
+
+    leader_name = get_leader_name(helper_guy);
+
+    choice = popup_choice(parse("An emissary of $s0($s1) is approaching. Will you listen to him?", leader_name, helper_color), $S("Yes"), $S("No"));
+
+    if (choice == 1) {
+      choice = popup_choice($S("We do not wish to become a member of this new federation. They will only take advantage of our people and exploit our resources. We will help you if, in return, you agree to leave us in peace. Will you sign an alliance with us?"), $S("Yes"), $S("No"));
+      if (choice == 1) {
+        make_alliance(1, helper_guy);
+        city_name = capitals[helper_guy - 3];
+        if (city_captured_by(helper_guy, 1, city_name) && !is_defeated(helper_guy)) {
+          city_id = find_city_id(city_name);
+          switch_teams(2, 1, city_id);
+          city_id = find_city_id(city_name);
+          switch_teams(helper_guy, 2, city_id);
+        }
+      }
+    }
+  }
+}
+
+if (time() >= get_time_limit()) {
+  defeat(1);
+}
+}

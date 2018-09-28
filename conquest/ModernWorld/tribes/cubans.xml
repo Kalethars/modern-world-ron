@@ -1,0 +1,43 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by user (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Cubans">
+  <LEADERS>
+    <LEADER>Mario García Menocal</LEADER>
+    <LEADER>Che Guevara</LEADER>
+    <LEADER>Fidel Castro</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Havana</CITY>
+    <CITY>Santiago de Cuba</CITY>
+    <CITY>Varadero</CITY>
+    <CITY>Cayo Largo</CITY>
+    <CITY>Cienfuegos</CITY>
+    <CITY>Camaguey</CITY>
+    <CITY>Cayo Guillermo</CITY>
+    <CITY>Cayo Santa Maria</CITY>
+    <CITY>Villa Clara</CITY>
+    <CITY>Granma</CITY>
+    <CITY>Playa Giron</CITY>
+    <CITY>Marea del Portillo</CITY>
+    <CITY>Guardalavanca</CITY>
+    <CITY>Sancti Spiritus</CITY>
+    <CITY>Holguin</CITY>
+    <CITY>Playa Larga</CITY>
+    <CITY>Caya Coco</CITY>
+    <CITY>Trinidad</CITY>
+    <CITY>Pinar del Rio</CITY>
+    <CITY>Ciego de Avila</CITY>
+    <CITY>Vinales</CITY>
+    <CITY>La Fe</CITY>
+    <CITY>Los Arrovos</CITY>
+    <CITY>Niquero</CITY>
+    <CITY>Moa</CITY>
+    <CITY>Bayamo</CITY>
+    <CITY>Gibara</CITY>
+    <CITY>Esmerelda</CITY>
+    <CITY>La Isabela</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>2 American</UNIT_CONTINENT>
+  <BUILD_CONTINENT>6 Iroquois</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>4 American</BACKUP_BUILD_CONTINENT>
+</TRIBE>

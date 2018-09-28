@@ -1,0 +1,46 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by user (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Mexicans">
+  <LEADERS>
+    <LEADER>Venustiano Carranza</LEADER>
+    <LEADER>Manuel Ávila Camacho</LEADER>
+    <LEADER>Miguel de la Madrid</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Mexico City</CITY>
+    <CITY>Acapulco</CITY>
+    <CITY>Cancun</CITY>
+    <CITY>Cuernavaca</CITY>
+    <CITY>Ensenada</CITY>
+    <CITY>Guadalajara</CITY>
+    <CITY>Guanajuato</CITY>
+    <CITY>Ixtapa</CITY>
+    <CITY>Lake Chapala</CITY>
+    <CITY>Los Cabos</CITY>
+    <CITY>Manzanillo</CITY>
+    <CITY>Mazatlan</CITY>
+    <CITY>Merida</CITY>
+    <CITY>Monterrey</CITY>
+    <CITY>Morelia</CITY>
+    <CITY>Playa Del Carmen</CITY>
+    <CITY>Puebla</CITY>
+    <CITY>Puerto Escondido</CITY>
+    <CITY>Puerto Vallarta</CITY>
+    <CITY>Queretaro</CITY>
+    <CITY>San Miguel de Allende</CITY>
+    <CITY>Tijuana</CITY>
+    <CITY>Veracruz</CITY>
+    <CITY>Tepic</CITY>
+    <CITY>Oaxaca</CITY>
+    <CITY>Creel</CITY>
+    <CITY>Hermosillo</CITY>
+    <CITY>Nogales</CITY>
+    <CITY>Rosarito</CITY>
+    <CITY>La Paz</CITY>
+    <CITY>Zacatecas</CITY>
+    <CITY>Tampico</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>2 American</UNIT_CONTINENT>
+  <BUILD_CONTINENT>4 American</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>4 American</BACKUP_BUILD_CONTINENT>
+</TRIBE>

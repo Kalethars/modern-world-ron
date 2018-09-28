@@ -1,0 +1,48 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Robert Nicaise (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Africans">
+  <LEADERS>
+    <LEADER>Haile Selassie I of Ethiopia</LEADER>
+    <LEADER>Idris of Libya</LEADER>
+    <LEADER>Muhammad V an-Nasir of Tunis</LEADER>
+    <LEADER>Yusef of Morocco</LEADER>
+    <LEADER>Ranavalona III of Madagascar</LEADER>
+    <LEADER>Ali Yusuf Kenadid of Somali</LEADER>
+    <LEADER>Samori Ture of Wassoulou</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Addis Ababa</CITY>
+    <CITY>Tripoli</CITY>
+    <CITY>Tunis</CITY>
+    <CITY>Rabat</CITY>
+    <CITY>Antananarivo</CITY>
+    <CITY>Mogadishu</CITY>
+    <CITY>Abuja</CITY>
+    <CITY>Kinshasa</CITY>
+    <CITY>Nairobi</CITY>
+    <CITY>Khartoum</CITY>
+    <CITY>Dodoma</CITY>
+    <CITY>Dakar</CITY>
+    <CITY>Algiers</CITY>
+    <CITY>Luanda</CITY>
+    <CITY>Accra</CITY>
+    <CITY>Maputo</CITY>
+    <CITY>Yaoundé</CITY>
+    <CITY>Yamoussoukro</CITY>
+    <CITY>Lusaka</CITY>
+    <CITY>Niamey</CITY>
+    <CITY>Bamako</CITY>
+    <CITY>Ouagadougou</CITY>
+    <CITY>Harare</CITY>
+    <CITY>Lilongwe</CITY>
+    <CITY>N'Djamena</CITY>
+    <CITY>Conakry</CITY>
+    <CITY>Porto-Novo</CITY>
+    <CITY>Juba</CITY>
+    <CITY>Kigali</CITY>
+    <CITY>Bujumbura</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>1 Arab</UNIT_CONTINENT>
+  <BUILD_CONTINENT>6 Iroquois</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>6 Iroquois</BACKUP_BUILD_CONTINENT>
+</TRIBE>

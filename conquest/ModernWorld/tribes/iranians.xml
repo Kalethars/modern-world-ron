@@ -1,0 +1,43 @@
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Iranians">
+  <LEADERS>
+    <LEADER>Ahmad Shah Qajar</LEADER>
+    <LEADER>Mohammad Reza Pahlavi</LEADER>
+    <LEADER>Mahmoud Ahmadinejad</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Tehran</CITY>
+    <CITY>Mashhad</CITY>
+    <CITY>Isfahan</CITY>
+    <CITY>Karaj</CITY>
+    <CITY>Tabriz</CITY>
+    <CITY>Shiraz</CITY>
+    <CITY>Ahvaz</CITY>
+    <CITY>Qom</CITY>
+    <CITY>Kermanshah</CITY>
+    <CITY>Urmia</CITY>
+    <CITY>Rasht</CITY>
+    <CITY>Zahedan</CITY>
+    <CITY>Kerman</CITY>
+    <CITY>Arak</CITY>
+    <CITY>Hamedan</CITY>
+    <CITY>Yazd</CITY>
+    <CITY>Ardabil</CITY>
+    <CITY>Bandar Abbas</CITY>
+    <CITY>Eslamshahr</CITY>
+    <CITY>Qazvin</CITY>
+    <CITY>Zanjan</CITY>
+    <CITY>Khorramabad</CITY>
+    <CITY>Sanandaj</CITY>
+    <CITY>Malard</CITY>
+    <CITY>Qods</CITY>
+    <CITY>Kashan</CITY>
+    <CITY>Gorgan</CITY>
+    <CITY>Golestan</CITY>
+    <CITY>Sari</CITY>
+    <CITY>Shahriar</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>1 Arab</UNIT_CONTINENT>
+  <BUILD_CONTINENT>5 Turk</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>8 EIndian</BACKUP_BUILD_CONTINENT>
+</TRIBE>

@@ -1,0 +1,54 @@
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Brian Reynolds (Big Huge Games) -->
+<!-- LOCALIZATION: LEADER and CITY elements; also, name attribute -->
+<TRIBE name="Russians">
+  <LEADERS>
+    <LEADER>Vladimir Lenin</LEADER>
+    <LEADER>Joseph Stalin</LEADER>
+	<LEADER>Vladimir Putin</LEADER>
+  </LEADERS>
+  <CITIES>
+    <CITY>Moscow</CITY>
+    <CITY>Saint Petersburg</CITY>
+    <CITY>Novosibirsk</CITY>
+    <CITY>Yekaterinburg</CITY>
+    <CITY>Nizhny Novgorod</CITY>
+    <CITY>Kazan</CITY>
+    <CITY>Chelyabinsk</CITY>
+    <CITY>Omsk</CITY>
+    <CITY>Samara</CITY>
+    <CITY>Rostov-on-Don</CITY>
+    <CITY>Ufa</CITY>
+    <CITY>Krasnoyarsk</CITY>
+    <CITY>Perm</CITY>
+    <CITY>Voronezh</CITY>
+    <CITY>Volgograd</CITY>
+    <CITY>Krasnodar</CITY>
+    <CITY>Saratov</CITY>
+    <CITY>Tyumen</CITY>
+    <CITY>Tolyatti</CITY>
+    <CITY>Izhevsk</CITY>
+    <CITY>Barnaul</CITY>
+    <CITY>Ulyanovsk</CITY>
+    <CITY>Irkutsk</CITY>
+    <CITY>Khabarovsk</CITY>
+    <CITY>Yaroslavl</CITY>
+    <CITY>Vladivostok</CITY>
+    <CITY>Makhachkala</CITY>
+    <CITY>Tomsk</CITY>
+    <CITY>Orenburg</CITY>
+    <CITY>Kemerovo</CITY>
+    <CITY>Novokuznetsk</CITY>
+    <CITY>Ryazan</CITY>
+    <CITY>Astrakhan</CITY>
+    <CITY>Naberezhnye Chelny</CITY>
+    <CITY>Penza</CITY>
+    <CITY>Lipetsk</CITY>
+    <CITY>Kirov</CITY>
+    <CITY>Cheboksary</CITY>
+    <CITY>Tula</CITY>
+    <CITY>Kaliningrad</CITY>
+  </CITIES>
+  <UNIT_CONTINENT>0 European</UNIT_CONTINENT>
+  <BUILD_CONTINENT>1 NEuro</BUILD_CONTINENT>
+  <BACKUP_BUILD_CONTINENT>0 Med</BACKUP_BUILD_CONTINENT>
+</TRIBE>

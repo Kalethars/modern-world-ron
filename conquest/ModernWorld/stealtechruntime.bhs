@@ -1,0 +1,251 @@
+include "ctw_lib.bhs"
+
+int conquest tech_level(int who, String category);
+
+conquest
+{
+  
+
+  static int diff = get_difficulty();
+  static int red = 1;
+  static int blue = 2;
+  static String tech_categories[] = ["Military", "Civic", "Commerce", "Science"];
+  static String loc_tech_categories[] = [$S("Military"), $S("Civic"), $S("Commerce"), $S("Science")];
+  //static String fort_tech1[] = ["Fortification", "Bombardment", "Strategic Resources"];
+  //static String fort_tech2[] = ["Tactics", "Operations", "Strategy"];
+  //static String temple_tech1[] = ["Religion", "Monotheism", "Existentialism"];
+  //static String temple_tech2[] = ["Taxation", "Vassalage", "Social Contract", "Income Tax"];
+  //static String tower_tech1[] = ["Militia", "Minuteman", "Partisan"];
+  //static String tower_tech2[] = ["Allegiance", "Oath of Fealty", "Patriotism", "Nationalism"];
+  //static String mill_tech1[] = ["Carpentry", "Logging Industry", "Papermill"];
+  //static String mill_tech2[] = ["Construction", "Architecture", "Engineering"];
+  //static String granary_tech1[] = ["Agriculture", "Crop Rotation", "Food Industry"];
+  //static String granary_tech2[] = ["Herbal Lore", "Medicine", "Pharmaceuticals"];
+  //static String smelter_tech1[] = ["Metal Alloys", "Cold Casting", "Steel"];
+  //static String smelter_tech2[] = ["Forage", "Supply", "Logistics"];
+  //static String senate_tech[] = ["Despotism", "Republic", "Monarchy", "Democracy", "Socialism", "Capitalism"];
+  //static String light_inf[] = ["Arquebusiers", "Musketeers", "Riflemen"]
+  //static String heavy_inf[] = ["Elite Pikemen", "Fusiliers", "Anti-Tank Rifle"];
+  //static String light_cav[] = ["Elite Light Cavalry", "Hussar", "Armored Car"];
+  //static String heavy_cav[] = ["Heavy Knight", "Cuirassier", "Light Tank"];
+  //static String ranged_cav[] = ["Dragoon", "Carabineer", "Armored Car"];
+  //static String siege[] = ["Bombard", "Cannon", "Artillery"]
+
+  static int casting_spies[] = [1999,1999,1999,1999,1999,1999,1999,1999,1999,1999,1999,1999];
+  static int curr = 0;
+  int level;
+  static int infiltrated;
+  static int end_time = get_time_limit();
+  int cur_time;
+  static String blue_cap = find_capital(blue);
+  static int techs_stolen = 1;
+  static int get_nothing;
+  static int random_time;
+  int one_tech;
+  int two_tech;
+
+  run_once {
+    ctw_add_objective_text($S("Hint: To gain technology, use Spies to infiltrate the enemy Library."), 1, "");
+    set_timer("guard_library", 120);
+    if (diff < 3 && get_age() == 5) {
+      enable_trigger("tech_up");
+    }
+    else {
+      disable_trigger("tech_up");
+    }
+  }
+
+  trigger tech_up(time_later_than(45)) {
+    if (age(2) == 5) {
+      gain_tech(2, "Modern Age");
+    }
+    else if (age(2) == 6) {
+      gain_tech(2, "Information Age");
+    }
+  }
+
+  if (diff < 3) {
+    for (i = 0; i < tech_categories.length; i++) {
+      one_tech += tech_level(1, tech_categories[i]);
+      two_tech += tech_level(2, tech_categories[i]);
+    }
+    if (one_tech >= two_tech) {
+      gain_tech(2, tech_categories[rand_int(0,3)]);
+    }
+  }
+
+  cur_time = time_min();
+  if (cur_time >= end_time) defeat(red);
+
+  if (city_captured(blue, blue_cap)) {
+    victory(red);
+  }
+
+  if (timer_expired("guard_library")) {
+    time = 120/techs_stolen;
+    set_timer("guard_library", time);
+    building = find_build(blue, "Library");
+    x = object_position_x(blue, building);
+    y = object_position_y(blue, building);
+    if (rand_int(0,2) == 1) {
+      create_unit_upgrade(blue, x, y, "Scout", 1);
+    } else {
+      create_unit_upgrade(blue, x, y, "Spy", 1);
+    }
+  }
+
+  //check the library
+  for (n = num_type(blue, "Library"); n > 0; n--) {
+    building = find_build(blue, "Library");
+    get_nothing = 0;
+    if (is_infiltrated(blue, building) && infiltrated == 0) {
+      level = rand_int(0,4);
+      if (age(blue) > age(red)) {
+        if ((tech_level(red, "Military") + tech_level(red, "Civic") + tech_level(red, "Commerce") + tech_level(red, "Science")) > get_techs_per_age(red)) {
+          gain_next_age(red);
+          print_game_msg($S("We have gained the next Age."));
+          techs_stolen++;
+        } else {
+          for (z = 0; z < 4; z++) {
+            if (tech_level(blue, tech_categories[level]) > tech_level(red, tech_categories[level])) {
+              gain_tech(red, tech_categories[level]);
+
+              print_game_msg(parse("We have stolen $STRING0 technology.", loc_tech_categories[level]));
+              techs_stolen++;
+            }
+            level++;
+            if (level == 4) level = 0;
+          }
+        }
+      } else {
+        for (g = 0; g < 4; g++) {
+          if (tech_level(blue, tech_categories[level]) > tech_level(red, tech_categories[level])) {
+            gain_tech(red, tech_categories[level]);
+            print_game_msg(parse("We have stolen $STRING0 technology.", loc_tech_categories[level]));
+            techs_stolen++;
+          }
+          else {
+            get_nothing++;
+          }
+          level++;
+          if (level == 4) level = 0;
+        }
+      }
+      if (get_nothing == 4) {
+        print_game_msg($S("The enemy has not researched any new technologies since we last infiltrated their Library."));
+      }
+      x = object_position_x(blue, building);
+      y = object_position_y(blue, building);
+      unit = create_unit_upgrade(blue, x - 2, y, "Scout", 1);
+      scout_counter_intel(blue, unit, blue, building);
+      infiltrated = building;
+    }
+  }
+
+  if (infiltrated > 0) {
+    if (!is_infiltrated(blue, infiltrated)) {
+      infiltrated = 0;
+    }
+  }
+
+  for (n = num_type(red, "Spy"); n > 0; n--) {
+    unit = find_unit(red, "Spy");
+    if (has_cast_order(red, unit)) {
+      for (z = 0; z < casting_spies.length; z++) {
+        if (casting_spies[curr] == 1999) {
+          casting_spies[curr] = unit;
+        }
+      }
+    }
+  }
+
+  for (n = 0; n < casting_spies.length; n++) {
+    if (casting_spies[n] != 1999) {
+      if (!has_cast_order(red, casting_spies[n]) && !is_on_transport(red, casting_spies[n])) {
+        kill_unit_anim(red, casting_spies[n], 2);
+        casting_spies[n] = 1999;
+      }
+    }
+  }
+
+}
+
+int conquest tech_level(int who, String category)
+{
+  if (category == "Military") {
+    if (!have_tech(who, "The Art of War")) {
+      return 0;
+    } else if (!have_tech(who, "Mercenaries")) {
+      return 1;
+    } else if (!have_tech(who, "Standing Army")) {
+      return 2;
+    } else if (!have_tech(who, "Conscription")) {
+      return 3;
+    } else if (!have_tech(who, "Levee en Masse")) {
+      return 4;
+    } else if (!have_tech(who, "Nation-in-Arms")) {
+      return 5;
+    } else if (!have_tech(who, "Selective Service")) {
+      return 6;
+    } else {
+      return 7;
+    }
+  } else if (category == "Civic") {
+    if (!have_tech(who, "City State")) {
+      return 0;
+    } else if (!have_tech(who, "Empire")) {
+      return 1;
+    } else if (!have_tech(who, "Feudalism")) {
+      return 2;
+    } else if (!have_tech(who, "Divine Right")) {
+      return 3;
+    } else if (!have_tech(who, "Constitution")) {
+      return 4;
+    } else if (!have_tech(who, "Great Power")) {
+      return 5;
+    } else if (!have_tech(who, "International Law")) {
+      return 6;
+    } else {
+      return 7;
+    }
+  } else if (category == "Commerce") {
+    if (!have_tech(who, "Barter")) {
+      return 0;
+    } else if (!have_tech(who, "Coinage")) {
+      return 1;
+    } else if (!have_tech(who, "Trade")) {
+      return 2;
+    } else if (!have_tech(who, "Mercantilism")) {
+      return 3;
+    } else if (!have_tech(who, "Finance")) {
+      return 4;
+    } else if (!have_tech(who, "Assembly Line")) {
+      return 5;
+    } else if (!have_tech(who, "Globalization")) {
+      return 6;
+    } else {
+      return 7;
+    }
+  } else if (category == "Science") {
+    if (!have_tech(who, "Written Word")) {
+      return 0;
+    } else if (!have_tech(who, "Mathematics")) {
+      return 1;
+    } else if (!have_tech(who, "Chemistry")) {
+      return 2;
+    } else if (!have_tech(who, "Laws of Nature")) {
+      return 3;
+    } else if (!have_tech(who, "Electricity")) {
+      return 4;
+    } else if (!have_tech(who, "Electronics")) {
+      return 5;
+    } else if (!have_tech(who, "Computerization")) {
+      return 6;
+    } else {
+      return 7;
+    }
+  } else {
+    return -1;
+  }
+
+}

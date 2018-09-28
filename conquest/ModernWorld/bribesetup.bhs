@@ -1,0 +1,121 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+
+  labels {
+    ATTACKER,
+    DEFENDER,
+  }
+
+  int diff = get_difficulty();
+  int dir,center,radius,x,y,x0,y0,offset;
+
+  dir = get_conquest_invasion_dir();
+  center = get_map_size() / 2;
+  radius = center - 5;
+  x = (int)(radius * sin(dir) + center);
+  y = (int)(center - (radius * cos(dir)));
+
+  force_transport_ability(ATTACKER);
+  force_transport_ability(DEFENDER);
+
+  disable_city_defeat(ATTACKER);
+  //disable_city_defeat(DEFENDER);
+  
+  //destroy_building(DEFENDER, find_city_id(find_capital(DEFENDER)));
+  //create_building_near(DEFENDER, center, center, "Major City", 15);
+  //set_capital(DEFENDER, find_city_name(DEFENDER));
+  //enable_city_defeat(DEFENDER);
+  
+  create_unit_upgrade(ATTACKER, x, y, "Spy", 11-diff);
+  clear_group(DEFENDER);
+  create_unit_upgrade(DEFENDER, center, center, "Slingers", 3);
+  create_unit_upgrade(DEFENDER, center, center, "Hoplites", 1);
+  create_unit_upgrade(DEFENDER, center, center, "Machine Gun", 1);
+  create_unit_upgrade(DEFENDER, center, center, "Light Horse", 2);
+  create_unit_upgrade(DEFENDER, center, center, "Cataphract", 1);
+  group_patrol_order(DEFENDER, center, center);
+  place_building_upgrade(DEFENDER, "Granary", find_capital(DEFENDER));
+  place_building_upgrade(DEFENDER, "Lumber Mill", find_capital(DEFENDER));
+  place_building_upgrade(DEFENDER, "Mine", find_capital(DEFENDER));
+  place_building_upgrade(DEFENDER, "University", find_capital(DEFENDER));
+  place_building_upgrade(DEFENDER, "Market", find_capital(DEFENDER));
+  place_building_upgrade(DEFENDER, "Temple", find_capital(DEFENDER));
+  place_building_upgrade(DEFENDER, "Senate", find_capital(DEFENDER));
+  place_building_upgrade(DEFENDER, "Tower", find_capital(DEFENDER));
+  place_building_upgrade(DEFENDER, "Barracks", find_capital(DEFENDER));
+  place_building_upgrade(DEFENDER, "Stable", find_capital(DEFENDER));
+  place_building_upgrade(DEFENDER, "Siege Factory", find_capital(DEFENDER));
+  if (diff > 3) {
+    place_building_upgrade(DEFENDER, "Tower", find_capital(DEFENDER));
+  }
+  if (diff==6) {
+	place_building_upgrade(DEFENDER, "Fortress", find_capital(DEFENDER));
+  }
+  
+  dir=rand_int(0,360);
+  offset=rand_int(0,2)*2-1;
+  offset=offset*120;
+  for (radius = 60; radius > 0; radius--){
+    x = (int)(radius * sin(dir) + center);
+    y = (int)(center - (radius * cos(dir)));
+    if (map_is_land(x, y)){
+	  x0=x;
+	  y0=y;
+      clear_group(DEFENDER);
+      create_unit_upgrade(DEFENDER, x, y, "Slingers", 3);
+      create_unit_upgrade(DEFENDER, x, y, "Machine Gun", 3);
+      break;
+    }
+  }
+
+  for (radius = 60; radius > 0; radius--){
+    x = (int)(radius * sin(dir + offset) + center);
+    y = (int)(center - (radius * cos(dir + offset)));
+    if (map_is_land(x, y)){
+      group_patrol_order(DEFENDER, x, y);
+      clear_group(DEFENDER);
+      create_unit_upgrade(DEFENDER, x, y, "Hoplites", 3);
+      create_unit_upgrade(DEFENDER, x, y, "Cataphract", 3);
+      //group_patrol_order(DEFENDER, x, y);
+      break;
+    }
+  }
+
+  for (radius = 60; radius > 0; radius--){
+    x = (int)(radius * sin(dir - offset) + center);
+    y = (int)(center - (radius * cos(dir - offset)));
+    if (map_is_land(x, y)){
+      group_patrol_order(DEFENDER, x, y);
+      clear_group(DEFENDER);
+      create_unit_upgrade(DEFENDER, x, y, "Catapult", 3);
+      create_unit_upgrade(DEFENDER, x, y, "Light Horse", 3);
+      //create_unit_upgrade(DEFENDER, x, y, "Anti-Aircraft Gun", 2);
+      group_patrol_order(DEFENDER, x0, y0);
+      break;
+    }
+  }
+
+  gain_tech(ATTACKER, "Operations");
+  gain_tech(ATTACKER, "Strategy");
+  gain_tech(ATTACKER, "Tactics");
+  set_type_job_time("Spy", 10);
+  set_unit_type_max_craft("Spy", 2200-200*diff);
+  
+  disable_type("Special Forces");
+  disable_type("Elite Special Forces");
+  disable_type("Scout");
+  disable_type("Explorer");
+  disable_type("Commando");
+  disable_type("Takohs");
+  disable_type("Akweks");
+  disable_type("Okwari");
+  disable_type("Helicopter");
+
+  disable_type("Small City");
+  disable_type("Senate");
+
+  disable_take_attrition(ATTACKER);
+
+}

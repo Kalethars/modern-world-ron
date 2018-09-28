@@ -1,0 +1,201 @@
+include "ctw_lib.bhs"
+
+conquest
+{
+  if (get_ctw_campaign() == "The New World") {
+    new_world_rules();
+    new_world_setup();
+  } 
+  else if (get_ctw_campaign() == "Napoleon") {
+    napoleon_rules();
+  }
+  else if (get_ctw_campaign() == "Alexander the Great") {
+    alexander_setup();
+  }
+  else if (get_ctw_campaign() == "The Cold War") {
+    coldwar_rules();
+  }
+labels {
+}
+
+run_once {
+  disable_city_defeat(1);
+}
+
+set_time_limit(15);
+diff = get_difficulty();
+
+force_transport_ability(1);
+
+int x, y, dir, center, radius;
+
+set_explored(1, world_x_size()/2, world_y_size()/2, world_x_size());
+
+dir = get_conquest_invasion_dir();
+center = get_map_size() / 2;
+radius = center - 10;
+x = (int)(radius * sin(dir) + center);
+y = (int)(center - (radius * cos(dir)));  
+
+jump_camera(x, y);
+
+create_unit_upgrade(1, x, y, "Slingers", 1);
+create_unit_upgrade(1, x, y, "Archers", 1);
+create_unit_upgrade(1, x, y, "Light Horse", 2);
+create_unit_upgrade(1, x, y, "Cataphract", 2);
+if (find_nation(1) == "Spanish" && get_ctw_campaign() == "The New World") {
+  create_unit_upgrade(1, x, y, "Conquistador", 5);
+}
+else if (find_nation(1) == "Nubians" && get_ctw_campaign() == "The New World") {
+  if (get_age() == 3) {
+    unit = create_unit(1, x, y, "Dragoon", 3);
+    add_to_group(1, unit);
+  }
+  else {
+    unit = create_unit(1, x, y, "Carabineer", 3);
+    add_to_group(1, unit);
+  }
+}
+else {
+  create_unit_upgrade(1, x, y, "Horse Archer", 4);
+}
+create_unit_upgrade(1, x, y, "Supply Wagon", 1);
+if (get_ctw_campaign() == "Alexander the Great") {
+  create_unit_in_group(1, x - 4, y, "Alexander", 1);
+}
+else if (get_ctw_campaign() == "Napoleon") {
+  create_unit_in_group(1, x - 4, y, "Napoleon", 1);
+}
+else {
+  create_unit_in_group(1, x, y, "General", 1);
+}
+create_unit_upgrade(1, x, y, "Scout", 1);
+
+city_name = find_capital(2);
+city_id = find_city_id(city_name);
+
+x = object_position_x(2, city_id);
+y = object_position_y(2, city_id);
+
+create_unit(2, x, y, "Citizen", 4);
+create_unit_upgrade(2, x, y, "Archers", diff/2-1);
+if (get_ctw_campaign() == "The New World") {
+  if (find_nation(2) == "Nubians") {
+      create_unit_in_group(2, x, y, "Bandeirantes", diff/2);
+  }
+  else {
+    create_unit_in_group(2, x, y, "Pikemen", diff/2);
+  }
+}
+else {
+  create_unit_in_group(2, x, y, "Phalanx", diff/2);
+}
+if (get_ctw_campaign() == "Napoleon") {
+  if (find_nation(2) == "British") {
+    create_unit_in_group(2, x - 4, y, "Wellington", 1);
+  }
+  else if (find_nation(2) == "Greeks") {
+    create_unit_in_group(2, x - 4, y, "Archduke Charles", 1);
+  }
+  else if (find_nation(2) == "Germans") {
+    create_unit_in_group(2, x - 4, y, "General Blucher", 1);
+  }
+  else if (find_nation(2) == "Russians") {
+    create_unit_in_group(2, x - 4, y, "General Kutosov", 1);
+  }
+  else if (find_nation(2) == "Turks") {
+    create_unit_in_group(2, x - 4, y, "Djezzar", 1);
+    create_unit_upgrade(2, x, y, "Archers", diff/2-1);
+    create_unit_upgrade(2, x, y, "Javelineers", diff/2);
+    create_unit_upgrade(2, x, y, "Phalanx", diff/2);
+  }
+}
+
+if (diff < 4) {
+  for (i = 0; i < 2; i++) {
+    do{
+      x = rand_int(15, world_x_size()/2);
+      y = rand_int(15, world_y_size()/2);
+    }while(!map_is_buildable(x, y));
+    if (map_is_buildable(x+5, y)) {
+      create_building(2, x+5, y, "Farm");
+    }
+    else {
+      create_building(2, x-5, y, "Farm");
+    }
+    if (map_is_buildable(x, y+5)) {
+      create_building(2, x, y+5, "Farm");
+    }
+    else {
+      create_building(2, x, y-5, "Farm");
+    }
+    create_unit(2, x, y, "Citizen", 2);
+
+    do{
+      x = rand_int(world_x_size()/2, world_x_size() - 15);
+      y = rand_int(15, world_y_size()/2);
+    }while(!map_is_buildable(x, y));
+    if (map_is_buildable(x+5, y)) {
+      create_building(2, x+5, y, "Farm");
+    }
+    else {
+      create_building(2, x-5, y, "Farm");
+    }
+    if (map_is_buildable(x, y+5)) {
+      create_building(2, x, y+5, "Farm");
+    }
+    else {
+      create_building(2, x, y-5, "Farm");
+    }
+    create_unit(2, x, y, "Citizen", 2);
+
+    do{
+      x = rand_int(15, world_x_size()/2);
+      y = rand_int(world_y_size()/2, world_y_size() - 15);
+    }while(!map_is_buildable(x, y));
+    if (map_is_buildable(x+5, y)) {
+      create_building(2, x+5, y, "Farm");
+    }
+    else {
+      create_building(2, x-5, y, "Farm");
+    }
+    if (map_is_buildable(x, y+5)) {
+      create_building(2, x, y+5, "Farm");
+    }
+    else {
+      create_building(2, x, y-5, "Farm");
+    }
+    create_unit(2, x, y, "Citizen", 2);
+
+    do{
+      x = rand_int(world_x_size()/2, world_x_size() - 15);
+      y = rand_int(world_y_size()/2, world_y_size() - 15);
+    }while(!map_is_buildable(x, y));
+    if (map_is_buildable(x+5, y)) {
+      create_building(2, x+5, y, "Farm");
+    }
+    else {
+      create_building(2, x-5, y, "Farm");
+    }
+    if (map_is_buildable(x, y+5)) {
+      create_building(2, x, y+5, "Farm");
+    }
+    else {
+      create_building(2, x, y-5, "Farm");
+    }
+    create_unit(2, x, y, "Citizen", 2);
+  }
+}
+
+if (diff < 4) {
+  disable_tech(2, "Allegiance");
+}
+
+city_name = find_capital(2);
+place_building_upgrade(2, "Tower", city_name);
+place_building_upgrade(2, "Tower", city_name);
+
+gain_tech(2, "Commerce");
+gain_tech(2, "Commerce");
+gain_tech(2, "Commerce");
+}
