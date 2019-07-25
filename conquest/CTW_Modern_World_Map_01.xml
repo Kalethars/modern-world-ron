@@ -106,7 +106,7 @@
 		<LINK to="Karelia" sea="0"/>
 		<LINK to="Eastern Europe" sea="0"/>
 		<LINK to="South Russia" sea="0"/>
-		<LINK to="Arkhangelsk" sea="1"/>
+		<LINK to="Novaya Zemlya" sea="1"/>
 	</COUNTRY>
 	<COUNTRY name="Eastern Siberia" card="Commandeer Transport" tileset="arctic" size="0" id="Eastern Siberia" red="2" green="202" blue="120" continent="East Asia" tribute="15" left="6127" right="7518" top="34" bottom="1183" x="6908" y="441">
 		<LINK to="Western Siberia" sea="0"/>
@@ -128,7 +128,7 @@
 	<COUNTRY name="Karelia" card="Letter of Marque" id="Karelia" tileset="arctic" size="0" red="247" green="186" blue="115" continent="Europe" tribute="45" left="4328" right="4786" top="91" bottom="499" x="4476" y="330">
 		<LINK to="Finland" sea="0"/>
 		<LINK to="Russia" sea="0"/>
-		<LINK to="Arkhangelsk" sea="1"/>
+		<LINK to="Novaya Zemlya" sea="1"/>
 		<LINK to="Eastern Europe" sea="0"/>
 	</COUNTRY>
 	<COUNTRY name="Norway" tileset="snowy" rare="Furs" size="5" capital="1" owner="dutch" id="Norway" red="128" green="246" blue="170" continent="Europe" left="3640" right="4207" top="95" bottom="591" x="3805" y="494">
@@ -470,7 +470,7 @@
 		<LINK to="North Korea" sea="0"/>
 		<LINK to="Eastern Siberia" sea="0"/>
 	</COUNTRY>
-	<COUNTRY name="Arkhangelsk" tileset="arctic" size="0" id="Arkhangelsk" card="Logistics" tribute="10" red="94" green="165" blue="5" continent="Europe" left="5023" right="5468" top="8" bottom="264" x="5085" y="152">
+	<COUNTRY name="Novaya Zemlya" tileset="arctic" size="0" id="Novaya Zemlya" card="Logistics" tribute="10" red="94" green="165" blue="5" continent="Europe" left="5023" right="5468" top="8" bottom="264" x="5085" y="152">
 		<LINK to="Russia" sea="1"/>
 		<LINK to="Karelia" sea="1"/>
 		<LINK to="Urals" sea="1"/>
@@ -616,7 +616,7 @@
 		<LINK to="South Russia" sea="0"/>
 		<LINK to="Kazakhstan" sea="0"/>
 		<LINK to="Western Siberia" sea="0"/>
-		<LINK to="Arkhangelsk" sea="1"/>
+		<LINK to="Novaya Zemlya" sea="1"/>
 	</COUNTRY>
 	<COUNTRY name="Iran" tileset="sw_desert" rare="Dye" size="5" id="Iran" capital="1" owner="persian" red="176" green="244" blue="196" continent="West Asia" left="4766" right="5148" top="1354" bottom="1747" x="4952" y="1448">
 		<LINK to="Caucasus" sea="0"/>
